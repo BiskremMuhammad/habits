@@ -5,8 +5,20 @@
  */
 
 import React from "react";
-import { Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 export const SplashScreen = () => {
-  return <Text>Welcome</Text>;
+  return (
+    <View style={SplashScreenStyles.container}>
+      <Text>Welcome</Text>
+    </View>
+  );
 };
+
+const SplashScreenStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
