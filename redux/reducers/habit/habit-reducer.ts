@@ -7,7 +7,10 @@
 import { Habit } from "../../../types/habit";
 import { HabitActions, HabitActionTypes } from "./habit-actions";
 
-export const habitReducer = (state: Habit[], action: HabitActions): Habit[] => {
+export const habitReducer = (
+  state: Habit[] = [],
+  action: HabitActions
+): Habit[] => {
   switch (action.type) {
     case HabitActionTypes.ADD_NEW_HABIT:
       return [...state, action.payload as Habit];
