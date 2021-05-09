@@ -7,12 +7,15 @@
 import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
+import { Dimensions, Image, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import * as Font from "expo-font";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import { SplashScreen } from "./screens/splash";
 import { createStackNavigator } from "@react-navigation/stack";
+
+const { width, height } = Dimensions.get("screen");
 
 /**
  * App Routing instance
@@ -51,9 +54,13 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <StatusBar style="light" />
+        <Image source={require("./assets/bg.png")} style={styles.background} />
         <Route.Navigator
           screenOptions={{
             header: () => null,
+            cardStyle: {
+              backgroundColor: "transparent",
+            },
           }}
         >
           <Route.Screen name="Splash" component={SplashScreen} />
@@ -62,3 +69,14 @@ export default function App() {
     </Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  background: {
+    width,
+    height,
+    resizeMode: "cover",
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
+});
