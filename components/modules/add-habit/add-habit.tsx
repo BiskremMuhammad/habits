@@ -5,11 +5,14 @@
  */
 
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { CommonStyles } from "../../../styles/common";
+import { Button } from "../../elements/button";
 import { Input } from "../../elements/input";
 import BookIcon from "../../svgs/book";
 import TimerIcon from "../../svgs/timer-icon";
+
+const { height: screenHeight } = Dimensions.get("screen");
 
 /**
  * interface that defines the props of the component
@@ -50,6 +53,12 @@ export const AddHabit = ({ enableFrequencySelect }: AddHabitProps) => {
           }
         />
       </View>
+      <Button
+        shape="circle"
+        text="start"
+        hasCircleBorder={true}
+        extraStyles={{ marginTop: 0.1055 * screenHeight, alignSelf: "center" }}
+      />
     </View>
   );
 };
