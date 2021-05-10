@@ -1,3 +1,9 @@
+/**
+ * @author Muhammad Omran
+ * @date 10-05-2021
+ * @description implement info icon svg
+ */
+
 import * as React from "react";
 import Svg, { SvgProps, Path } from "react-native-svg";
 
