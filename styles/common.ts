@@ -12,19 +12,36 @@ export const CommonStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  withIcon: {
+    marginTop: 4,
+    marginRight: 8,
+  },
   input: {
-    paddingVertical: 20,
+    paddingVertical: 16,
     position: "relative",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden",
   },
   inputChevron: {
     width: 10,
     height: 5,
-    alignSelf: "flex-end",
+    position: "absolute",
+    right: -1,
+    transform: [
+      {
+        translateY: 3,
+      },
+    ],
+  },
+  inputBorderContainer: {
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "97%",
+    height: "100%",
   },
   inputCircleBorderStart: {
     position: "absolute",
@@ -52,6 +69,6 @@ export const CommonStyles = StyleSheet.create({
   },
   inputBorderBottomWithCircle: {
     left: 14,
-    width: "93%",
+    width: "95%",
   },
 });

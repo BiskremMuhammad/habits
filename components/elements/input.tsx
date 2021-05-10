@@ -23,6 +23,13 @@ interface InputProps {
   customTextStyle?: StyleProp<TextStyle>;
 
   /**
+   * flag wheather the input has a bottom border or not
+   *
+   * @type {boolean}
+   */
+  hasBorder?: boolean;
+
+  /**
    * flag if the input has a circle in the bottom border
    *
    * @type {boolean}
@@ -49,23 +56,42 @@ interface InputProps {
    * @type {string}
    */
   text: string;
+
+  /**
+   * width of the input, is it long or short
+   *
+   * @type {"long" | "short"}
+   */
+  width?: "long" | "short";
 }
 
 export const Input = (props: InputProps) => {
   return (
     <View style={CommonStyles.input}>
-      {props.hasCircleBorder && (
-        <View style={CommonStyles.inputCircleBorderStart}></View>
+      {props.hasBorder && (
+        <View style={CommonStyles.inputBorderContainer}>
+          {props.hasCircleBorder && (
+            <View style={CommonStyles.inputCircleBorderStart}></View>
+          )}
+          <View
+            style={[
+              CommonStyles.inputBorderBottom,
+              props.hasCircleBorder
+                ? CommonStyles.inputBorderBottomWithCircle
+                : {},
+            ]}
+          ></View>
+        </View>
       )}
-      <View
-        style={[
-          CommonStyles.inputBorderBottom,
-          props.hasCircleBorder ? CommonStyles.inputBorderBottomWithCircle : {},
-        ]}
-      ></View>
-      <View style={CommonStyles.textWithIcon}>
+      <View style={[CommonStyles.textWithIcon, { marginLeft: 12 }]}>
         {props.icon}
-        <Text style={[InputStyles.text, props.customTextStyle]}>
+        <Text
+          style={[
+            InputStyles.text,
+            props.customTextStyle,
+            props.width === "short" && InputStyles.short,
+          ]}
+        >
           {props.text}
         </Text>
       </View>
@@ -79,5 +105,9 @@ const InputStyles = StyleSheet.create({
     fontFamily: "JosefinSans-Bold",
     fontSize: 24,
     color: "#fff",
+    marginRight: 58,
+  },
+  short: {
+    marginRight: 27,
   },
 });
