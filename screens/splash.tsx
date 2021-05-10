@@ -6,6 +6,7 @@
 
 import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
@@ -17,16 +18,33 @@ export const SplashScreen = () => {
     <View style={SplashScreenStyles.container}>
       <View style={SplashScreenStyles.bgIconContainer}>
         <AddIconSvg style={SplashScreenStyles.bgIcon} />
-        <Text style={SplashScreenStyles.welcome}>Welcome</Text>
+        <MotiView
+          from={{ opacity: 0, translateY: 10 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 300, duration: 1000 }}
+        >
+          <Text style={SplashScreenStyles.welcome}>Welcome</Text>
+        </MotiView>
       </View>
-      <View style={SplashScreenStyles.valueProp}>
+      <MotiView
+        from={{ opacity: 0, translateY: 10 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        style={SplashScreenStyles.valueProp}
+        transition={{ delay: 300, duration: 1000 }}
+      >
         <InfoIcon style={SplashScreenStyles.valuePropInfoIcon} fill="#fff" />
         <Text style={SplashScreenStyles.valuePropDescription}>
           We’ll start with an example session. Select a Habit and tap START to
           begin:
         </Text>
-      </View>
-      <AddHabit />
+      </MotiView>
+      <MotiView
+        from={{ opacity: 0, translateY: 10 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ delay: 1300, duration: 1000 }}
+      >
+        <AddHabit />
+      </MotiView>
     </View>
   );
 };
