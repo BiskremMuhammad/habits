@@ -57,7 +57,7 @@ export const AddHabit = ({ enableFrequencySelect }: AddHabitProps) => {
         shape="circle"
         text="start"
         hasCircleBorder={true}
-        extraStyles={{ marginTop: 0.1055 * screenHeight, alignSelf: "center" }}
+        extraStyles={{ marginTop: 0.0855 * screenHeight, alignSelf: "center" }}
       />
     </View>
   );
