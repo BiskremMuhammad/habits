@@ -13,13 +13,13 @@ export const CommonStyles = StyleSheet.create({
     alignItems: "center",
   },
   input: {
-    paddingVertical: 10,
-    borderRadius: 56,
+    paddingVertical: 20,
     position: "relative",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
   },
   inputChevron: {
     width: 10,
@@ -28,7 +28,7 @@ export const CommonStyles = StyleSheet.create({
   },
   inputCircleBorderStart: {
     position: "absolute",
-    bottom: -7,
+    bottom: 0,
     left: 0,
     width: 14,
     height: 14,
@@ -39,15 +39,19 @@ export const CommonStyles = StyleSheet.create({
     opacity: 0.3,
   },
   inputBorderBottom: {
-    marginTop: "60%",
-    marginLeft: 16,
     position: "absolute",
-    width: "100%",
+    bottom: 6,
+    left: 0,
+    width: "104%",
     height: "100%",
     borderBottomWidth: 2,
     borderRightWidth: 2,
     borderColor: "#6F698F",
     opacity: 0.47,
-    borderRadius: 56,
+    borderBottomRightRadius: 140,
+  },
+  inputBorderBottomWithCircle: {
+    left: 14,
+    width: "93%",
   },
 });

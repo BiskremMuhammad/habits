@@ -57,7 +57,12 @@ export const Input = (props: InputProps) => {
       {props.hasCircleBorder && (
         <View style={CommonStyles.inputCircleBorderStart}></View>
       )}
-      <View style={CommonStyles.inputBorderBottom}></View>
+      <View
+        style={[
+          CommonStyles.inputBorderBottom,
+          props.hasCircleBorder ? CommonStyles.inputBorderBottomWithCircle : {},
+        ]}
+      ></View>
       <View style={CommonStyles.textWithIcon}>
         {props.icon}
         <Text style={[InputStyles.text, props.customTextStyle]}>
