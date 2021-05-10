@@ -6,6 +6,7 @@
 
 import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
 
@@ -25,6 +26,7 @@ export const SplashScreen = () => {
           begin:
         </Text>
       </View>
+      <AddHabit />
     </View>
   );
 };
@@ -34,7 +36,7 @@ const SplashScreenStyles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingVertical: 0.23896 * screenHeight,
-    paddingHorizontal: 0.22 * screenWidth,
+    paddingHorizontal: 0.18 * screenWidth,
   },
   bgIconContainer: {
     width: "100%",
@@ -63,6 +65,8 @@ const SplashScreenStyles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 0.0444 * screenHeight,
     opacity: 0.66,
+    paddingHorizontal: 0.04 * screenWidth,
+    marginBottom: 0.044 * screenHeight,
   },
   valuePropInfoIcon: {
     width: 15,

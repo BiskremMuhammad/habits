@@ -62,7 +62,7 @@ interface InputProps {
    *
    * @type {"long" | "short"}
    */
-  width?: "long" | "short";
+  width?: "long" | "short" | "minimal";
 }
 
 export const Input = (props: InputProps) => {
@@ -83,7 +83,12 @@ export const Input = (props: InputProps) => {
           ></View>
         </View>
       )}
-      <View style={[CommonStyles.textWithIcon, { marginLeft: 12 }]}>
+      <View
+        style={[
+          CommonStyles.textWithIcon,
+          props.width !== "minimal" && { marginLeft: 12 },
+        ]}
+      >
         {props.icon}
         <Text
           style={[
@@ -105,7 +110,7 @@ const InputStyles = StyleSheet.create({
     fontFamily: "JosefinSans-Bold",
     fontSize: 24,
     color: "#fff",
-    marginRight: 58,
+    marginRight: 64,
   },
   short: {
     marginRight: 27,
