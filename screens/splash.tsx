@@ -21,7 +21,7 @@ export const SplashScreen = () => {
         <MotiView
           from={{ opacity: 0, translateY: 10 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 300, duration: 1000 }}
+          transition={{ delay: 300, duration: 1000, type: "timing" }}
         >
           <Text style={SplashScreenStyles.welcome}>Welcome</Text>
         </MotiView>
@@ -30,7 +30,7 @@ export const SplashScreen = () => {
         from={{ opacity: 0, translateY: 10 }}
         animate={{ opacity: 1, translateY: 0 }}
         style={SplashScreenStyles.valueProp}
-        transition={{ delay: 300, duration: 1000 }}
+        transition={{ delay: 300, duration: 1000, type: "timing" }}
       >
         <InfoIcon style={SplashScreenStyles.valuePropInfoIcon} fill="#fff" />
         <Text style={SplashScreenStyles.valuePropDescription}>
@@ -41,7 +41,7 @@ export const SplashScreen = () => {
       <MotiView
         from={{ opacity: 0, translateY: 10 }}
         animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: 1300, duration: 1000 }}
+        transition={{ delay: 1300, duration: 1000, type: "timing" }}
       >
         <AddHabit />
       </MotiView>
