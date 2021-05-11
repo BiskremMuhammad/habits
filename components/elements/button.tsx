@@ -101,6 +101,7 @@ const ButtonStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 30,
+    position: "relative",
   },
   circle: {
     width: 60,
@@ -126,9 +127,11 @@ const ButtonStyles = StyleSheet.create({
     borderRadius: 30,
   },
   ovalBorderContainer: {
-    opacity: 0.5,
+    width: "80%",
     borderWidth: 2,
-    borderColor: "#fff",
+    borderColor: "rgba(255,255,255,0.5)",
+    paddingVertical: 22,
+    paddingHorizontal: 35,
   },
   circleBorderContainer: {
     position: "absolute",
@@ -175,6 +178,7 @@ const ButtonStyles = StyleSheet.create({
     width: 14.58,
     height: 14.58,
     top: 0,
-    right: 0,
+    right: -2,
+    borderColor: "rgba(255,255,255,0.5)",
   },
 });
