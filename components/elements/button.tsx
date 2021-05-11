@@ -149,14 +149,14 @@ const ButtonStyles = StyleSheet.create({
   circleBorder01: {
     transform: [
       {
-        rotate: "-45deg",
+        rotate: "-49deg",
       },
     ],
   },
   circleBorder02: {
     transform: [
       {
-        rotate: "-0deg",
+        rotate: "10deg",
       },
     ],
   },
@@ -167,8 +167,8 @@ const ButtonStyles = StyleSheet.create({
     borderColor: "#fff",
     borderRadius: 7,
     position: "absolute",
-    top: 6,
-    right: 5,
+    top: 8,
+    right: 3,
     backgroundColor: "#1A1539",
   },
   ovalBorderCircle: {
