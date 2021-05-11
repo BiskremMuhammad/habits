@@ -5,7 +5,7 @@
  */
 
 import { MotiView } from "moti";
-import React from "react";
+import React, { Children } from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 
 /**
@@ -14,6 +14,13 @@ import { StyleSheet, View, Text, Pressable } from "react-native";
  * @interface
  */
 interface RadioProps {
+  /**
+   * children to be rendered to the component
+   *
+   * @type {React.ReactNode}
+   */
+  children?: React.ReactNode;
+
   /**
    * radio button index in a radio group
    *
@@ -41,7 +48,13 @@ interface RadioProps {
   selected: boolean;
 }
 
-export const Radio = ({ index, label, onChange, selected }: RadioProps) => {
+export const Radio = ({
+  children,
+  index,
+  label,
+  onChange,
+  selected,
+}: RadioProps) => {
   return (
     <MotiView
       from={{ backgroundColor: "rgba(151, 151, 151, 0)" }}
@@ -74,6 +87,7 @@ export const Radio = ({ index, label, onChange, selected }: RadioProps) => {
         </View>
         <Text style={RadioStyles.freqFormLabelText}>{label}</Text>
       </Pressable>
+      {selected && children}
     </MotiView>
   );
 };
@@ -81,7 +95,6 @@ export const Radio = ({ index, label, onChange, selected }: RadioProps) => {
 const RadioStyles = StyleSheet.create({
   freqFormLabelContainer: {
     display: "flex",
-    flexDirection: "row",
     paddingHorizontal: 11,
     paddingVertical: 18,
     borderRadius: 16,
