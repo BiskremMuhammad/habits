@@ -10,6 +10,7 @@ import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
+import { CONSTANTS } from "../utils/constants";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -39,11 +40,12 @@ export const SplashScreen = () => {
         </Text>
       </MotiView>
       <MotiView
+        style={{ alignSelf: "stretch" }}
         from={{ opacity: 0, translateY: 10 }}
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ delay: 1300, duration: 1000, type: "timing" }}
       >
-        <AddHabit />
+        <AddHabit enableFrequencySelect={true} />
       </MotiView>
     </View>
   );
@@ -53,8 +55,7 @@ const SplashScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 0.23896 * screenHeight,
-    paddingHorizontal: 0.18 * screenWidth,
+    paddingVertical: 0.222 * screenHeight,
   },
   bgIconContainer: {
     width: "100%",
@@ -83,7 +84,7 @@ const SplashScreenStyles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 0.0444 * screenHeight,
     opacity: 0.66,
-    paddingHorizontal: 0.04 * screenWidth,
+    paddingHorizontal: 0.06 * screenWidth + CONSTANTS.PADDING,
     marginBottom: 0.044 * screenHeight,
   },
   valuePropInfoIcon: {
@@ -91,11 +92,13 @@ const SplashScreenStyles = StyleSheet.create({
     height: 15,
     marginRight: 6,
     marginTop: 8,
+    opacity: 0.5,
   },
   valuePropDescription: {
     fontFamily: "Rubik-Regular",
     fontSize: 16,
     lineHeight: 32,
     color: "#fff",
+    opacity: 0.66,
   },
 });
