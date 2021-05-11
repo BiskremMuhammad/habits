@@ -111,6 +111,7 @@ const InputStyles = StyleSheet.create({
     fontSize: 24,
     color: "#fff",
     marginRight: 64,
+    textTransform: "capitalize",
   },
   short: {
     marginRight: 27,
