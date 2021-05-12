@@ -19,3 +19,19 @@ export enum WeekDays {
   FRI = "FRI",
   SAT = "SAT",
 }
+
+/**
+ * enum that defines the days full names of the week
+ *
+ * @enum
+ * @exports
+ */
+export enum WeekDaysFullName {
+  SUN = "Sunday",
+  MON = "Monday",
+  TUE = "Tuesday",
+  WED = "Wednesday",
+  THU = "Thursday",
+  FRI = "Friday",
+  SAT = "Saturday",
+}

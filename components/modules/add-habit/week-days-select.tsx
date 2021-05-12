@@ -45,6 +45,13 @@ interface WeekDaysSelectProps {
   containerStyle?: StyleProp<ViewStyle>;
 
   /**
+   * the selected days array
+   *
+   * @type {WeekDays[]}
+   */
+  days: WeekDays[];
+
+  /**
    * to limit the selection of days to only one day
    * this is only for the case to select the rest day
    *
@@ -57,8 +64,23 @@ export const WeekDaysSelect = (porps: WeekDaysSelectProps) => {
   return (
     <View style={[WeekDaysSelectStyles.container, porps.containerStyle]}>
       {Object.keys(WeekDays).map((key: string) => (
-        <Pressable key={key} style={WeekDaysSelectStyles.day}>
-          <Text style={WeekDaysSelectStyles.dayText}>{key}</Text>
+        <Pressable
+          key={key}
+          style={[
+            WeekDaysSelectStyles.day,
+            !porps.days.includes(key as WeekDays) &&
+              WeekDaysSelectStyles.dayDisabled,
+          ]}
+        >
+          <Text
+            style={[
+              WeekDaysSelectStyles.dayText,
+              !porps.days.includes(key as WeekDays) &&
+                WeekDaysSelectStyles.dayTextDisabled,
+            ]}
+          >
+            {key}
+          </Text>
         </Pressable>
       ))}
     </View>
@@ -76,7 +98,7 @@ const WeekDaysSelectStyles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(196, 196, 196, 0.8)",
+    backgroundColor: "rgba(196, 196, 196, 0.9)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

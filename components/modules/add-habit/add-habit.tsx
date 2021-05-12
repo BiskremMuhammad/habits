@@ -5,18 +5,24 @@
  */
 
 import { MotiView } from "@motify/components";
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
 import { CommonStyles } from "../../../styles/common";
 import { HabitTypes } from "../../../types/habit";
-import { WeekDays } from "../../../types/week-days";
+import { WeekDays, WeekDaysFullName } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
+import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 import { Button } from "../../elements/button";
 import { Input } from "../../elements/input";
 import { Radio } from "../../elements/radio";
 import BookIcon from "../../svgs/book";
 import InfoIcon from "../../svgs/info-icon";
 import TimerIcon from "../../svgs/timer-icon";
+import {
+  AddHabitActionTypes,
+  addHabitReducer,
+  INITIAL_ADD_HABIT_STATE,
+} from "./add-habit-reducer";
 import { WeekDaysSelect } from "./week-days-select";
 
 const { height: screenHeight } = Dimensions.get("screen");
@@ -43,12 +49,31 @@ interface AddHabitProps {
 }
 
 export const AddHabit = (props: AddHabitProps) => {
-  const [type, setType] = useState<HabitTypes>(HabitTypes.READING);
-  const [isEveryday, setEveryday] = useState<boolean>(true);
-  const [freq, setFreq] = useState<WeekDays[]>([]);
-  const [freqChangeOpen, setFreqChangeOpenState] = useState<boolean>(true);
+  const [state, dispatch] = useReducer(
+    addHabitReducer,
+    INITIAL_ADD_HABIT_STATE
+  );
+  const { type, isEveryDay, days, duration } = state;
+
+  const [freqChangeOpen, setFreqChangeOpenState] = useState<boolean>(
+    !isEveryDay
+  );
   const [freqSelection, setFreqSelection] = useState<number>(1);
-  const [duration, setDuration] = useState<number>(1);
+
+  const onChangeFreq = (radio: number) => {
+    setFreqSelection(radio);
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_EVERYDAY_STATE,
+      payload:
+        radio === 1
+          ? true
+          : radio === 2
+          ? Object.keys(WeekDays)
+              .filter((_, i) => i > 0)
+              .map<WeekDays>((k) => k as WeekDays)
+          : [],
+    });
+  };
 
   return (
     <View style={addHabitStyles.container}>
@@ -85,8 +110,28 @@ export const AddHabit = (props: AddHabitProps) => {
               style={addHabitStyles.frequencyButton}
               onPress={() => setFreqChangeOpenState(!freqChangeOpen)}
             >
-              <Text style={addHabitStyles.frequencyText}>
-                {isEveryday && "everyday"}
+              <Text
+                style={[
+                  addHabitStyles.frequencyText,
+                  !isEveryDay && addHabitStyles.frequencyTextNotEveryday,
+                ]}
+              >
+                {isEveryDay
+                  ? "everyday"
+                  : freqSelection === 2
+                  ? `everyday day but ${
+                      WeekDaysFullName[
+                        getEnumKeyByEnumValue(
+                          WeekDays,
+                          Object.keys(WeekDays).find(
+                            (d) => !days?.includes(d as WeekDays)
+                          )!
+                        )!
+                      ]
+                    }`
+                  : days?.length
+                  ? days.join(", ")
+                  : "select your schedule"}
               </Text>
               <InfoIcon style={addHabitStyles.frequencyIcon} fill="#fff" />
             </Pressable>
@@ -108,15 +153,16 @@ export const AddHabit = (props: AddHabitProps) => {
                   index={1}
                   label="Ok, I’ll do it everyday"
                   selected={freqSelection === 1}
-                  onChange={setFreqSelection}
+                  onChange={() => onChangeFreq(1)}
                 />
                 <Radio
                   index={2}
                   label="I understand. I still want a rest day on:"
                   selected={freqSelection === 2}
-                  onChange={setFreqSelection}
+                  onChange={() => onChangeFreq(2)}
                 >
                   <WeekDaysSelect
+                    days={days!}
                     containerStyle={{ marginTop: 15, marginBottom: 2 }}
                   />
                 </Radio>
@@ -124,8 +170,13 @@ export const AddHabit = (props: AddHabitProps) => {
                   index={3}
                   label="Let me choose my own schedule"
                   selected={freqSelection === 3}
-                  onChange={setFreqSelection}
-                />
+                  onChange={() => onChangeFreq(3)}
+                >
+                  <WeekDaysSelect
+                    days={days!}
+                    containerStyle={{ marginTop: 15, marginBottom: 2 }}
+                  />
+                </Radio>
               </View>
             </MotiView>
           )}
@@ -201,6 +252,9 @@ const addHabitStyles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 32,
     color: "#fff",
+  },
+  frequencyTextNotEveryday: {
+    fontSize: 20,
   },
   frequencyIcon: {
     width: 15,
