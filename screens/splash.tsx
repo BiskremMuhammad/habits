@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { ScrollView, View, Text, StyleSheet, Dimensions } from "react-native";
 import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
@@ -16,38 +16,40 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
 export const SplashScreen = () => {
   return (
-    <View style={SplashScreenStyles.container}>
-      <View style={SplashScreenStyles.bgIconContainer}>
-        <AddIconSvg style={SplashScreenStyles.bgIcon} />
+    <ScrollView>
+      <View style={SplashScreenStyles.container}>
+        <View style={SplashScreenStyles.bgIconContainer}>
+          <AddIconSvg style={SplashScreenStyles.bgIcon} />
+          <MotiView
+            from={{ opacity: 0, translateY: 10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ delay: 300, duration: 1000, type: "timing" }}
+          >
+            <Text style={SplashScreenStyles.welcome}>Welcome</Text>
+          </MotiView>
+        </View>
         <MotiView
           from={{ opacity: 0, translateY: 10 }}
           animate={{ opacity: 1, translateY: 0 }}
+          style={SplashScreenStyles.valueProp}
           transition={{ delay: 300, duration: 1000, type: "timing" }}
         >
-          <Text style={SplashScreenStyles.welcome}>Welcome</Text>
+          <InfoIcon style={SplashScreenStyles.valuePropInfoIcon} fill="#fff" />
+          <Text style={SplashScreenStyles.valuePropDescription}>
+            We’ll start with an example session. Select a Habit and tap START to
+            begin:
+          </Text>
+        </MotiView>
+        <MotiView
+          style={{ alignSelf: "stretch" }}
+          from={{ opacity: 0, translateY: 10 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 1300, duration: 1000, type: "timing" }}
+        >
+          <AddHabit enableFrequencySelect={true} />
         </MotiView>
       </View>
-      <MotiView
-        from={{ opacity: 0, translateY: 10 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        style={SplashScreenStyles.valueProp}
-        transition={{ delay: 300, duration: 1000, type: "timing" }}
-      >
-        <InfoIcon style={SplashScreenStyles.valuePropInfoIcon} fill="#fff" />
-        <Text style={SplashScreenStyles.valuePropDescription}>
-          We’ll start with an example session. Select a Habit and tap START to
-          begin:
-        </Text>
-      </MotiView>
-      <MotiView
-        style={{ alignSelf: "stretch" }}
-        from={{ opacity: 0, translateY: 10 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: 1300, duration: 1000, type: "timing" }}
-      >
-        <AddHabit enableFrequencySelect={true} />
-      </MotiView>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -55,7 +57,8 @@ const SplashScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 0.222 * screenHeight,
+    paddingTop: 0.222 * screenHeight,
+    paddingBottom: 0.08 * screenHeight,
   },
   bgIconContainer: {
     width: "100%",
