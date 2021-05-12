@@ -116,7 +116,9 @@ export const AddHabit = (props: AddHabitProps) => {
                   selected={freqSelection === 2}
                   onChange={setFreqSelection}
                 >
-                  <WeekDaysSelect />
+                  <WeekDaysSelect
+                    containerStyle={{ marginTop: 15, marginBottom: 2 }}
+                  />
                 </Radio>
                 <Radio
                   index={3}
