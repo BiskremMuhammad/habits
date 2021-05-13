@@ -152,7 +152,9 @@ export const AddHabit = (props: AddHabitProps) => {
               animate={{ opacity: 1, height: "100%" }}
               style={addHabitStyles.frequencyChangeContainer}
             >
-              <View style={addHabitStyles.frequencyChangeBorder}></View>
+              <View style={addHabitStyles.frequencyChangeBorderContainer}>
+                <View style={addHabitStyles.frequencyChangeBorder}></View>
+              </View>
               <View style={addHabitStyles.frequencyChangeForm}>
                 <Text style={addHabitStyles.frequencyChangeFormText}>
                   Research has shown more consistent change when doing limited
@@ -285,14 +287,24 @@ const addHabitStyles = StyleSheet.create({
   frequencyChangeContainer: {
     position: "relative",
   },
+  frequencyChangeBorderContainer: {
+    position: "absolute",
+    bottom: -1,
+    right: -2,
+    width: "45%",
+    height: 53,
+    overflow: "hidden",
+  },
   frequencyChangeBorder: {
     position: "absolute",
     bottom: 0,
-    right: 0,
-    width: "10%",
-    borderRadius: 56,
+    right: -4,
+    width: "200%",
+    height: "200%",
+    borderRadius: 28,
     borderColor: "#6F698F",
-    borderWidth: 2,
+    borderBottomWidth: 2,
+    borderRightWidth: 2,
     opacity: 0.47,
   },
   frequencyChangeForm: {
