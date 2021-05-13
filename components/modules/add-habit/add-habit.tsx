@@ -61,6 +61,8 @@ export const AddHabit = (props: AddHabitProps) => {
   const [freqSelection, setFreqSelection] = useState<number>(1);
 
   const onChangeFreq = (radio: number) => {
+    if (radio === freqSelection) return;
+
     setFreqSelection(radio);
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_EVERYDAY_STATE,
