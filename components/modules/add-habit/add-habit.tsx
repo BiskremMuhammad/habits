@@ -169,7 +169,27 @@ export const AddHabit = (props: AddHabitProps) => {
                 />
                 <Radio
                   index={2}
-                  label="I understand. I still want a rest day on:"
+                  label={
+                    <View
+                      style={addHabitStyles.frequencyCustomRadioLabelContainer}
+                    >
+                      <Text style={addHabitStyles.frequencyCustomRadioText}>
+                        I understand. I still want a
+                      </Text>
+                      <Text
+                        style={[
+                          addHabitStyles.frequencyCustomRadioText,
+                          addHabitStyles.frequencyCustomRadioTextAccent,
+                        ]}
+                      >
+                        {"  "}
+                        rest day{"  "}
+                      </Text>
+                      <Text style={addHabitStyles.frequencyCustomRadioText}>
+                        on:
+                      </Text>
+                    </View>
+                  }
                   selected={freqSelection === 2}
                   onChange={() => onChangeFreq(2)}
                 >
@@ -323,5 +343,21 @@ const addHabitStyles = StyleSheet.create({
     paddingLeft: 9,
     paddingRight: 38,
     marginBottom: 5,
+  },
+  frequencyCustomRadioLabelContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  frequencyCustomRadioText: {
+    fontFamily: "Rubik-Medium",
+    fontSize: 14,
+    lineHeight: 23,
+    color: "#fff",
+  },
+  frequencyCustomRadioTextAccent: {
+    backgroundColor: "#151032",
+    borderRadius: 20,
+    marginHorizontal: 2,
   },
 });
