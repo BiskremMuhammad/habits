@@ -66,7 +66,14 @@ export const addHabitReducer = (
             : action.payload,
       };
     case AddHabitActionTypes.CHANGE_HABIT_FREQUENCY:
-      return { ...state, days: action.payload };
+      // if custom schedule is all 7 days of the week are selected >> so turn on the everyday flag
+      if (action.payload.length === 7)
+        return {
+          ...state,
+          isEveryDay: true,
+          days: Object.keys(WeekDays).map<WeekDays>((k) => k as WeekDays),
+        };
+      else return { ...state, isEveryDay: false, days: action.payload };
 
     case AddHabitActionTypes.CHANGE_HABIT_DURATION:
       return { ...state, duration: action.payload };

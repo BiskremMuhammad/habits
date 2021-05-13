@@ -114,6 +114,10 @@ export const AddHabit = (props: AddHabitProps) => {
                 style={[
                   addHabitStyles.frequencyText,
                   !isEveryDay && addHabitStyles.frequencyTextNotEveryday,
+                  !isEveryDay &&
+                    freqSelection === 3 &&
+                    days!.length > 5 &&
+                    addHabitStyles.frequencyTextCustomScheduleTooLong,
                 ]}
               >
                 {isEveryDay
@@ -133,7 +137,13 @@ export const AddHabit = (props: AddHabitProps) => {
                   ? days.join(", ")
                   : "select your schedule"}
               </Text>
-              <InfoIcon style={addHabitStyles.frequencyIcon} fill="#fff" />
+              <InfoIcon
+                style={[
+                  addHabitStyles.frequencyIcon,
+                  freqSelection === 3 && { marginBottom: 5 },
+                ]}
+                fill="#fff"
+              />
             </Pressable>
           </MotiView>
           {freqChangeOpen && (
@@ -163,6 +173,9 @@ export const AddHabit = (props: AddHabitProps) => {
                 >
                   <WeekDaysSelect
                     days={days!}
+                    clickable={true}
+                    limitOneSelection={true}
+                    dispatch={dispatch}
                     containerStyle={{ marginTop: 15, marginBottom: 2 }}
                   />
                 </Radio>
@@ -174,6 +187,8 @@ export const AddHabit = (props: AddHabitProps) => {
                 >
                   <WeekDaysSelect
                     days={days!}
+                    clickable={true}
+                    dispatch={dispatch}
                     containerStyle={{ marginTop: 15, marginBottom: 2 }}
                   />
                 </Radio>
@@ -255,6 +270,9 @@ const addHabitStyles = StyleSheet.create({
   },
   frequencyTextNotEveryday: {
     fontSize: 20,
+  },
+  frequencyTextCustomScheduleTooLong: {
+    fontSize: 16,
   },
   frequencyIcon: {
     width: 15,

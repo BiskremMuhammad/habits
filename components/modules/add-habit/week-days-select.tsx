@@ -14,6 +14,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { WeekDays } from "../../../types/week-days";
+import { AddHabitAction, AddHabitActionTypes } from "./add-habit-reducer";
 
 /**
  * define the component props
@@ -27,15 +28,6 @@ interface WeekDaysSelectProps {
    * @type {boolean}
    */
   clickable?: boolean;
-
-  /**
-   * flag to set the behaviour of the component on press function
-   * which will disable the item that is being clicked
-   * this is only for the case to select the rest day
-   *
-   * @type {boolean}
-   */
-  clickToDisable?: boolean;
 
   /**
    * custom styles for the container
@@ -52,6 +44,13 @@ interface WeekDaysSelectProps {
   days: WeekDays[];
 
   /**
+   * dispatch action to the add habit form
+   *
+   * @type {React.Dispatch<AddHabitAction>}
+   */
+  dispatch?: React.Dispatch<AddHabitAction>;
+
+  /**
    * to limit the selection of days to only one day
    * this is only for the case to select the rest day
    *
@@ -60,22 +59,40 @@ interface WeekDaysSelectProps {
   limitOneSelection?: boolean;
 }
 
-export const WeekDaysSelect = (porps: WeekDaysSelectProps) => {
+export const WeekDaysSelect = (props: WeekDaysSelectProps) => {
+  const onSelectDay = (d: WeekDays) => {
+    if (!props.clickable) return;
+
+    const selectedDays: WeekDays[] = props.limitOneSelection
+      ? (Object.keys(WeekDays).filter((key: string) => key !== d) as WeekDays[])
+      : props.days.includes(d)
+      ? (props.days.filter((day) => day !== d) as WeekDays[])
+      : [...props.days, d];
+
+    if (props.dispatch) {
+      props.dispatch({
+        type: AddHabitActionTypes.CHANGE_HABIT_FREQUENCY,
+        payload: selectedDays,
+      });
+    }
+  };
+
   return (
-    <View style={[WeekDaysSelectStyles.container, porps.containerStyle]}>
+    <View style={[WeekDaysSelectStyles.container, props.containerStyle]}>
       {Object.keys(WeekDays).map((key: string) => (
         <Pressable
           key={key}
+          onPress={() => onSelectDay(key as WeekDays)}
           style={[
             WeekDaysSelectStyles.day,
-            !porps.days.includes(key as WeekDays) &&
+            !props.days.includes(key as WeekDays) &&
               WeekDaysSelectStyles.dayDisabled,
           ]}
         >
           <Text
             style={[
               WeekDaysSelectStyles.dayText,
-              !porps.days.includes(key as WeekDays) &&
+              !props.days.includes(key as WeekDays) &&
                 WeekDaysSelectStyles.dayTextDisabled,
             ]}
           >
