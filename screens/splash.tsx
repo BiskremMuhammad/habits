@@ -16,7 +16,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
 export const SplashScreen = () => {
   return (
-    <ScrollView>
+    <ScrollView style={{ flex: 1 }}>
       <View style={SplashScreenStyles.container}>
         <View style={SplashScreenStyles.bgIconContainer}>
           <AddIconSvg style={SplashScreenStyles.bgIcon} />
@@ -46,7 +46,7 @@ export const SplashScreen = () => {
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 1300, duration: 1000, type: "timing" }}
         >
-          <AddHabit enableFrequencySelect={true} />
+          <AddHabit />
         </MotiView>
       </View>
     </ScrollView>

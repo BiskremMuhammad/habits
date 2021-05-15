@@ -60,6 +60,22 @@ export const AddHabit = (props: AddHabitProps) => {
   );
   const [freqSelection, setFreqSelection] = useState<number>(1);
 
+  const onChangeHabit = (val: string) => {
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_TYPE,
+      payload: `${val}ING`,
+    });
+  };
+
+  const onChangeDuration = (val: string) => {
+    if (!props.enableDurationSelect) return;
+
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_DURATION,
+      payload: val,
+    });
+  };
+
   const onChangeFreq = (radio: number) => {
     if (radio === freqSelection) return;
 
@@ -83,9 +99,11 @@ export const AddHabit = (props: AddHabitProps) => {
         <Text style={addHabitStyles.label}>I will</Text>
         <Input
           text={type.replace(/ing/gi, "")}
+          width="long"
           icon={
             <BookIcon width={16} height={21} style={CommonStyles.withIcon} />
           }
+          onChange={onChangeHabit}
           isDropdown={true}
           hasBorder={true}
           hasCircleBorder={true}
@@ -224,11 +242,24 @@ export const AddHabit = (props: AddHabitProps) => {
       <View style={addHabitStyles.addHabitSection}>
         <Text style={addHabitStyles.label}>for</Text>
         <Input
-          text={`${duration} min`}
+          text={`${duration >= 60 ? duration / 60 : duration} ${
+            duration >= 60 ? "hr" : "min"
+          }`}
           width={props.enableDurationSelect ? "short" : "minimal"}
           icon={
             <TimerIcon width={24} height={21} style={CommonStyles.withIcon} />
           }
+          onChange={onChangeDuration}
+          isDropdown={props.enableDurationSelect}
+          dropdownOptions={[
+            "1 min",
+            "5 min",
+            "10 min",
+            "15 min",
+            "30 min",
+            "1 hr",
+            "2 hr",
+          ]}
           customTextStyle={{ textTransform: "none" }}
         />
       </View>
@@ -247,6 +278,7 @@ const addHabitStyles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "flex-start",
     paddingHorizontal: 6,
+    paddingBottom: 95,
   },
   addHabitSection: {
     display: "flex",

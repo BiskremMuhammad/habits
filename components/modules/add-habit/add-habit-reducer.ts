@@ -76,7 +76,12 @@ export const addHabitReducer = (
       else return { ...state, isEveryDay: false, days: action.payload };
 
     case AddHabitActionTypes.CHANGE_HABIT_DURATION:
-      return { ...state, duration: action.payload };
+      return {
+        ...state,
+        duration:
+          Number(action.payload.match(/\d+/g)[0]) *
+          (action.payload.includes("h") ? 60 : 1),
+      };
 
     default:
       return state;
