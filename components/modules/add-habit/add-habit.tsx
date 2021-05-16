@@ -14,6 +14,7 @@ import {
   HabitActionTypes,
 } from "../../../redux/reducers/habit/habit-actions";
 import { GlobalStore } from "../../../redux/store";
+import { TimerScreenRouteParams } from "../../../screens/timer-screen";
 import { CommonStyles } from "../../../styles/common";
 import { Habit, HabitTypes } from "../../../types/habit";
 import { WeekDays, WeekDaysFullName } from "../../../types/week-days";
@@ -113,7 +114,9 @@ export const AddHabit = (props: AddHabitProps) => {
     });
 
     if (!habits.length) {
-      navigation.navigate("Timer");
+      navigation.navigate("Timer", {
+        habitId: state.id,
+      } as TimerScreenRouteParams);
     }
   };
 

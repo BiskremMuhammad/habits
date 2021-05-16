@@ -4,22 +4,66 @@
  * @description implement the timer Screen
  */
 
-import React from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
-import { MotiView, Image as MotiImage } from "moti";
+import { MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation, useRoute } from "@react-navigation/core";
 
 import BookIcon from "../components/svgs/book";
 import { CommonStyles } from "../styles/common";
 import { CircleProgress } from "../components/elements/circle-progress";
 import { Button } from "../components/elements/button";
+import { Habit } from "../types/habit";
+import { useSelector } from "react-redux";
+import { GlobalStore } from "../redux/store";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
 let plantFill: "small" | "dark" | "normal" | "glow" = "dark";
 
+/**
+ * interface that defines the route parameters should be passed to the component
+ *
+ * @interface
+ * @exports
+ */
+export interface TimerScreenRouteParams {
+  /**
+   * the habit id
+   *
+   * @type {string}
+   */
+  habitId: string;
+}
+
 export const TimerScreen = () => {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const params = route.params as TimerScreenRouteParams;
+  const habitId: string = params ? params.habitId : "";
+  const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
+    (store: GlobalStore): Habit[] => store.habits
+  );
+  const [habit, setHabit] = useState<Habit>();
+
+  const [state, setState] =
+    useState<"stopped" | "playing" | "paused">("stopped");
+
+  useLayoutEffect(() => {
+    const getHabit = habits.find((h) => h.id === habitId);
+    if (getHabit) {
+      setHabit(getHabit);
+    } else {
+      navigation.navigate(habits.length ? /*home*/ "Splash" : "Splash");
+    }
+  });
+
+  const changeState = () => {
+    setState(state === "stopped" || state === "paused" ? "playing" : "paused");
+  };
+
   return (
     <View style={TimeScreenStyles.container}>
       <LinearGradient
@@ -90,11 +134,20 @@ export const TimerScreen = () => {
             onPress={() => {}}
           />
           <Button
-            text="Start"
+            text={
+              state === "stopped"
+                ? "Start"
+                : state === "paused"
+                ? "Resume"
+                : "Pause"
+            }
             shape="circle"
             hasBackground={true}
             hasCircleBorder={true}
-            onPress={() => {}}
+            darkBorder={state === "playing"}
+            dim={state === "playing"}
+            darkText={state !== "stopped"}
+            onPress={changeState}
           />
         </View>
         <View style={TimeScreenStyles.footer}>
