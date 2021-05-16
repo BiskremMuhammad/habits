@@ -43,8 +43,8 @@ export const CircleProgress = ({ progress, width }: CirclePogressProps) => {
   const cx = size / 2;
   const cy = size / 2;
   const A = PI + PI * 0.7;
-  const startAngle = PI + PI * 0.3;
-  const endAngle = 2 * PI - PI * 0.3;
+  const startAngle = PI + PI * 0.4;
+  const endAngle = 2 * PI - PI * 0.4;
   // A rx ry x-axis-rotation large-arc-flag sweep-flag x y
   const x1 = cx - r * cos(startAngle);
   const y1 = -r * sin(startAngle) + cy;
@@ -57,7 +57,11 @@ export const CircleProgress = ({ progress, width }: CirclePogressProps) => {
 
   const strokeDashoffset = multiply(α, r);
   return (
-    <Svg width={size} height={size}>
+    <Svg
+      width={size}
+      height={size}
+      style={{ transform: [{ rotate: "-9deg" }] }}
+    >
       <Path
         stroke="white"
         fill="none"

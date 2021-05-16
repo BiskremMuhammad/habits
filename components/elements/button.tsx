@@ -104,7 +104,7 @@ export const Button = (props: ButtonProps) => {
             ? props.darkBorder
               ? "#575272"
               : "#524A7B"
-            : "#6B619A",
+            : "rgba(107, 97, 154, 0.5)",
         },
         props.extraStyles,
       ]}
