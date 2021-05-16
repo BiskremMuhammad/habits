@@ -9,6 +9,8 @@ import { StyleSheet, View, Image, Text } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import BookIcon from "../components/svgs/book";
 import { CommonStyles } from "../styles/common";
+import { CircleProgress } from "../components/elements/circle-progress";
+import { Button } from "../components/elements/button";
 
 export const TimerScreen = () => {
   return (
@@ -27,6 +29,27 @@ export const TimerScreen = () => {
       <View style={TimeScreenStyles.peers}>
         <Text style={TimeScreenStyles.peersNum}>2K</Text>
         <Text style={TimeScreenStyles.peersText}>are reading now</Text>
+      </View>
+      <View style={TimeScreenStyles.timerContainer}>
+        <View style={TimeScreenStyles.progressContainer}>
+          <CircleProgress progress={0.6} />
+        </View>
+        <View style={TimeScreenStyles.timerControls}>
+          <Button
+            text="cancel"
+            shape="circle"
+            noBorder={true}
+            hasBackground={true}
+            onPress={() => {}}
+          />
+          <Button
+            text="Start"
+            shape="circle"
+            hasBackground={true}
+            hasCircleBorder={true}
+            onPress={() => {}}
+          />
+        </View>
       </View>
     </View>
   );
@@ -95,5 +118,20 @@ const TimeScreenStyles = StyleSheet.create({
     fontSize: 14,
     color: "#BDBDBD",
   },
-  timerContainer: {},
+  timerContainer: {
+    flex: 1,
+    display: "flex",
+    paddingHorizontal: 27,
+  },
+  progressContainer: {
+    alignItems: "center",
+    transform: [{ scaleX: -1 }],
+  },
+  timerControls: {
+    marginTop: 36.5,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
 });

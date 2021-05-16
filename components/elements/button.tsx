@@ -21,6 +21,27 @@ import {
  */
 interface ButtonProps {
   /**
+   * flag to darken the border
+   *
+   * @type {boolean}
+   */
+  darkBorder?: boolean;
+
+  /**
+   * to display the text in black instead of white
+   *
+   * @type {boolean}
+   */
+  darkText?: boolean;
+
+  /**
+   * flag to dim the button
+   *
+   * @type {boolean}
+   */
+  dim?: boolean;
+
+  /**
    * extra custom styles to the button
    *
    * @type {StyleProp<ViewStyle>}
@@ -28,11 +49,25 @@ interface ButtonProps {
   extraStyles?: StyleProp<ViewStyle>;
 
   /**
+   * flag if the button has a background
+   *
+   * @type {boolean}
+   */
+  hasBackground?: boolean;
+
+  /**
    * flag wheather the border has a circle decorator
    *
    * @type {boolean}
    */
   hasCircleBorder?: boolean;
+
+  /**
+   * fag to disable border
+   *
+   * @type {boolean}
+   */
+  noBorder?: boolean;
 
   /**
    * the button on press callback
@@ -62,39 +97,67 @@ export const Button = (props: ButtonProps) => {
       style={[
         ButtonStyles.base,
         props.shape === "circle" ? ButtonStyles.circle : ButtonStyles.oval,
+        props.hasBackground && {
+          backgroundColor: props.noBorder
+            ? "#342F58"
+            : props.dim
+            ? props.darkBorder
+              ? "#575272"
+              : "#524A7B"
+            : "#6B619A",
+        },
         props.extraStyles,
       ]}
       onPress={props.onPress}
     >
-      <View
-        style={[
-          ButtonStyles.borderContainer,
-          props.shape === "oval" && ButtonStyles.ovalBorderContainer,
-        ]}
-      >
-        {props.shape === "circle" && (
-          <View style={ButtonStyles.circleBorderContainer}>
+      {!props.noBorder && (
+        <View
+          style={[
+            ButtonStyles.borderContainer,
+            props.shape === "oval" && ButtonStyles.ovalBorderContainer,
+          ]}
+        >
+          {props.shape === "circle" && (
             <View
-              style={[ButtonStyles.circleBorder, ButtonStyles.circleBorder01]}
-            ></View>
+              style={[
+                ButtonStyles.circleBorderContainer,
+                props.darkBorder && { transform: [{ rotate: "180deg" }] },
+              ]}
+            >
+              <View
+                style={[
+                  ButtonStyles.circleBorder,
+                  ButtonStyles.circleBorder01,
+                  props.darkBorder && ButtonStyles.darkBorder,
+                  props.darkBorder && { transform: [{ rotate: "0deg" }] },
+                ]}
+              ></View>
+              <View
+                style={[
+                  ButtonStyles.circleBorder,
+                  ButtonStyles.circleBorder02,
+                  props.darkBorder && ButtonStyles.darkBorder,
+                  props.darkBorder && { transform: [{ rotate: "90deg" }] },
+                ]}
+              ></View>
+            </View>
+          )}
+          {props.hasCircleBorder && (
             <View
-              style={[ButtonStyles.circleBorder, ButtonStyles.circleBorder02]}
+              style={[
+                ButtonStyles.borderCircle,
+                props.shape === "oval" && ButtonStyles.ovalBorderCircle,
+                props.darkBorder && { borderColor: "#292441" },
+              ]}
             ></View>
-          </View>
-        )}
-        {props.hasCircleBorder && (
-          <View
-            style={[
-              ButtonStyles.borderCircle,
-              props.shape === "oval" && ButtonStyles.ovalBorderCircle,
-            ]}
-          ></View>
-        )}
-      </View>
+          )}
+        </View>
+      )}
       <Text
         style={[
           ButtonStyles.text,
           props.shape === "oval" && ButtonStyles.ovalText,
+          props.darkText && { color: "#0E0A27" },
         ]}
       >
         {props.text}
@@ -156,6 +219,11 @@ const ButtonStyles = StyleSheet.create({
     borderLeftColor: "#fff",
     borderBottomColor: "#fff",
     borderRightColor: "transparent",
+  },
+  darkBorder: {
+    borderTopColor: "#292441",
+    borderLeftColor: "#292441",
+    borderBottomColor: "#292441",
   },
   circleBorder01: {
     transform: [
