@@ -97,6 +97,15 @@ export const TimerScreen = () => {
             onPress={() => {}}
           />
         </View>
+        <View style={TimeScreenStyles.footer}>
+          <Button
+            shape="oval"
+            text="submit"
+            noBorder={true}
+            isAccentButton={true}
+            onPress={() => {}}
+          />
+        </View>
       </View>
     </View>
   );
@@ -246,5 +255,10 @@ const TimeScreenStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  footer: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: -20,
   },
 });

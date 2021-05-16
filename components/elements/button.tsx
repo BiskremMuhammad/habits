@@ -63,6 +63,13 @@ interface ButtonProps {
   hasCircleBorder?: boolean;
 
   /**
+   * is the Button is noticable call to action button, white bg uppercase letters
+   *
+   * @type {boolean}
+   */
+  isAccentButton?: boolean;
+
+  /**
    * fag to disable border
    *
    * @type {boolean}
@@ -106,6 +113,7 @@ export const Button = (props: ButtonProps) => {
               : "#524A7B"
             : "rgba(107, 97, 154, 0.5)",
         },
+        props.isAccentButton && ButtonStyles.accentButton,
         props.extraStyles,
       ]}
       onPress={props.onPress}
@@ -158,6 +166,7 @@ export const Button = (props: ButtonProps) => {
           ButtonStyles.text,
           props.shape === "oval" && ButtonStyles.ovalText,
           props.darkText && { color: "#0E0A27" },
+          props.isAccentButton && ButtonStyles.accentText,
         ]}
       >
         {props.text}
@@ -182,6 +191,9 @@ const ButtonStyles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 35,
   },
+  accentButton: {
+    backgroundColor: "#fff",
+  },
   text: {
     fontFamily: "Rubik-Medium",
     fontSize: 13,
@@ -190,6 +202,9 @@ const ButtonStyles = StyleSheet.create({
   },
   ovalText: {
     color: "#C2C9D1",
+  },
+  accentText: {
+    color: "#0E0A27",
   },
   borderContainer: {
     position: "absolute",
