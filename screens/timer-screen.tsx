@@ -5,16 +5,24 @@
  */
 
 import React from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
+import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+
 import BookIcon from "../components/svgs/book";
 import { CommonStyles } from "../styles/common";
 import { CircleProgress } from "../components/elements/circle-progress";
 import { Button } from "../components/elements/button";
 
+const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
+
 export const TimerScreen = () => {
   return (
     <View style={TimeScreenStyles.container}>
+      <LinearGradient
+        colors={["rgb(13, 9, 39)", "rgb(33, 29, 66)"]}
+        style={TimeScreenStyles.backgroundOverlay}
+      />
       <Image
         source={require("../assets/illustration.png")}
         style={TimeScreenStyles.illustrationBackground}
@@ -58,8 +66,15 @@ export const TimerScreen = () => {
 const TimeScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(43, 38, 69, 0.6)",
     paddingVertical: 65,
+  },
+  backgroundOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: screenWidth,
+    height: screenHeight,
+    opacity: 0.6,
   },
   illustrationBackground: {
     width: "100%",
