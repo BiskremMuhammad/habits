@@ -5,6 +5,7 @@
  */
 
 import { MotiView } from "@motify/components";
+import { useNavigation } from "@react-navigation/core";
 import React, { useReducer, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
 import { CommonStyles } from "../../../styles/common";
@@ -59,6 +60,7 @@ export const AddHabit = (props: AddHabitProps) => {
     !isEveryDay
   );
   const [freqSelection, setFreqSelection] = useState<number>(1);
+  const navigation = useNavigation();
 
   const onChangeHabit = (val: string) => {
     dispatch({
@@ -266,6 +268,7 @@ export const AddHabit = (props: AddHabitProps) => {
       <Button
         shape="circle"
         text="start"
+        onPress={() => navigation.navigate("Timer")}
         hasCircleBorder={true}
         extraStyles={{ marginTop: 0.0855 * screenHeight, alignSelf: "center" }}
       />

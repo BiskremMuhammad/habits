@@ -35,6 +35,13 @@ interface ButtonProps {
   hasCircleBorder?: boolean;
 
   /**
+   * the button on press callback
+   *
+   * @type {() => void}
+   */
+  onPress: () => void;
+
+  /**
    * the shape of the button
    *
    * @type {"circle" | "oval"}
@@ -57,6 +64,7 @@ export const Button = (props: ButtonProps) => {
         props.shape === "circle" ? ButtonStyles.circle : ButtonStyles.oval,
         props.extraStyles,
       ]}
+      onPress={props.onPress}
     >
       <View
         style={[

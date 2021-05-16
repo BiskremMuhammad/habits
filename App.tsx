@@ -14,6 +14,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import { SplashScreen } from "./screens/splash";
 import { createStackNavigator } from "@react-navigation/stack";
+import { TimerScreen } from "./screens/timer-screen";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -64,6 +65,7 @@ export default function App() {
           }}
         >
           <Route.Screen name="Splash" component={SplashScreen} />
+          <Route.Screen name="Timer" component={TimerScreen} />
         </Route.Navigator>
       </NavigationContainer>
     </Provider>
