@@ -12,6 +12,8 @@ export const habitReducer = (
   action: HabitActions
 ): Habit[] => {
   switch (action.type) {
+    case HabitActionTypes.LOAD_HABITS_FROM_STORAGE:
+      return [...(action.payload as Habit[])];
     case HabitActionTypes.ADD_NEW_HABIT:
       return [...state, action.payload as Habit];
     case HabitActionTypes.DELETE_HABIT:

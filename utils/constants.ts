@@ -10,4 +10,5 @@ const { width } = Dimensions.get("screen");
 
 export const CONSTANTS = {
   PADDING: 0.17 * width,
+  ASYNC_STORAGE_HABITS: "ASYNC_STORAGE_HABITS",
 };

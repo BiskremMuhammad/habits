@@ -13,6 +13,8 @@ import { Habit } from "../../../types/habit";
  * @exports
  */
 export enum HabitActionTypes {
+  ASYNC_SEND_LOAD_HABITS_FROM_STORAGE = "ASYNC_SEND_LOAD_HABITS_FROM_STORAGE",
+  LOAD_HABITS_FROM_STORAGE = "LOAD_HABITS_FROM_STORAGE",
   SEND_ADD_NEW_HABIT = "SEND_ADD_NEW_HABIT",
   SEND_ADD_NEW_HABIT_FAILED = "SEND_ADD_NEW_HABIT_FAILED",
   ADD_NEW_HABIT = "ADD_NEW_HABIT",
@@ -43,5 +45,5 @@ export interface HabitActions {
    * @type {Habit | string}
    * @memberof HabitActions
    */
-  payload?: Habit | string;
+  payload?: Habit[] | Habit | string;
 }

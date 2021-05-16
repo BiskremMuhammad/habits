@@ -7,6 +7,7 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
 import createSagaMiddleWare from "redux-saga";
 import { Habit } from "../types/habit";
+import { HabitActionTypes } from "./reducers/habit/habit-actions";
 import { habitReducer } from "./reducers/habit/habit-reducer";
 import { habitSagaWatcher } from "./sagas/habit-saga";
 
@@ -35,3 +36,6 @@ const reducers = combineReducers({
 export const store = createStore(reducers, applyMiddleware(sagaWorker));
 
 sagaWorker.run(habitSagaWatcher);
+
+// Initially load habits from async storage
+store.dispatch({ type: HabitActionTypes.ASYNC_SEND_LOAD_HABITS_FROM_STORAGE });
