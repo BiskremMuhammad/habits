@@ -4,11 +4,12 @@
  * @description implement a reducer for the add habit form
  */
 
+import { v4 as uuid } from "uuid";
 import { Habit, HabitTypes } from "../../../types/habit";
 import { WeekDays } from "../../../types/week-days";
 
 export const INITIAL_ADD_HABIT_STATE: Habit = {
-  id: "1",
+  id: uuid(),
   type: HabitTypes.READING,
   isEveryDay: true,
   days: Object.keys(WeekDays).map<WeekDays>((k) => k as WeekDays),

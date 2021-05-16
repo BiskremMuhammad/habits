@@ -21,7 +21,8 @@ export interface GlobalStore {
   /**
    * the habits part of the stare
    *
-   * @type {Habit[]}
+   * @type {{
+   * habits: Habit[]}}
    * @memberof GlobalStore
    */
   habits: Habit[];
@@ -33,7 +34,10 @@ const reducers = combineReducers({
   habits: habitReducer,
 });
 
-export const store = createStore(reducers, applyMiddleware(sagaWorker));
+export const store = createStore<GlobalStore, any, any, any>(
+  reducers,
+  applyMiddleware(sagaWorker)
+);
 
 sagaWorker.run(habitSagaWatcher);
 

@@ -6,10 +6,16 @@
 
 import { MotiView } from "@motify/components";
 import { useNavigation } from "@react-navigation/core";
-import React, { useReducer, useState } from "react";
+import React, { Dispatch, useReducer, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  HabitActions,
+  HabitActionTypes,
+} from "../../../redux/reducers/habit/habit-actions";
+import { GlobalStore } from "../../../redux/store";
 import { CommonStyles } from "../../../styles/common";
-import { HabitTypes } from "../../../types/habit";
+import { Habit, HabitTypes } from "../../../types/habit";
 import { WeekDays, WeekDaysFullName } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
@@ -50,6 +56,11 @@ interface AddHabitProps {
 }
 
 export const AddHabit = (props: AddHabitProps) => {
+  const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
+    (store: GlobalStore): Habit[] => store.habits
+  );
+  const storeDispatch = useDispatch<Dispatch<HabitActions>>();
+
   const [state, dispatch] = useReducer(
     addHabitReducer,
     INITIAL_ADD_HABIT_STATE
@@ -93,6 +104,17 @@ export const AddHabit = (props: AddHabitProps) => {
               .map<WeekDays>((k) => k as WeekDays)
           : [],
     });
+  };
+
+  const onCallToActionPress = () => {
+    storeDispatch({
+      type: HabitActionTypes.ADD_NEW_HABIT,
+      payload: state,
+    });
+
+    if (!habits.length) {
+      navigation.navigate("Timer");
+    }
   };
 
   return (
@@ -266,9 +288,9 @@ export const AddHabit = (props: AddHabitProps) => {
         />
       </View>
       <Button
-        shape="circle"
-        text="start"
-        onPress={() => navigation.navigate("Timer")}
+        shape={habits.length ? "oval" : "circle"}
+        text={habits.length ? "commit" : "start"}
+        onPress={onCallToActionPress}
         hasCircleBorder={true}
         extraStyles={{ marginTop: 0.0855 * screenHeight, alignSelf: "center" }}
       />
