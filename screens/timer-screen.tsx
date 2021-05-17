@@ -4,20 +4,21 @@
  * @description implement the timer Screen
  */
 
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
 import { MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/core";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 import BookIcon from "../components/svgs/book";
 import { CommonStyles } from "../styles/common";
-import { CircleProgress } from "../components/elements/circle-progress";
 import { Button } from "../components/elements/button";
 import { Habit } from "../types/habit";
 import { useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
+import { Clock, useDerivedValue } from "react-native-reanimated";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -49,7 +50,10 @@ export const TimerScreen = () => {
   const [habit, setHabit] = useState<Habit>();
 
   const [state, setState] =
-    useState<"stopped" | "playing" | "paused">("stopped");
+    useState<"stopped" | "playing" | "paused" | "ended">("stopped");
+  const [timer, setTimer] = useState<number>((habit?.duration || 1) * 60);
+  const [eta, setEta] = useState<Date>(new Date());
+  let timerCounter = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useLayoutEffect(() => {
     const getHabit = habits.find((h) => h.id === habitId);
@@ -60,7 +64,30 @@ export const TimerScreen = () => {
     }
   });
 
+  useEffect(() => {
+    if (timer === 0) {
+      if (timerCounter.current) {
+        clearInterval(timerCounter.current);
+        timerCounter.current = null;
+        setState("ended");
+      }
+    }
+  }, [timer]);
+
   const changeState = () => {
+    if (state === "stopped" || state === "paused") {
+      if (!timerCounter.current) {
+        timerCounter.current = setInterval(() => {
+          setTimer((t) => t - 1);
+        }, 1000);
+      }
+      setEta(new Date(Date.now() + timer * 1000));
+    } else {
+      if (timerCounter.current) {
+        clearInterval(timerCounter.current);
+        timerCounter.current = null;
+      }
+    }
     setState(state === "stopped" || state === "paused" ? "playing" : "paused");
   };
 
@@ -87,7 +114,21 @@ export const TimerScreen = () => {
       </View>
       <View style={TimeScreenStyles.timerContainer}>
         <View style={TimeScreenStyles.progressContainer}>
-          <CircleProgress progress={0.6} />
+          <AnimatedCircularProgress
+            size={screenWidth - 32 - 54}
+            width={5}
+            fill={
+              (((timer - (habit?.duration || 1) * 60) * -1) /
+                ((habit?.duration || 1) * 60)) *
+              100
+            }
+            tintColor="#fff"
+            lineCap="round"
+            rotation={-145}
+            arcSweepAngle={290}
+            onAnimationComplete={() => console.log("onAnimationComplete")}
+            backgroundColor="rgba(255,255,255, 0.16)"
+          />
           <View style={TimeScreenStyles.plantContainer}>
             <Image
               source={require("../assets/pot.png")}
@@ -116,13 +157,23 @@ export const TimerScreen = () => {
           <View style={TimeScreenStyles.timer}>
             <MotiView
               from={{ opacity: 0 }}
-              animate={{ opacity: true ? 0.2 : 0 }}
+              animate={{ opacity: state === "playing" ? 0.2 : 0 }}
               style={TimeScreenStyles.timerEta}
             >
               <Text style={TimeScreenStyles.timerEtaText}>Eta </Text>
-              <Text style={TimeScreenStyles.timerEtaText}>11:32 pm</Text>
+              <Text style={TimeScreenStyles.timerEtaText}>{`${
+                eta.getHours() > 12 ? eta.getHours() % 12 : eta.getHours()
+              }:${
+                eta.getMinutes() < 10
+                  ? `0${eta.getMinutes()}`
+                  : eta.getMinutes()
+              } ${eta.getHours() > 12 ? "pm" : "am"}`}</Text>
             </MotiView>
-            <Text style={TimeScreenStyles.timerText}>00:00</Text>
+            <Text style={TimeScreenStyles.timerText}>{`${
+              timer / 60 < 10
+                ? `0${Math.floor(timer / 60)}`
+                : Math.floor(timer / 60)
+            }:${timer % 60 < 10 ? `0${timer % 60}` : timer % 60}`}</Text>
           </View>
         </View>
         <View style={TimeScreenStyles.timerControls}>
@@ -133,32 +184,36 @@ export const TimerScreen = () => {
             hasBackground={true}
             onPress={() => {}}
           />
-          <Button
-            text={
-              state === "stopped"
-                ? "Start"
-                : state === "paused"
-                ? "Resume"
-                : "Pause"
-            }
-            shape="circle"
-            hasBackground={true}
-            hasCircleBorder={true}
-            darkBorder={state === "playing"}
-            dim={state === "playing"}
-            darkText={state !== "stopped"}
-            onPress={changeState}
-          />
+          {state !== "ended" && (
+            <Button
+              text={
+                state === "stopped"
+                  ? "Start"
+                  : state === "paused"
+                  ? "Resume"
+                  : "Pause"
+              }
+              shape="circle"
+              hasBackground={true}
+              hasCircleBorder={true}
+              darkBorder={state === "playing"}
+              dim={state === "playing"}
+              darkText={state !== "stopped"}
+              onPress={changeState}
+            />
+          )}
         </View>
-        <View style={TimeScreenStyles.footer}>
-          <Button
-            shape="oval"
-            text="submit"
-            noBorder={true}
-            isAccentButton={true}
-            onPress={() => {}}
-          />
-        </View>
+        {state === "ended" && (
+          <View style={TimeScreenStyles.footer}>
+            <Button
+              shape="oval"
+              text="submit"
+              noBorder={true}
+              isAccentButton={true}
+              onPress={() => {}}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -241,10 +296,8 @@ const TimeScreenStyles = StyleSheet.create({
   },
   progressContainer: {
     alignItems: "center",
-    transform: [{ scaleX: -1 }],
   },
   plantContainer: {
-    transform: [{ scaleX: -1 }],
     position: "absolute",
     width: "100%",
     height: "100%",
@@ -269,7 +322,6 @@ const TimeScreenStyles = StyleSheet.create({
     resizeMode: "contain",
   },
   timer: {
-    transform: [{ scaleX: -1 }],
     position: "absolute",
     top: 0,
     left: 0,

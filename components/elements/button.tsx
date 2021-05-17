@@ -126,12 +126,7 @@ export const Button = (props: ButtonProps) => {
           ]}
         >
           {props.shape === "circle" && (
-            <View
-              style={[
-                ButtonStyles.circleBorderContainer,
-                props.darkBorder && { transform: [{ rotate: "180deg" }] },
-              ]}
-            >
+            <View style={ButtonStyles.circleBorderContainer}>
               <View
                 style={[
                   ButtonStyles.circleBorder,
@@ -155,7 +150,12 @@ export const Button = (props: ButtonProps) => {
               style={[
                 ButtonStyles.borderCircle,
                 props.shape === "oval" && ButtonStyles.ovalBorderCircle,
-                props.darkBorder && { borderColor: "#292441" },
+                props.darkBorder && {
+                  borderColor: "#292441",
+                  right: "auto",
+                  top: 38,
+                  left: 0,
+                },
               ]}
             ></View>
           )}
