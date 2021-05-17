@@ -108,16 +108,15 @@ export const AddHabit = (props: AddHabitProps) => {
   };
 
   const onCallToActionPress = () => {
-    storeDispatch({
-      type: HabitActionTypes.ADD_NEW_HABIT,
-      payload: state,
-    });
-
     if (!habits.length) {
       navigation.navigate("Timer", {
         habitId: state.id,
       } as TimerScreenRouteParams);
     }
+    storeDispatch({
+      type: HabitActionTypes.ADD_NEW_HABIT,
+      payload: state,
+    });
   };
 
   return (
@@ -290,13 +289,14 @@ export const AddHabit = (props: AddHabitProps) => {
           customTextStyle={{ textTransform: "none" }}
         />
       </View>
-      <Button
-        shape={habits.length ? "oval" : "circle"}
-        text={habits.length ? "commit" : "start"}
-        onPress={onCallToActionPress}
-        hasCircleBorder={true}
-        extraStyles={{ marginTop: 0.0855 * screenHeight, alignSelf: "center" }}
-      />
+      <View style={addHabitStyles.buttonContainer}>
+        <Button
+          shape={habits.length ? "oval" : "circle"}
+          text={habits.length ? "commit" : "start"}
+          onPress={onCallToActionPress}
+          hasCircleBorder={true}
+        />
+      </View>
     </View>
   );
 };
@@ -421,5 +421,12 @@ const addHabitStyles = StyleSheet.create({
     backgroundColor: "#151032",
     borderRadius: 20,
     marginHorizontal: 2,
+  },
+  buttonContainer: {
+    alignSelf: "stretch",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 0.0855 * screenHeight,
   },
 });
