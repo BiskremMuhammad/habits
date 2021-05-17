@@ -18,7 +18,7 @@ import { Button } from "../components/elements/button";
 import { Habit } from "../types/habit";
 import { useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
-import { Clock, useDerivedValue } from "react-native-reanimated";
+import InfoIcon from "../components/svgs/info-icon";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -64,6 +64,11 @@ export const TimerScreen = () => {
     }
   });
 
+  const curProgress: number =
+    (((timer - (habit?.duration || 1) * 60) * -1) /
+      ((habit?.duration || 1) * 60)) *
+    100;
+
   useEffect(() => {
     if (timer === 0) {
       if (timerCounter.current) {
@@ -91,6 +96,17 @@ export const TimerScreen = () => {
     setState(state === "stopped" || state === "paused" ? "playing" : "paused");
   };
 
+  let plantResource = require("../assets/plant/plant_dark.png");
+  if (state === "stopped") {
+    plantResource = require("../assets/plant/plant_dark.png");
+  } else if (curProgress >= 0 && curProgress < 50 && state !== "stopped") {
+    plantResource = require("../assets/plant/plant_small.png");
+  } else if (curProgress >= 100) {
+    plantResource = require("../assets/plant/plant_glow.png");
+  } else {
+    plantResource = require("../assets/plant/plant_normal.png");
+  }
+
   return (
     <View style={TimeScreenStyles.container}>
       <LinearGradient
@@ -117,11 +133,7 @@ export const TimerScreen = () => {
           <AnimatedCircularProgress
             size={screenWidth - 32 - 54}
             width={5}
-            fill={
-              (((timer - (habit?.duration || 1) * 60) * -1) /
-                ((habit?.duration || 1) * 60)) *
-              100
-            }
+            fill={curProgress}
             tintColor="#fff"
             lineCap="round"
             rotation={-145}
@@ -135,26 +147,55 @@ export const TimerScreen = () => {
               style={TimeScreenStyles.pot}
             />
             <MotiView
-              from={{ height: 0, translateX: /*small*/ false ? 9 : 6 }}
-              animate={{
-                height: /*small*/ false ? 48.35 : 255.4,
-                translateX: /*small*/ false ? 9 : 6,
+              from={{
+                height: 0,
+                bottom: 24,
+                translateX:
+                  curProgress >= 0 && curProgress < 50 && state !== "stopped"
+                    ? 9
+                    : 6,
               }}
-              transition={{ type: "timing" }}
-              style={[
-                TimeScreenStyles.thePlant,
-                {
-                  bottom: /*small*/ false ? 75 : 24,
+              animate={{
+                height:
+                  curProgress >= 0 && curProgress < 50 && state !== "stopped"
+                    ? 48.35
+                    : (curProgress / 100 || 1) * 255.4,
+                translateX:
+                  curProgress >= 0 && curProgress < 50 && state !== "stopped"
+                    ? 9
+                    : 6,
+                bottom:
+                  curProgress >= 0 && curProgress < 50 && state !== "stopped"
+                    ? 75
+                    : curProgress > 50 && state !== "ended"
+                    ? (1 - curProgress / 100 + 0.35 || 1) * 75
+                    : 24,
+              }}
+              transition={{
+                type: "timing",
+                duration: curProgress > 0 ? 3000 : 100,
+                translateX: {
+                  type: "timing",
+                  duration: 100,
                 },
-              ]}
+                bottom: {
+                  type: "timing",
+                  duration: curProgress > 0 ? 2000 : 100,
+                },
+              }}
+              style={TimeScreenStyles.thePlant}
             >
               <Image
-                source={require(`../assets/plant/plant_${plantFill}.png`)}
+                source={plantResource}
                 style={TimeScreenStyles.plantImage}
               />
             </MotiView>
           </View>
-          <View style={TimeScreenStyles.timer}>
+          <MotiView
+            from={{ opacity: 0 }}
+            animate={{ opacity: state === "ended" ? 0 : 1 }}
+            style={TimeScreenStyles.timer}
+          >
             <MotiView
               from={{ opacity: 0 }}
               animate={{ opacity: state === "playing" ? 0.2 : 0 }}
@@ -174,7 +215,7 @@ export const TimerScreen = () => {
                 ? `0${Math.floor(timer / 60)}`
                 : Math.floor(timer / 60)
             }:${timer % 60 < 10 ? `0${timer % 60}` : timer % 60}`}</Text>
-          </View>
+          </MotiView>
         </View>
         <View style={TimeScreenStyles.timerControls}>
           <Button
@@ -212,6 +253,15 @@ export const TimerScreen = () => {
               isAccentButton={true}
               onPress={() => {}}
             />
+            <View style={TimeScreenStyles.footerInfoSection}>
+              <InfoIcon
+                style={[TimeScreenStyles.footerInfoIcon, CommonStyles.withIcon]}
+                fill="#fff"
+              />
+              <Text style={TimeScreenStyles.footerInfoText}>
+                Hit SUBMIT to infuse your habit with the light you've built up.
+              </Text>
+            </View>
           </View>
         )}
       </View>
@@ -364,6 +414,28 @@ const TimeScreenStyles = StyleSheet.create({
   footer: {
     display: "flex",
     alignItems: "center",
-    marginTop: -20,
+    marginTop: -10,
+  },
+  footerInfoSection: {
+    display: "flex",
+    flexDirection: "row",
+    paddingHorizontal: 8,
+    paddingVertical: 16,
+    marginTop: 16,
+    backgroundColor: "rgba(12, 8, 52, 0.6)",
+    borderRadius: 16,
+    marginHorizontal: "9%",
+  },
+  footerInfoIcon: {
+    width: 14,
+    height: 14,
+    opacity: 0.5,
+  },
+  footerInfoText: {
+    fontFamily: "Rubik-Regular",
+    fontSize: 16,
+    lineHeight: 24,
+    color: "#fff",
+    opacity: 0.66,
   },
 });
