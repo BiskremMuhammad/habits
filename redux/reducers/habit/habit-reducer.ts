@@ -18,6 +18,28 @@ export const habitReducer = (
   switch (action.type) {
     case HabitActionTypes.LOAD_HABITS_FROM_STORAGE:
       return [...(action.payload as Habit[])];
+
+    case HabitActionTypes.SAVE_DAY_PROGRESS:
+      newState = state.map((h: Habit, i: number) => {
+        if (
+          h.id === action.payload &&
+          !h.progress.includes(new Date(new Date().setHours(0, 0, 0, 0)))
+        ) {
+          return {
+            ...h,
+            progress: h.progress.concat(
+              new Date(new Date().setHours(0, 0, 0, 0))
+            ),
+          };
+        }
+        return h;
+      });
+      AsyncStorage.setItem(
+        CONSTANTS.ASYNC_STORAGE_HABITS,
+        JSON.stringify(newState)
+      );
+      return newState;
+
     case HabitActionTypes.ADD_NEW_HABIT:
       newState = [...state, action.payload as Habit];
       AsyncStorage.setItem(
@@ -25,6 +47,7 @@ export const habitReducer = (
         JSON.stringify(newState)
       );
       return newState;
+
     case HabitActionTypes.DELETE_HABIT:
       newState = state.filter((h: Habit, i: number) => h.id !== action.payload);
       AsyncStorage.setItem(

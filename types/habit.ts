@@ -60,4 +60,11 @@ export interface Habit {
    * @type {number}
    */
   duration: number;
+
+  /**
+   * habit tracker daily progress array
+   *
+   * @type {Date[]}
+   */
+  progress: Date[];
 }

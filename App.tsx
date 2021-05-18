@@ -15,6 +15,8 @@ import { store } from "./redux/store";
 import { SplashScreen } from "./screens/splash";
 import { createStackNavigator } from "@react-navigation/stack";
 import { TimerScreen } from "./screens/timer-screen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CONSTANTS } from "./utils/constants";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -42,6 +44,10 @@ export default function App() {
 
   useEffect(() => {
     const loadFonts = async () => {
+      await AsyncStorage.setItem(
+        CONSTANTS.ASYNC_STORAGE_HABITS,
+        JSON.stringify([])
+      );
       await Font.loadAsync(fonts);
       setLoading(false);
     };

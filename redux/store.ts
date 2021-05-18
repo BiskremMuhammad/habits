@@ -21,8 +21,7 @@ export interface GlobalStore {
   /**
    * the habits part of the stare
    *
-   * @type {{
-   * habits: Habit[]}}
+   * @type {Habit[]}
    * @memberof GlobalStore
    */
   habits: Habit[];

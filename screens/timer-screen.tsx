@@ -4,7 +4,13 @@
  * @description implement the timer Screen
  */
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
 import { MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -16,13 +22,15 @@ import BookIcon from "../components/svgs/book";
 import { CommonStyles } from "../styles/common";
 import { Button } from "../components/elements/button";
 import { Habit } from "../types/habit";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
 import InfoIcon from "../components/svgs/info-icon";
+import {
+  HabitActions,
+  HabitActionTypes,
+} from "../redux/reducers/habit/habit-actions";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
-
-let plantFill: "small" | "dark" | "normal" | "glow" = "dark";
 
 /**
  * interface that defines the route parameters should be passed to the component
@@ -47,6 +55,7 @@ export const TimerScreen = () => {
   const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
     (store: GlobalStore): Habit[] => store.habits
   );
+  const dispatch = useDispatch<Dispatch<HabitActions>>();
   const [habit, setHabit] = useState<Habit>();
 
   const [state, setState] =
@@ -251,7 +260,12 @@ export const TimerScreen = () => {
               text="submit"
               noBorder={true}
               isAccentButton={true}
-              onPress={() => {}}
+              onPress={() =>
+                dispatch({
+                  type: HabitActionTypes.SAVE_DAY_PROGRESS,
+                  payload: habitId,
+                })
+              }
             />
             <View style={TimeScreenStyles.footerInfoSection}>
               <InfoIcon
