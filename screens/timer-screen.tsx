@@ -29,8 +29,24 @@ import {
   HabitActions,
   HabitActionTypes,
 } from "../redux/reducers/habit/habit-actions";
+import { useDerivedValue } from "react-native-reanimated";
+import { Plant, PlantState } from "../components/elements/plant";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
+
+/**
+ * define the various kinds of Progress State
+ *
+ * @enum
+ * @exports
+ */
+export enum ProgressState {
+  STOPPED,
+  PLAYING,
+  PAUSED,
+  ENDED,
+  SUBMITTED,
+}
 
 /**
  * interface that defines the route parameters should be passed to the component
@@ -58,11 +74,67 @@ export const TimerScreen = () => {
   const dispatch = useDispatch<Dispatch<HabitActions>>();
   const [habit, setHabit] = useState<Habit>();
 
-  const [state, setState] =
-    useState<"stopped" | "playing" | "paused" | "ended">("stopped");
+  const [state, setState] = useState<ProgressState>(ProgressState.STOPPED);
   const [timer, setTimer] = useState<number>((habit?.duration || 1) * 60);
   const [eta, setEta] = useState<Date>(new Date());
   let timerCounter = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  /**
+   * update the progress value for the animations
+   */
+  const curProgress = useDerivedValue<number>(() => {
+    return (
+      (((timer - (habit?.duration || 1) * 60) * -1) /
+        ((habit?.duration || 1) * 60)) *
+        100 +
+      (state === ProgressState.STOPPED
+        ? 0
+        : 100 /
+          ((habit?.duration || 1) *
+            60)) /* add 1% because this will evaluate to 1% delay, which means the last re-render will be skipped */
+    );
+  }, [timer]);
+
+  /**
+   * plant animation props
+   */
+  const plantPositionX = useDerivedValue<number>(() => {
+    return curProgress.value >= 0 &&
+      curProgress.value < 50 &&
+      state !== ProgressState.STOPPED
+      ? 9
+      : 6;
+  }, [state]);
+
+  const plantHeight = useDerivedValue<number>(() => {
+    return curProgress.value >= 0 &&
+      curProgress.value < 50 &&
+      state !== ProgressState.STOPPED
+      ? 48.35
+      : (curProgress.value / 100 || 1) * 255.4;
+  }, [state]);
+
+  const plantPositionBottom = useDerivedValue<number>(() => {
+    return curProgress.value >= 0 &&
+      curProgress.value < 50 &&
+      state !== ProgressState.STOPPED
+      ? 75
+      : curProgress.value > 50 && state !== ProgressState.ENDED
+      ? (1 - curProgress.value / 100 + 0.35 || 1) * 75
+      : 24;
+  }, [state]);
+
+  const plant = useDerivedValue<PlantState>(() => {
+    if (state === ProgressState.STOPPED) {
+      return PlantState.DARK;
+    } else if (curProgress.value >= 0 && curProgress.value < 50) {
+      return PlantState.SMALL;
+    } else if (curProgress.value >= 100) {
+      return PlantState.GLOW;
+    } else {
+      return PlantState.NORMAL;
+    }
+  }, [state]);
 
   useLayoutEffect(() => {
     const getHabit = habits.find((h) => h.id === habitId);
@@ -73,23 +145,28 @@ export const TimerScreen = () => {
     }
   });
 
-  const curProgress: number =
-    (((timer - (habit?.duration || 1) * 60) * -1) /
-      ((habit?.duration || 1) * 60)) *
-    100;
+  // clear timeput whenever component unforced unmout
+  useEffect(() => {
+    return () => {
+      if (timerCounter.current) {
+        clearInterval(timerCounter.current);
+        timerCounter.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (timer === 0) {
       if (timerCounter.current) {
         clearInterval(timerCounter.current);
         timerCounter.current = null;
-        setState("ended");
+        setState(ProgressState.ENDED);
       }
     }
   }, [timer]);
 
   const changeState = () => {
-    if (state === "stopped" || state === "paused") {
+    if (state === ProgressState.STOPPED || state === ProgressState.PAUSED) {
       if (!timerCounter.current) {
         timerCounter.current = setInterval(() => {
           setTimer((t) => t - 1);
@@ -102,19 +179,12 @@ export const TimerScreen = () => {
         timerCounter.current = null;
       }
     }
-    setState(state === "stopped" || state === "paused" ? "playing" : "paused");
+    setState(
+      state === ProgressState.STOPPED || state === ProgressState.PAUSED
+        ? ProgressState.PLAYING
+        : ProgressState.PAUSED
+    );
   };
-
-  let plantResource = require("../assets/plant/plant_dark.png");
-  if (state === "stopped") {
-    plantResource = require("../assets/plant/plant_dark.png");
-  } else if (curProgress >= 0 && curProgress < 50 && state !== "stopped") {
-    plantResource = require("../assets/plant/plant_small.png");
-  } else if (curProgress >= 100) {
-    plantResource = require("../assets/plant/plant_glow.png");
-  } else {
-    plantResource = require("../assets/plant/plant_normal.png");
-  }
 
   return (
     <View style={TimeScreenStyles.container}>
@@ -142,72 +212,27 @@ export const TimerScreen = () => {
           <AnimatedCircularProgress
             size={screenWidth - 32 - 54}
             width={5}
-            fill={curProgress}
+            fill={curProgress.value}
             tintColor="#fff"
             lineCap="round"
             rotation={-145}
             arcSweepAngle={290}
-            onAnimationComplete={() => console.log("onAnimationComplete")}
             backgroundColor="rgba(255,255,255, 0.16)"
           />
-          <View style={TimeScreenStyles.plantContainer}>
-            <Image
-              source={require("../assets/pot.png")}
-              style={TimeScreenStyles.pot}
-            />
-            <MotiView
-              from={{
-                height: 0,
-                bottom: 24,
-                translateX:
-                  curProgress >= 0 && curProgress < 50 && state !== "stopped"
-                    ? 9
-                    : 6,
-              }}
-              animate={{
-                height:
-                  curProgress >= 0 && curProgress < 50 && state !== "stopped"
-                    ? 48.35
-                    : (curProgress / 100 || 1) * 255.4,
-                translateX:
-                  curProgress >= 0 && curProgress < 50 && state !== "stopped"
-                    ? 9
-                    : 6,
-                bottom:
-                  curProgress >= 0 && curProgress < 50 && state !== "stopped"
-                    ? 75
-                    : curProgress > 50 && state !== "ended"
-                    ? (1 - curProgress / 100 + 0.35 || 1) * 75
-                    : 24,
-              }}
-              transition={{
-                type: "timing",
-                duration: curProgress > 0 ? 3000 : 100,
-                translateX: {
-                  type: "timing",
-                  duration: 100,
-                },
-                bottom: {
-                  type: "timing",
-                  duration: curProgress > 0 ? 2000 : 100,
-                },
-              }}
-              style={TimeScreenStyles.thePlant}
-            >
-              <Image
-                source={plantResource}
-                style={TimeScreenStyles.plantImage}
-              />
-            </MotiView>
-          </View>
+          <Plant
+            state={plant.value}
+            height={plantHeight}
+            positionX={plantPositionX}
+            positionBottom={plantPositionBottom}
+          />
           <MotiView
             from={{ opacity: 0 }}
-            animate={{ opacity: state === "ended" ? 0 : 1 }}
+            animate={{ opacity: state === ProgressState.ENDED ? 0 : 1 }}
             style={TimeScreenStyles.timer}
           >
             <MotiView
               from={{ opacity: 0 }}
-              animate={{ opacity: state === "playing" ? 0.2 : 0 }}
+              animate={{ opacity: state === ProgressState.PLAYING ? 0.2 : 0 }}
               style={TimeScreenStyles.timerEta}
             >
               <Text style={TimeScreenStyles.timerEtaText}>Eta </Text>
@@ -234,26 +259,26 @@ export const TimerScreen = () => {
             hasBackground={true}
             onPress={() => {}}
           />
-          {state !== "ended" && (
+          {state !== ProgressState.ENDED && (
             <Button
               text={
-                state === "stopped"
+                state === ProgressState.STOPPED
                   ? "Start"
-                  : state === "paused"
+                  : state === ProgressState.PAUSED
                   ? "Resume"
                   : "Pause"
               }
               shape="circle"
               hasBackground={true}
               hasCircleBorder={true}
-              darkBorder={state === "playing"}
-              dim={state === "playing"}
-              darkText={state !== "stopped"}
+              darkBorder={state === ProgressState.PLAYING}
+              dim={state === ProgressState.PLAYING}
+              darkText={state !== ProgressState.STOPPED}
               onPress={changeState}
             />
           )}
         </View>
-        {state === "ended" && (
+        {state === ProgressState.ENDED && (
           <View style={TimeScreenStyles.footer}>
             <Button
               shape="oval"
@@ -360,30 +385,6 @@ const TimeScreenStyles = StyleSheet.create({
   },
   progressContainer: {
     alignItems: "center",
-  },
-  plantContainer: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    bottom: -46,
-    left: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-  },
-  pot: {
-    width: "50%",
-    height: 92.3,
-    resizeMode: "contain",
-  },
-  thePlant: {
-    width: "60%",
-    position: "absolute",
-  },
-  plantImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
   },
   timer: {
     position: "absolute",
