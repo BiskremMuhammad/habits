@@ -12,7 +12,7 @@ import React, {
   useState,
 } from "react";
 import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
-import { MotiView } from "moti";
+import { MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/core";
@@ -119,8 +119,8 @@ export const TimerScreen = () => {
       curProgress.value < 50 &&
       state !== ProgressState.STOPPED
       ? 75
-      : curProgress.value > 50 && state !== ProgressState.ENDED
-      ? (1 - curProgress.value / 100 + 0.35 || 1) * 75
+      : curProgress.value >= 50 && state !== ProgressState.ENDED
+      ? (1 - curProgress.value / 100 + 0.4 || 1) * 75
       : 24;
   }, [state]);
 
@@ -129,7 +129,7 @@ export const TimerScreen = () => {
       return PlantState.DARK;
     } else if (curProgress.value >= 0 && curProgress.value < 50) {
       return PlantState.SMALL;
-    } else if (curProgress.value >= 100) {
+    } else if (curProgress.value >= 100 && state === ProgressState.SUBMITTED) {
       return PlantState.GLOW;
     } else {
       return PlantState.NORMAL;
@@ -186,6 +186,15 @@ export const TimerScreen = () => {
     );
   };
 
+  const onSubmit = () => {
+    setState(ProgressState.SUBMITTED);
+
+    dispatch({
+      type: HabitActionTypes.SAVE_DAY_PROGRESS,
+      payload: habitId,
+    });
+  };
+
   return (
     <View style={TimeScreenStyles.container}>
       <LinearGradient
@@ -212,7 +221,9 @@ export const TimerScreen = () => {
           <AnimatedCircularProgress
             size={screenWidth - 32 - 54}
             width={5}
-            fill={curProgress.value}
+            fill={
+              timer === (habit?.duration || 1) * 60 - 1 ? 1 : curProgress.value
+            }
             tintColor="#fff"
             lineCap="round"
             rotation={-145}
@@ -220,7 +231,9 @@ export const TimerScreen = () => {
             backgroundColor="rgba(255,255,255, 0.16)"
           />
           <Plant
-            state={plant.value}
+            state={
+              state === ProgressState.SUBMITTED ? PlantState.GLOW : plant.value
+            }
             height={plantHeight}
             positionX={plantPositionX}
             positionBottom={plantPositionBottom}
@@ -244,11 +257,38 @@ export const TimerScreen = () => {
                   : eta.getMinutes()
               } ${eta.getHours() > 12 ? "pm" : "am"}`}</Text>
             </MotiView>
-            <Text style={TimeScreenStyles.timerText}>{`${
-              timer / 60 < 10
-                ? `0${Math.floor(timer / 60)}`
-                : Math.floor(timer / 60)
-            }:${timer % 60 < 10 ? `0${timer % 60}` : timer % 60}`}</Text>
+            <MotiText
+              animate={{
+                top: state === ProgressState.SUBMITTED ? 220 : 0,
+                scale: state === ProgressState.SUBMITTED ? 0.4 : 1,
+              }}
+              transition={{
+                delay: 300,
+                duration: 2000,
+                type: "timing",
+                opacity: {
+                  delay: 0,
+                  type: "timing",
+                  duration: 300,
+                },
+              }}
+              onDidAnimate={() => console.log("[moti] animation completed..")}
+              style={TimeScreenStyles.timerText}
+            >
+              {state === ProgressState.SUBMITTED
+                ? `${
+                    habit?.duration
+                      ? habit.duration < 10
+                        ? `0${habit.duration}`
+                        : habit.duration
+                      : "01"
+                  }:00`
+                : `${
+                    timer / 60 < 10
+                      ? `0${Math.floor(timer / 60)}`
+                      : Math.floor(timer / 60)
+                  }:${timer % 60 < 10 ? `0${timer % 60}` : timer % 60}`}
+            </MotiText>
           </MotiView>
         </View>
         <View style={TimeScreenStyles.timerControls}>
@@ -259,24 +299,25 @@ export const TimerScreen = () => {
             hasBackground={true}
             onPress={() => {}}
           />
-          {state !== ProgressState.ENDED && (
-            <Button
-              text={
-                state === ProgressState.STOPPED
-                  ? "Start"
-                  : state === ProgressState.PAUSED
-                  ? "Resume"
-                  : "Pause"
-              }
-              shape="circle"
-              hasBackground={true}
-              hasCircleBorder={true}
-              darkBorder={state === ProgressState.PLAYING}
-              dim={state === ProgressState.PLAYING}
-              darkText={state !== ProgressState.STOPPED}
-              onPress={changeState}
-            />
-          )}
+          {state !== ProgressState.ENDED &&
+            state !== ProgressState.SUBMITTED && (
+              <Button
+                text={
+                  state === ProgressState.STOPPED
+                    ? "Start"
+                    : state === ProgressState.PAUSED
+                    ? "Resume"
+                    : "Pause"
+                }
+                shape="circle"
+                hasBackground={true}
+                hasCircleBorder={true}
+                darkBorder={state === ProgressState.PLAYING}
+                dim={state === ProgressState.PLAYING}
+                darkText={state !== ProgressState.STOPPED}
+                onPress={changeState}
+              />
+            )}
         </View>
         {state === ProgressState.ENDED && (
           <View style={TimeScreenStyles.footer}>
@@ -285,12 +326,7 @@ export const TimerScreen = () => {
               text="submit"
               noBorder={true}
               isAccentButton={true}
-              onPress={() =>
-                dispatch({
-                  type: HabitActionTypes.SAVE_DAY_PROGRESS,
-                  payload: habitId,
-                })
-              }
+              onPress={onSubmit}
             />
             <View style={TimeScreenStyles.footerInfoSection}>
               <InfoIcon
