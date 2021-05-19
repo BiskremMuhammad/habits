@@ -17,6 +17,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { TimerScreen } from "./screens/timer-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CONSTANTS } from "./utils/constants";
+import { SuccessScreen } from "./screens/success-screen";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -69,9 +70,12 @@ export default function App() {
               backgroundColor: "transparent",
             },
           }}
+          initialRouteName={"Splash"}
         >
           <Route.Screen name="Splash" component={SplashScreen} />
+          <Route.Screen name="Home" component={SplashScreen} />
           <Route.Screen name="Timer" component={TimerScreen} />
+          <Route.Screen name="Success" component={SuccessScreen} />
         </Route.Navigator>
       </NavigationContainer>
     </Provider>

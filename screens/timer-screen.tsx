@@ -195,6 +195,12 @@ export const TimerScreen = () => {
     });
   };
 
+  const onSubmitAnimationHasCompleted = () => {
+    if (state === ProgressState.SUBMITTED) {
+      navigation.navigate("Success");
+    }
+  };
+
   return (
     <View style={TimeScreenStyles.container}>
       <LinearGradient
@@ -272,7 +278,7 @@ export const TimerScreen = () => {
                   duration: 300,
                 },
               }}
-              onDidAnimate={() => console.log("[moti] animation completed..")}
+              onDidAnimate={onSubmitAnimationHasCompleted}
               style={TimeScreenStyles.timerText}
             >
               {state === ProgressState.SUBMITTED

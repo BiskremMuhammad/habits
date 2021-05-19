@@ -6,7 +6,7 @@
 
 import React from "react";
 import { MotiImage, MotiView } from "moti";
-import { View, Image, StyleSheet, StyleProp, ViewProps } from "react-native";
+import { View, Image, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 
 /**
@@ -31,9 +31,9 @@ interface PlantProps {
   /**
    * pass some extra custom styles for the plant
    *
-   * @type {StyleProp<ViewProps>}
+   * @type {StyleProp<ViewStyle>}
    */
-  extraStyles?: StyleProp<ViewProps>;
+  extraStyles?: StyleProp<ViewStyle>;
 
   /**
    * custom plant top height
@@ -83,7 +83,7 @@ export const Plant = (props: PlantProps) => {
   }
 
   return (
-    <View style={PlantStyles.plantContainer}>
+    <View style={[PlantStyles.plantContainer, props.extraStyles]}>
       <View style={PlantStyles.potContainer}>
         <Image
           source={require("../../assets/pot.png")}

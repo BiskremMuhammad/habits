@@ -16,10 +16,6 @@ import {
   ScrollView,
 } from "react-native";
 import { CommonStyles } from "../../styles/common";
-import {
-  AddHabitAction,
-  AddHabitActionTypes,
-} from "../modules/add-habit/add-habit-reducer";
 import CaretDown from "../svgs/caret-down";
 
 /**
