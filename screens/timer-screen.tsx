@@ -31,6 +31,8 @@ import {
 } from "../redux/reducers/habit/habit-actions";
 import { useDerivedValue } from "react-native-reanimated";
 import { Plant, PlantState } from "../components/elements/plant";
+import { Modal } from "../components/modules/modals/modal";
+import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -78,6 +80,10 @@ export const TimerScreen = () => {
   const [timer, setTimer] = useState<number>((habit?.duration || 1) * 60);
   const [eta, setEta] = useState<Date>(new Date());
   let timerCounter = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // ......for exit session modal
+  const [exitSessionModalOpened, setExitSessionModalOpenState] =
+    useState<boolean>(false);
 
   /**
    * update the progress value for the animations
@@ -303,7 +309,7 @@ export const TimerScreen = () => {
             shape="circle"
             noBorder={true}
             hasBackground={true}
-            onPress={() => {}}
+            onPress={() => setExitSessionModalOpenState(true)}
           />
           {state !== ProgressState.ENDED &&
             state !== ProgressState.SUBMITTED && (
@@ -346,6 +352,14 @@ export const TimerScreen = () => {
           </View>
         )}
       </View>
+      {exitSessionModalOpened && (
+        <Modal>
+          <ExitSessionModal
+            onCancel={() => setExitSessionModalOpenState(false)}
+            onExit={() => {}}
+          />
+        </Modal>
+      )}
     </View>
   );
 };
