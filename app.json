@@ -18,8 +18,7 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "UIUserInterfaceStyle": "Light"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
