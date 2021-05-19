@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { MotiView } from "moti";
+import { MotiImage, MotiView } from "moti";
 import { View, Image, StyleSheet, StyleProp, ViewProps } from "react-native";
 import Animated from "react-native-reanimated";
 
@@ -89,6 +89,14 @@ export const Plant = (props: PlantProps) => {
           source={require("../../assets/pot.png")}
           style={PlantStyles.pot}
         />
+        {props.state === PlantState.GLOW && (
+          <MotiImage
+            from={{ opacity: 0 }}
+            animate={{ opacity: 0.44 }}
+            source={require("../../assets/pot_glowfeedback.png")}
+            style={PlantStyles.potGlowFeedBack}
+          />
+        )}
       </View>
       <MotiView
         from={{
@@ -161,13 +169,21 @@ const PlantStyles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
   },
   pot: {
     width: "100%",
     height: "100%",
     resizeMode: "contain",
   },
-  potGlowFeedBack: {},
+  potGlowFeedBack: {
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    height: 36.8,
+    resizeMode: "contain",
+    opacity: 0.44,
+  },
   thePlant: {
     width: "60%",
     position: "absolute",
