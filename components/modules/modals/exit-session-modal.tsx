@@ -1,3 +1,9 @@
+/**
+ * @author Muhammad Omran
+ * @date 19-05-2021
+ * @description implement the modal that will appear when timer screen exit session button is clicked
+ */
+
 import { MotiView } from "@motify/components";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
