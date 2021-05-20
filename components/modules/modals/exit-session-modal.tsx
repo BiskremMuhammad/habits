@@ -40,10 +40,22 @@ export const ExitSessionModal = ({
       from={{ opacity: 0, translateY: 200 }}
       animate={{ opacity: 1, translateY: -103 }}
       exit={{ opacity: 0, translateY: 200 }}
+      transition={{
+        type: "timing",
+        duration: 100,
+        translateY: {
+          type: "spring",
+        },
+      }}
       style={styles.container}
     >
       <Text style={styles.headerTitle}>Exit Session?</Text>
-      <Text style={[CommonStyles.infoTxtSmaller, { marginVertical: 16 }]}>
+      <Text
+        style={[
+          CommonStyles.infoTxtSmaller,
+          { marginTop: 16, marginBottom: 36 },
+        ]}
+      >
         Are you sure you want to end this session, you will lose your progress?
       </Text>
       <View style={styles.buttons}>

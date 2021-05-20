@@ -171,8 +171,12 @@ export const TimerScreen = () => {
     }
   }, [timer]);
 
-  const changeState = () => {
-    if (state === ProgressState.STOPPED || state === ProgressState.PAUSED) {
+  const changeState = (newState?: ProgressState) => {
+    console.log("whta is my new satate: ", newState);
+    if (
+      (state === ProgressState.STOPPED || state === ProgressState.PAUSED) &&
+      (!newState || newState === ProgressState.PLAYING)
+    ) {
       if (!timerCounter.current) {
         timerCounter.current = setInterval(() => {
           setTimer((t) => t - 1);
@@ -186,7 +190,8 @@ export const TimerScreen = () => {
       }
     }
     setState(
-      state === ProgressState.STOPPED || state === ProgressState.PAUSED
+      (state === ProgressState.STOPPED || state === ProgressState.PAUSED) &&
+        (!newState || newState === ProgressState.PLAYING)
         ? ProgressState.PLAYING
         : ProgressState.PAUSED
     );
@@ -205,6 +210,12 @@ export const TimerScreen = () => {
     if (state === ProgressState.SUBMITTED) {
       navigation.navigate("Success");
     }
+  };
+
+  const onCancelSessionHandler = (openState: boolean) => {
+    setExitSessionModalOpenState(openState);
+    // also pause the timer
+    changeState(ProgressState.PAUSED);
   };
 
   return (
@@ -309,7 +320,7 @@ export const TimerScreen = () => {
             shape="circle"
             noBorder={true}
             hasBackground={true}
-            onPress={() => setExitSessionModalOpenState(true)}
+            onPress={() => onCancelSessionHandler(true)}
           />
           {state !== ProgressState.ENDED &&
             state !== ProgressState.SUBMITTED && (
@@ -327,7 +338,7 @@ export const TimerScreen = () => {
                 darkBorder={state === ProgressState.PLAYING}
                 dim={state === ProgressState.PLAYING}
                 darkText={state !== ProgressState.STOPPED}
-                onPress={changeState}
+                onPress={() => changeState()}
               />
             )}
         </View>
@@ -356,7 +367,7 @@ export const TimerScreen = () => {
         {exitSessionModalOpened && (
           <Modal>
             <ExitSessionModal
-              onCancel={() => setExitSessionModalOpenState(false)}
+              onCancel={() => onCancelSessionHandler(false)}
               onExit={() => {}}
             />
           </Modal>
