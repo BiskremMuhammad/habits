@@ -12,7 +12,7 @@ import React, {
   useState,
 } from "react";
 import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
-import { MotiText, MotiView } from "moti";
+import { AnimatePresence, MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/core";
@@ -352,14 +352,16 @@ export const TimerScreen = () => {
           </View>
         )}
       </View>
-      {exitSessionModalOpened && (
-        <Modal>
-          <ExitSessionModal
-            onCancel={() => setExitSessionModalOpenState(false)}
-            onExit={() => {}}
-          />
-        </Modal>
-      )}
+      <AnimatePresence>
+        {exitSessionModalOpened && (
+          <Modal>
+            <ExitSessionModal
+              onCancel={() => setExitSessionModalOpenState(false)}
+              onExit={() => {}}
+            />
+          </Modal>
+        )}
+      </AnimatePresence>
     </View>
   );
 };
