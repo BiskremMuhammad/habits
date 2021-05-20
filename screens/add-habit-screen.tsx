@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 0.222 * screenHeight,
+    paddingTop: 0.26 * screenHeight,
     paddingBottom: 0.08 * screenHeight,
   },
   bgIconContainer: {
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+    marginBottom: 92,
   },
   bgIcon: {
     width: "100%",

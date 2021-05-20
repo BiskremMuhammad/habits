@@ -15,7 +15,7 @@ import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
 import { AnimatePresence, MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation, useRoute } from "@react-navigation/core";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/core";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 import BookIcon from "../components/svgs/book";
@@ -33,6 +33,7 @@ import { useDerivedValue } from "react-native-reanimated";
 import { Plant, PlantState } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
+import { Routes } from "../types/route-names";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -65,9 +66,24 @@ export interface TimerScreenRouteParams {
   habitId: string;
 }
 
-export const TimerScreen = () => {
+/**
+ * interface that defines the props of the component
+ *
+ * @interface
+ */
+interface TimerScreenProps {
+  /**
+   * flag if app state is still playing the introduction
+   *
+   * @type {boolean}
+   */
+  isIntroduction: boolean;
+}
+
+export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   const route = useRoute();
   const navigation = useNavigation();
+  const isOnFocus = useIsFocused();
   const params = route.params as TimerScreenRouteParams;
   const habitId: string = params ? params.habitId : "";
   const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
@@ -146,8 +162,8 @@ export const TimerScreen = () => {
     const getHabit = habits.find((h) => h.id === habitId);
     if (getHabit) {
       setHabit(getHabit);
-    } else {
-      navigation.navigate(habits.length ? /*home*/ "Splash" : "Splash");
+    } else if (isOnFocus) {
+      navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
     }
   });
 
@@ -162,6 +178,17 @@ export const TimerScreen = () => {
   }, []);
 
   useEffect(() => {
+    if (
+      isIntroduction &&
+      state === ProgressState.PLAYING &&
+      timer > 0 &&
+      timer % 3 === 0
+    ) {
+      setTimer(timer - 4);
+    }
+  }, [isIntroduction, timer, state]);
+
+  useEffect(() => {
     if (timer === 0) {
       if (timerCounter.current) {
         clearInterval(timerCounter.current);
@@ -172,7 +199,6 @@ export const TimerScreen = () => {
   }, [timer]);
 
   const changeState = (newState?: ProgressState) => {
-    console.log("whta is my new satate: ", newState);
     if (
       (state === ProgressState.STOPPED || state === ProgressState.PAUSED) &&
       (!newState || newState === ProgressState.PLAYING)
@@ -208,14 +234,22 @@ export const TimerScreen = () => {
 
   const onSubmitAnimationHasCompleted = () => {
     if (state === ProgressState.SUBMITTED) {
-      navigation.navigate("Success");
+      navigation.navigate(Routes.SUCCESS);
     }
   };
 
   const onCancelSessionHandler = (openState: boolean) => {
-    setExitSessionModalOpenState(openState);
-    // also pause the timer
-    changeState(ProgressState.PAUSED);
+    if (isIntroduction) {
+      dispatch({
+        type: HabitActionTypes.DELETE_HABIT,
+        payload: habitId,
+      });
+      navigation.navigate(Routes.SPLASH);
+    } else {
+      setExitSessionModalOpenState(openState);
+      // also pause the timer
+      changeState(ProgressState.PAUSED);
+    }
   };
 
   return (

@@ -17,6 +17,7 @@ import { GlobalStore } from "../../../redux/store";
 import { TimerScreenRouteParams } from "../../../screens/timer-screen";
 import { CommonStyles } from "../../../styles/common";
 import { Habit, HabitTypes } from "../../../types/habit";
+import { Routes } from "../../../types/route-names";
 import { WeekDays, WeekDaysFullName } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
@@ -61,6 +62,13 @@ interface AddHabitProps {
    * @type {boolean}
    */
   enableFrequencySelect?: boolean;
+
+  /**
+   * flag if app state is still playing the introduction
+   *
+   * @type {boolean}
+   */
+  isIntroduction?: boolean;
 }
 
 export const AddHabit = (props: AddHabitProps) => {
@@ -80,14 +88,6 @@ export const AddHabit = (props: AddHabitProps) => {
   );
   const [freqSelection, setFreqSelection] = useState<number>(1);
   const navigation = useNavigation();
-
-  /**
-   * State of the button to prevent from changing while screen transition
-   */
-  const [buttonShape, setButtonShape] = useState<"circle" | "oval">("circle");
-  useLayoutEffect(() => {
-    setButtonShape(habits.length ? "oval" : "circle");
-  }, []);
 
   const onChangeHabit = (val: string) => {
     dispatch({
@@ -123,10 +123,12 @@ export const AddHabit = (props: AddHabitProps) => {
   };
 
   const onCallToActionPress = () => {
-    if (!habits.length) {
-      navigation.navigate("Timer", {
+    if (props.isIntroduction) {
+      navigation.navigate(Routes.TIMER, {
         habitId: state.id,
       } as TimerScreenRouteParams);
+    } else {
+      // TODO:: navigate to Identity Reinforcement if play intro state is false
     }
     storeDispatch({
       type: HabitActionTypes.ADD_NEW_HABIT,
@@ -312,8 +314,8 @@ export const AddHabit = (props: AddHabitProps) => {
       </View>
       <View style={addHabitStyles.buttonContainer}>
         <Button
-          shape={buttonShape}
-          text={buttonShape === "oval" ? "commit" : "start"}
+          shape={props.isIntroduction ? "circle" : "oval"}
+          text={!props.isIntroduction ? "commit" : "start"}
           onPress={onCallToActionPress}
           hasCircleBorder={true}
         />

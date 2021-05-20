@@ -5,23 +5,33 @@
  */
 
 import { useNavigation } from "@react-navigation/core";
-import React from "react";
+import React, { Dispatch } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { useDispatch } from "react-redux";
 import { Button } from "../components/elements/button";
 import { Plant, PlantState } from "../components/elements/plant";
 import { Spoiler } from "../components/elements/spoiler";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
+import {
+  HabitActions,
+  HabitActionTypes,
+} from "../redux/reducers/habit/habit-actions";
 import { CommonStyles } from "../styles/common";
+import { Routes } from "../types/route-names";
 import { CONSTANTS } from "../utils/constants";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
 export const SuccessScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch<Dispatch<HabitActions>>();
 
   const onBegin = () => {
-    navigation.navigate("Home");
+    dispatch({
+      type: HabitActionTypes.INTRODUCTION_CLEAR_UP,
+    });
+    navigation.navigate(Routes.ADD_HABIT);
   };
 
   return (

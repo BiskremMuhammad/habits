@@ -9,6 +9,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { Dimensions, Image, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { enableScreens } from "react-native-screens";
 import * as Font from "expo-font";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
@@ -19,6 +20,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CONSTANTS } from "./utils/constants";
 import { SuccessScreen } from "./screens/success-screen";
 import { AddHabitScreen } from "./screens/add-habit-screen";
+import { DashboardScreen } from "./screens/dashboard-screen";
+import { Routes } from "./types/route-names";
+enableScreens();
 
 const { width, height } = Dimensions.get("screen");
 
@@ -43,6 +47,7 @@ let fonts = {
 
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true);
+  const [playIntroduction, setPlayIntroduction] = useState<boolean>(false);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -51,6 +56,11 @@ export default function App() {
         JSON.stringify([])
       );
       await Font.loadAsync(fonts);
+      const firstTimer = await AsyncStorage.getItem(
+        CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY
+      );
+      console.log("first time", !!!firstTimer);
+      setPlayIntroduction(!!!firstTimer);
       setLoading(false);
     };
 
@@ -71,13 +81,21 @@ export default function App() {
               backgroundColor: "transparent",
             },
           }}
-          initialRouteName={"Splash"}
+          initialRouteName={playIntroduction ? Routes.SPLASH : Routes.HOME}
         >
-          <Route.Screen name="Splash" component={SplashScreen} />
-          <Route.Screen name="Home" component={SplashScreen} />
-          <Route.Screen name="AddHabit" component={AddHabitScreen} />
-          <Route.Screen name="Timer" component={TimerScreen} />
-          <Route.Screen name="Success" component={SuccessScreen} />
+          {playIntroduction && (
+            <Route.Screen name={Routes.SPLASH} component={SplashScreen} />
+          )}
+          {playIntroduction && (
+            <Route.Screen name={Routes.SUCCESS} component={SuccessScreen} />
+          )}
+          <Route.Screen name={Routes.HOME} component={DashboardScreen} />
+          <Route.Screen name={Routes.TIMER}>
+            {(props) => (
+              <TimerScreen {...props} isIntroduction={playIntroduction} />
+            )}
+          </Route.Screen>
+          <Route.Screen name={Routes.ADD_HABIT} component={AddHabitScreen} />
         </Route.Navigator>
       </NavigationContainer>
     </Provider>

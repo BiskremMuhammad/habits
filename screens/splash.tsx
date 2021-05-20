@@ -46,7 +46,7 @@ export const SplashScreen = () => {
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 1300, duration: 1000, type: "timing" }}
         >
-          <AddHabit />
+          <AddHabit isIntroduction={true} />
         </MotiView>
       </View>
     </ScrollView>

@@ -55,6 +55,14 @@ export const habitReducer = (
         JSON.stringify(newState)
       );
       return newState;
+
+    case HabitActionTypes.INTRODUCTION_CLEAR_UP:
+      newState = [];
+      AsyncStorage.setItem(
+        CONSTANTS.ASYNC_STORAGE_HABITS,
+        JSON.stringify(newState)
+      );
+      return newState;
     default:
       return state;
   }
