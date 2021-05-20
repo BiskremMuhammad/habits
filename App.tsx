@@ -18,6 +18,7 @@ import { TimerScreen } from "./screens/timer-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CONSTANTS } from "./utils/constants";
 import { SuccessScreen } from "./screens/success-screen";
+import { AddHabitScreen } from "./screens/add-habit-screen";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -74,6 +75,7 @@ export default function App() {
         >
           <Route.Screen name="Splash" component={SplashScreen} />
           <Route.Screen name="Home" component={SplashScreen} />
+          <Route.Screen name="AddHabit" component={AddHabitScreen} />
           <Route.Screen name="Timer" component={TimerScreen} />
           <Route.Screen name="Success" component={SuccessScreen} />
         </Route.Navigator>

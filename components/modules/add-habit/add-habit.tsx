@@ -6,7 +6,7 @@
 
 import { MotiView } from "@motify/components";
 import { useNavigation } from "@react-navigation/core";
-import React, { Dispatch, useReducer, useState } from "react";
+import React, { Dispatch, useLayoutEffect, useReducer, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -42,6 +42,13 @@ const { height: screenHeight } = Dimensions.get("screen");
  */
 interface AddHabitProps {
   /**
+   * flag to enable change the habit type
+   *
+   * @type {boolean}
+   */
+  enableChangeHabit?: boolean;
+
+  /**
    * flag of which to display the habit Duration change
    *
    * @type {boolean}
@@ -73,6 +80,14 @@ export const AddHabit = (props: AddHabitProps) => {
   );
   const [freqSelection, setFreqSelection] = useState<number>(1);
   const navigation = useNavigation();
+
+  /**
+   * State of the button to prevent from changing while screen transition
+   */
+  const [buttonShape, setButtonShape] = useState<"circle" | "oval">("circle");
+  useLayoutEffect(() => {
+    setButtonShape(habits.length ? "oval" : "circle");
+  }, []);
 
   const onChangeHabit = (val: string) => {
     dispatch({
@@ -131,6 +146,11 @@ export const AddHabit = (props: AddHabitProps) => {
           }
           onChange={onChangeHabit}
           isDropdown={true}
+          dropdownOptions={
+            props.enableChangeHabit
+              ? Object.keys(HabitTypes).map((k) => k.replace(/ing/gi, ""))
+              : undefined
+          }
           hasBorder={true}
           hasCircleBorder={true}
         />
@@ -286,13 +306,14 @@ export const AddHabit = (props: AddHabitProps) => {
             "1 hr",
             "2 hr",
           ]}
+          hasBorder={props.enableDurationSelect}
           customTextStyle={{ textTransform: "none" }}
         />
       </View>
       <View style={addHabitStyles.buttonContainer}>
         <Button
-          shape={habits.length ? "oval" : "circle"}
-          text={habits.length ? "commit" : "start"}
+          shape={buttonShape}
+          text={buttonShape === "oval" ? "commit" : "start"}
           onPress={onCallToActionPress}
           hasCircleBorder={true}
         />
