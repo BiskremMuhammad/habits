@@ -4,15 +4,49 @@
  * @description implement the Add Habit Screen
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
 import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
+import { useNavigation } from "@react-navigation/native";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
-export const AddHabitScreen = () => {
+/**
+ * interface that defines the props of the component
+ *
+ * @interface
+ */
+interface AddHabitScreenProps {
+  /**
+   * flag if app state is still playing the introduction
+   *
+   * @type {boolean}
+   */
+  isIntroduction: boolean;
+}
+
+export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
+  const navigation = useNavigation();
+
+  /**
+   * Disable user from going back when this is the first time to prevent going back to the introduction success screen
+   */
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        if (isIntroduction) {
+          return;
+        } else {
+          navigation.dispatch(e.data.action);
+        }
+      }),
+    [navigation, isIntroduction]
+  );
+
   return (
     <ScrollView style={{ flex: 1 }}>
       <View style={styles.container}>

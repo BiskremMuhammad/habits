@@ -5,7 +5,7 @@
  */
 
 import { useNavigation } from "@react-navigation/core";
-import React, { Dispatch } from "react";
+import React, { Dispatch, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { useDispatch } from "react-redux";
 import { Button } from "../components/elements/button";
@@ -26,6 +26,19 @@ const { height: screenHeight } = Dimensions.get("screen");
 export const SuccessScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<Dispatch<HabitActions>>();
+
+  /**
+   * Disable user from going back
+   */
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        return;
+      }),
+    [navigation]
+  );
 
   const onBegin = () => {
     dispatch({

@@ -6,7 +6,13 @@
 
 import { MotiView } from "@motify/components";
 import { useNavigation } from "@react-navigation/core";
-import React, { Dispatch, useLayoutEffect, useReducer, useState } from "react";
+import React, {
+  Dispatch,
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useState,
+} from "react";
 import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {

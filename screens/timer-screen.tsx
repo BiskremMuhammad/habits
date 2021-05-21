@@ -11,7 +11,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
+import { StyleSheet, View, Image, Text, Dimensions, Alert } from "react-native";
 import { AnimatePresence, MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -34,6 +34,7 @@ import { Plant, PlantState } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
 import { Routes } from "../types/route-names";
+import { CommonActions } from "@react-navigation/native";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -157,6 +158,22 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       return PlantState.NORMAL;
     }
   }, [state]);
+
+  /**
+   * Disable user from going back
+   */
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        if (!isIntroduction) {
+          onCancelSessionHandler(true);
+        }
+        return;
+      }),
+    [navigation, isIntroduction]
+  );
 
   useLayoutEffect(() => {
     const getHabit = habits.find((h) => h.id === habitId);

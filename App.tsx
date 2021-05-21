@@ -95,7 +95,11 @@ export default function App() {
               <TimerScreen {...props} isIntroduction={playIntroduction} />
             )}
           </Route.Screen>
-          <Route.Screen name={Routes.ADD_HABIT} component={AddHabitScreen} />
+          <Route.Screen name={Routes.ADD_HABIT}>
+            {(props) => (
+              <AddHabitScreen {...props} isIntroduction={playIntroduction} />
+            )}
+          </Route.Screen>
         </Route.Navigator>
       </NavigationContainer>
     </Provider>
