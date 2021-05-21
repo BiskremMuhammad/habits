@@ -18,14 +18,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "UIUserInterfaceStyle": "Light"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.eisenberg.habit"
     },
     "web": {
       "favicon": "./assets/favicon.png"
