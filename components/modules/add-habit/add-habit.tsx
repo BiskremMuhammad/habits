@@ -135,6 +135,7 @@ export const AddHabit = (props: AddHabitProps) => {
       } as TimerScreenRouteParams);
     } else {
       // TODO:: navigate to Identity Reinforcement if play intro state is false
+      navigation.navigate(Routes.IDENTITY_REINFORCEMENT);
     }
     storeDispatch({
       type: HabitActionTypes.ADD_NEW_HABIT,
