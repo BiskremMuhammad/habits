@@ -57,6 +57,20 @@ interface PlantProps {
   positionBottom?: Animated.SharedValue<number>;
 
   /**
+   * custom value for the pot size in db number of string percentage
+   *
+   * @type {number | string}
+   */
+  potWidth?: number | string;
+
+  /**
+   * custom top position for the glow feedback
+   *
+   * @type {number}
+   */
+  potGlowTopPosition?: number;
+
+  /**
    * the state of the plant
    *
    * @type {PlantState}
@@ -84,7 +98,18 @@ export const Plant = (props: PlantProps) => {
 
   return (
     <View style={[PlantStyles.plantContainer, props.extraStyles]}>
-      <View style={PlantStyles.potContainer}>
+      <View
+        style={[
+          PlantStyles.potContainer,
+          !!props.potWidth && {
+            width: props.potWidth,
+            height:
+              (typeof props.potWidth === "string"
+                ? parseInt(props.potWidth) / 100
+                : props.potWidth / 75) * 93,
+          },
+        ]}
+      >
         <Image
           source={require("../../assets/pot.png")}
           style={PlantStyles.pot}
@@ -94,7 +119,10 @@ export const Plant = (props: PlantProps) => {
             from={{ opacity: 0 }}
             animate={{ opacity: 0.44 }}
             source={require("../../assets/pot_glowfeedback.png")}
-            style={PlantStyles.potGlowFeedBack}
+            style={[
+              PlantStyles.potGlowFeedBack,
+              !!props.potGlowTopPosition && { top: props.potGlowTopPosition },
+            ]}
           />
         )}
       </View>
@@ -166,6 +194,7 @@ const PlantStyles = StyleSheet.create({
   potContainer: {
     width: "50%",
     height: 92.3,
+    minHeight: 92.3,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -185,7 +214,7 @@ const PlantStyles = StyleSheet.create({
     opacity: 0.44,
   },
   thePlant: {
-    width: "60%",
+    width: "70%",
     position: "absolute",
   },
   plantImage: {
