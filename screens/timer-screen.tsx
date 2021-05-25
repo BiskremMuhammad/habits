@@ -34,7 +34,6 @@ import { Plant, PlantState } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
 import { Routes } from "../types/route-names";
-import { CommonActions } from "@react-navigation/native";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -182,7 +181,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     } else if (isOnFocus) {
       navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
     }
-  });
+  }, [isOnFocus, habits, navigation, habitId]);
 
   // clear timeput whenever component unforced unmout
   useEffect(() => {
@@ -201,12 +200,12 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       timer > 0 &&
       timer % 3 === 0
     ) {
-      setTimer(timer - 4);
+      setTimer(timer <= 8 ? 1 : timer - 8);
     }
   }, [isIntroduction, timer, state]);
 
   useEffect(() => {
-    if (timer === 0) {
+    if (timer <= 0) {
       if (timerCounter.current) {
         clearInterval(timerCounter.current);
         timerCounter.current = null;
