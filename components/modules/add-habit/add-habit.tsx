@@ -134,7 +134,9 @@ export const AddHabit = (props: AddHabitProps) => {
         habitId: state.id,
       } as TimerScreenRouteParams);
     } else {
-      navigation.navigate(Routes.IDENTITY_REINFORCEMENT);
+      navigation.navigate(Routes.IDENTITY_REINFORCEMENT, {
+        habitId: state.id,
+      } as TimerScreenRouteParams);
     }
     storeDispatch({
       type: HabitActionTypes.ADD_NEW_HABIT,

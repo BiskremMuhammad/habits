@@ -23,6 +23,7 @@ import { AddHabitScreen } from "./screens/add-habit-screen";
 import { DashboardScreen } from "./screens/dashboard-screen";
 import { Routes } from "./types/route-names";
 import { IdentityReinforcement } from "./screens/identity-screen";
+import { ViewHabitScreen } from "./screens/view-habit";
 enableScreens();
 
 const { width, height } = Dimensions.get("screen");
@@ -95,6 +96,7 @@ export default function App() {
             name={Routes.IDENTITY_REINFORCEMENT}
             component={IdentityReinforcement}
           />
+          <Route.Screen name={Routes.VIEW_HABIT} component={ViewHabitScreen} />
           <Route.Screen name={Routes.TIMER}>
             {(props) => (
               <TimerScreen {...props} isIntroduction={playIntroduction} />
