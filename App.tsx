@@ -61,7 +61,6 @@ export default function App() {
       const firstTimer = await AsyncStorage.getItem(
         CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY
       );
-      console.log("first time", !!!firstTimer);
       setPlayIntroduction(!!!firstTimer);
       setLoading(false);
     };

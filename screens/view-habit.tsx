@@ -145,7 +145,6 @@ export const ViewHabitScreen = () => {
               text="start"
               onPress={() => {}}
               hasCircleBorder={true}
-              extraStyles={{ opacity: 0.5 }}
             />
           </View>
         </View>
