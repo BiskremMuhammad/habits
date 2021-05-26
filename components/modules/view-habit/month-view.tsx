@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { Entypo } from "@expo/vector-icons";
 import { getDaysInMonth } from "../../../utils/calendar-utils";
 
 /**
@@ -113,11 +114,36 @@ export const MonthView = (props: MonthViewProps) => {
     return weeks;
   };
 
+  const nextMonth = () => {
+    if (month === 11) {
+      setMonth(0);
+      setyear(year + 1);
+    } else {
+      setMonth(month + 1);
+    }
+  };
+
+  const previousMonth = () => {
+    if (month === 0) {
+      setMonth(11);
+      setyear(year - 1);
+    } else {
+      setMonth(month - 1);
+    }
+  };
+
   return (
     <View style={styles.monthContainer}>
       <View style={styles.headContainer}>
         <Text style={styles.monthText}>{`${monthsLabels[month]} ${year}`}</Text>
-        <View style={styles.headButtonsContainer}></View>
+        <View style={styles.headButtonsContainer}>
+          <Pressable style={styles.headButtons} onPress={previousMonth}>
+            <Entypo name="chevron-thin-left" size={16} color="white" />
+          </Pressable>
+          <Pressable style={styles.headButtons} onPress={nextMonth}>
+            <Entypo name="chevron-thin-right" size={16} color="white" />
+          </Pressable>
+        </View>
       </View>
       <View style={styles.weekDaysRow}>
         {daysLabels.map((d: string, i: number) => (
@@ -155,7 +181,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  headButtons: {},
+  headButtons: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 30,
+  },
   weekDaysRow: {
     display: "flex",
     flexDirection: "row",
