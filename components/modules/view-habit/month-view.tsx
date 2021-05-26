@@ -97,7 +97,7 @@ export const MonthView = (props: MonthViewProps) => {
       }
       weekDays.push(day);
 
-      if (w == daysLabels.length - 1) {
+      if (w === daysLabels.length - 1) {
         // last week's day
         weeks.push(
           <View key={`week${weeks.length + 1}`} style={styles.weekDaysRow}>
@@ -105,6 +105,9 @@ export const MonthView = (props: MonthViewProps) => {
           </View>
         );
         weekDays = [];
+        if (c > daysInMonth) {
+          break;
+        }
         w = 0;
       } else {
         w++;
