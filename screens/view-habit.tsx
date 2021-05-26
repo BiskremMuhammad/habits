@@ -35,6 +35,7 @@ import { Plant, PlantState } from "../components/elements/plant";
 import { Button } from "../components/elements/button";
 import { useSharedValue } from "react-native-reanimated";
 import { MotiView } from "@motify/components";
+import { MonthView } from "../components/modules/view-habit/month-view";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -198,6 +199,7 @@ export const ViewHabitScreen = () => {
             </View>
           ))}
         </View>
+        {tab === "CALENDAR" && <MonthView />}
       </ScrollView>
     </View>
   );
