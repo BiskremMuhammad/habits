@@ -4,9 +4,30 @@
  * @description implement util functions that is related to dealing with date and time
  */
 
-import { DayState } from "../components/modules/view-habit/month-day";
 import { WeekDays } from "../types/week-days";
 import { getEnumKeyByEnumValue } from "./enum-type-utils";
+
+/**
+ * enum the defines the different states of the day regarding the habit progress
+ *
+ * @enum
+ * @exports
+ */
+export enum DayState {
+  REST,
+  REST_BETWEEN_STREAK,
+  REST_BETWEEN_INACTIVE_STREAK,
+  INACTIVE_STREAK_START,
+  INACTIVE_STREAK,
+  INACTIVE_STREAK_END,
+  STREAK_START,
+  STREAK,
+  TODAY,
+  TODAY_REST,
+  TODAY_LOGGED,
+  TODAY_STREAK,
+  NORMAL,
+}
 
 /**
  * helper function that returns month total number of days
@@ -28,7 +49,7 @@ export function getDaysInMonth(month: number, year: number) {
  */
 export function getTheWeekDay(day: Date): WeekDays {
   const daysOfWeek: string[] = Object.keys(WeekDays);
-  const weekDay = getEnumKeyByEnumValue(WeekDays, daysOfWeek[day.getDay() - 1]);
+  const weekDay = getEnumKeyByEnumValue(WeekDays, daysOfWeek[day.getDay()]);
   return WeekDays[weekDay!];
 }
 
@@ -48,20 +69,6 @@ export function stateOfTheDay(
   day.setHours(0, 0, 0, 0);
   const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
 
-  let prevActiveDay: Date = new Date(day.getTime() - 24 * 60 * 60 * 1000);
-  while (!habitFrequency.includes(getTheWeekDay(prevActiveDay))) {
-    prevActiveDay = new Date(prevActiveDay.getTime() - 24 * 60 * 60 * 1000);
-  }
-
-  let nextActiveDay: Date = new Date(day.getTime() + 24 * 60 * 60 * 1000);
-  while (
-    day.getTime() !== today.getTime() &&
-    nextActiveDay.getTime() !== today.getTime() &&
-    !habitFrequency.includes(getTheWeekDay(nextActiveDay))
-  ) {
-    nextActiveDay = new Date(nextActiveDay.getTime() + 24 * 60 * 60 * 1000);
-  }
-
   // get the streak data of the day
   const [streak, start, end] = calculateStreak(
     day,
@@ -70,6 +77,7 @@ export function stateOfTheDay(
   );
 
   // if date is today >> there is gonna be one of 4 cases TODAY, TODAY_REST, TODAY_LOGGED, TODAY_STREAK
+  console.log("day ", day, " && day in the week is: ", getTheWeekDay(day));
   if (day.getTime() === today.getTime()) {
     if (!habitFrequency.includes(getTheWeekDay(day))) {
       return DayState.TODAY_REST;
@@ -79,10 +87,12 @@ export function stateOfTheDay(
       habitProgress.find((d: Date, _) => d.getTime() === day.getTime())
     ) {
       return DayState.TODAY_STREAK;
-    } else if (streak > 0) {
-      return DayState.TODAY;
-    } else {
+    } else if (
+      habitProgress.find((d: Date, _) => d.getTime() === day.getTime())
+    ) {
       return DayState.TODAY_LOGGED;
+    } else {
+      return DayState.TODAY;
     }
   } else {
     // date is not today >>
@@ -116,8 +126,18 @@ export function stateOfTheDay(
       return DayState.INACTIVE_STREAK;
     } else if (streak > 0) {
       return DayState.REST_BETWEEN_INACTIVE_STREAK;
-    } else {
+    } else if (!habitFrequency.includes(getTheWeekDay(day))) {
+      console.log(
+        "day ",
+        day,
+        " is rest && day in the week is: ",
+        getTheWeekDay(day),
+        ", days are: ",
+        habitFrequency
+      );
       return DayState.REST;
+    } else {
+      return DayState.NORMAL;
     }
   }
 }
@@ -145,7 +165,7 @@ export function calculateStreak(
   // this will return empty array >> no streak for that day
   if (
     day.getTime() !== today.getTime() &&
-    !habitFrequency.includes(getTheWeekDay(day)) &&
+    habitFrequency.includes(getTheWeekDay(day)) &&
     !habitProgress.find((d: Date, _) => d.getTime() === day.getTime())
   ) {
     return [streak, undefined, undefined];
@@ -154,7 +174,7 @@ export function calculateStreak(
   /// >> now this day is maybe a rest or today or in a streak, get streak data >
   let firstStreakDay: Date = new Date(day.getTime());
   while (
-    day.getTime() === today.getTime() ||
+    firstStreakDay.getTime() === today.getTime() ||
     !habitFrequency.includes(getTheWeekDay(firstStreakDay)) ||
     habitProgress.find((d: Date, _) => d.getTime() === firstStreakDay.getTime())
   ) {
