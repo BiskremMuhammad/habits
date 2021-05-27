@@ -8,30 +8,13 @@ import { v4 as uuid } from "uuid";
 import { Habit, HabitTypes } from "../../../types/habit";
 import { WeekDays } from "../../../types/week-days";
 
-const today = new Date(new Date().setHours(0, 0, 0, 0));
-const testProgress: Date[] = [
-  today,
-  new Date(today.getTime() - 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 4 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 8 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 9 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 12 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 15 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 16 * 24 * 60 * 60 * 1000),
-  new Date(today.getTime() - 17 * 24 * 60 * 60 * 1000),
-];
-
 export const INITIAL_ADD_HABIT_STATE: Habit = {
   id: uuid(),
   type: HabitTypes.READING,
   isEveryDay: true,
   days: Object.keys(WeekDays).map<WeekDays>((k) => k as WeekDays),
   duration: 1,
-  progress: [...testProgress],
+  progress: [],
 };
 
 /**
