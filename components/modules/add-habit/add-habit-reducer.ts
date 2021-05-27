@@ -10,6 +10,7 @@ import { WeekDays } from "../../../types/week-days";
 
 const today = new Date(new Date().setHours(0, 0, 0, 0));
 const testProgress: Date[] = [
+  today,
   new Date(today.getTime() - 24 * 60 * 60 * 1000),
   new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000),
   new Date(today.getTime() - 4 * 24 * 60 * 60 * 1000),

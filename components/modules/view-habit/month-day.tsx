@@ -239,6 +239,7 @@ const styles = StyleSheet.create({
   },
   todayStreakCircle: {
     backgroundColor: "#9F9EB4",
+    right: -2,
   },
   dayTextWrapper: {
     display: "flex",
