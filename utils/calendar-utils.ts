@@ -77,7 +77,6 @@ export function stateOfTheDay(
   );
 
   // if date is today >> there is gonna be one of 4 cases TODAY, TODAY_REST, TODAY_LOGGED, TODAY_STREAK
-  console.log("day ", day, " && day in the week is: ", getTheWeekDay(day));
   if (day.getTime() === today.getTime()) {
     if (!habitFrequency.includes(getTheWeekDay(day))) {
       return DayState.TODAY_REST;
@@ -127,14 +126,6 @@ export function stateOfTheDay(
     } else if (streak > 0) {
       return DayState.REST_BETWEEN_INACTIVE_STREAK;
     } else if (!habitFrequency.includes(getTheWeekDay(day))) {
-      console.log(
-        "day ",
-        day,
-        " is rest && day in the week is: ",
-        getTheWeekDay(day),
-        ", days are: ",
-        habitFrequency
-      );
       return DayState.REST;
     } else {
       return DayState.NORMAL;

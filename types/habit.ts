@@ -52,7 +52,7 @@ export interface Habit {
    *
    * @type {WeekDays[]}
    */
-  days?: WeekDays[];
+  days: WeekDays[];
 
   /**
    * the duration of the habit in minutes

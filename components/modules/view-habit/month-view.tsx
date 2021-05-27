@@ -1,7 +1,15 @@
+/**
+ * @author Muhammad Omran
+ * @date 26-05-2021
+ * @description implement Month Calendar View
+ */
+
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { getDaysInMonth } from "../../../utils/calendar-utils";
+import { Habit } from "../../../types/habit";
+import { MonthDay } from "./month-day";
 
 /**
  * interface that defines the props of the component
@@ -9,6 +17,13 @@ import { getDaysInMonth } from "../../../utils/calendar-utils";
  * @interface
  */
 interface MonthViewProps {
+  /**
+   * habit to get month progress
+   *
+   * @type {Habit}
+   */
+  habit: Habit;
+
   /**
    * the month to be displayed
    *
@@ -70,28 +85,44 @@ export const MonthView = (props: MonthViewProps) => {
       if (i < new Date(year, month, 1).getDay()) {
         // previous month's day
         day = (
-          <View key={i} style={styles.day}>
-            <Text key={i} style={[styles.dayText, styles.otherMonthDay]}>
-              {prevDays - firstDayWeekday + i + 1}
-            </Text>
-          </View>
+          <MonthDay
+            key={i}
+            month="other"
+            day={
+              new Date(prevYear, prevMonth, prevDays - firstDayWeekday + i + 1)
+            }
+            dayNumber={prevDays - firstDayWeekday + i + 1}
+            habit={props.habit}
+          />
         );
       } else if (c > daysInMonth) {
         // next month's day
         day = (
-          <View key={i} style={styles.day}>
-            <Text style={[styles.dayText, styles.otherMonthDay]}>{n}</Text>
-          </View>
+          <MonthDay
+            key={i}
+            month="other"
+            day={
+              new Date(
+                month === 11 ? year + 1 : year,
+                month === 11 ? 0 : month + 1,
+                n
+              )
+            }
+            dayNumber={n}
+            habit={props.habit}
+          />
         );
         n++;
       } else {
         // current month's day
         day = (
-          <View key={i} style={styles.day}>
-            <Text key={i} style={styles.dayText}>
-              {c}
-            </Text>
-          </View>
+          <MonthDay
+            key={i}
+            month="current"
+            day={new Date(year, month, c)}
+            dayNumber={c}
+            habit={props.habit}
+          />
         );
         c++;
       }

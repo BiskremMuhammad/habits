@@ -104,7 +104,7 @@ export const ViewHabitScreen = () => {
                       getEnumKeyByEnumValue(
                         WeekDays,
                         Object.keys(WeekDays).find(
-                          (d) => !habit.days?.includes(d as WeekDays)
+                          (d) => !habit.days.includes(d as WeekDays)
                         )!
                       )!
                     ]
@@ -199,7 +199,7 @@ export const ViewHabitScreen = () => {
             </View>
           ))}
         </View>
-        {tab === "CALENDAR" && <MonthView />}
+        {tab === "CALENDAR" && !!habit && <MonthView habit={habit} />}
       </ScrollView>
     </View>
   );
