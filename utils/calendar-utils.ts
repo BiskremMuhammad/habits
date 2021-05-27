@@ -22,6 +22,7 @@ export enum DayState {
   INACTIVE_STREAK_END,
   STREAK_START,
   STREAK,
+  LOGGED_DAY,
   TODAY,
   TODAY_REST,
   TODAY_LOGGED,
@@ -114,8 +115,10 @@ export function stateOfTheDay(
       return DayState.STREAK;
     } else if (streak > 0 && end && end.getTime() === today.getTime()) {
       return DayState.REST_BETWEEN_STREAK;
-    } else if (streak > 0 && start && start.getTime() === day.getTime()) {
+    } else if (streak > 1 && start && start.getTime() === day.getTime()) {
       return DayState.INACTIVE_STREAK_START;
+    } else if (streak > 0 && start && start.getTime() === day.getTime()) {
+      return DayState.LOGGED_DAY;
     } else if (streak > 0 && end && end.getTime() === day.getTime()) {
       return DayState.INACTIVE_STREAK_END;
     } else if (
@@ -196,7 +199,10 @@ export function calculateStreak(
     lastStreakDay = new Date(lastStreakDay.getTime() + 24 * 60 * 60 * 1000);
   }
   // after the loop is done >> lastStreakDay value will be the day next because the day next is one of which is gonna break the loop
-  lastStreakDay = new Date(lastStreakDay.getTime() - 24 * 60 * 60 * 1000);
+  lastStreakDay =
+    lastStreakDay.getTime() === today.getTime()
+      ? lastStreakDay
+      : new Date(lastStreakDay.getTime() - 24 * 60 * 60 * 1000);
 
   return [streak, firstStreakDay, lastStreakDay];
 }

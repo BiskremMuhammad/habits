@@ -54,11 +54,11 @@ export const MonthDay = (props: MonthDayProps) => {
     <View style={styles.day}>
       {dayState !== DayState.NORMAL &&
         dayState !== DayState.REST &&
-        dayState !== DayState.TODAY &&
-        dayState !== DayState.TODAY_REST &&
+        dayState !== DayState.LOGGED_DAY &&
         dayState !== DayState.TODAY_LOGGED && (
           <View style={styles.streakDayIndicatorContainer}>
             {dayState !== DayState.INACTIVE_STREAK_START &&
+              dayState !== DayState.TODAY &&
               dayState !== DayState.STREAK_START && (
                 <View
                   style={[
@@ -72,8 +72,18 @@ export const MonthDay = (props: MonthDayProps) => {
                   ]}
                 ></View>
               )}
+            {dayState === DayState.TODAY && (
+              <View
+                style={[
+                  styles.todayWaitingForStreakIndicator,
+                  styles.streakDayIndicatorLeft,
+                ]}
+              ></View>
+            )}
             {dayState !== DayState.INACTIVE_STREAK_END &&
-              dayState !== DayState.TODAY_STREAK && (
+              dayState !== DayState.TODAY_STREAK &&
+              dayState !== DayState.TODAY &&
+              dayState !== DayState.TODAY_REST && (
                 <View
                   style={[
                     styles.streakDayIndicator,
@@ -98,7 +108,8 @@ export const MonthDay = (props: MonthDayProps) => {
             ? styles.streakDay
             : dayState === DayState.INACTIVE_STREAK ||
               dayState === DayState.INACTIVE_STREAK_END ||
-              dayState === DayState.INACTIVE_STREAK_START
+              dayState === DayState.INACTIVE_STREAK_START ||
+              dayState === DayState.LOGGED_DAY
             ? styles.inactiveStreakDay
             : dayState === DayState.TODAY || dayState === DayState.TODAY_REST
             ? styles.today
@@ -134,6 +145,13 @@ export const MonthDay = (props: MonthDayProps) => {
             style={[
               styles.dayText,
               props.month === "other" && styles.otherMonthDay,
+              dayState !== DayState.NORMAL &&
+                dayState !== DayState.REST &&
+                dayState !== DayState.REST_BETWEEN_INACTIVE_STREAK &&
+                dayState !== DayState.REST_BETWEEN_STREAK &&
+                dayState !== DayState.TODAY &&
+                dayState !== DayState.TODAY_REST &&
+                styles.streakDayText,
             ]}
           >
             {props.dayNumber}
@@ -164,7 +182,7 @@ const styles = StyleSheet.create({
   },
   streakDay: {
     borderWidth: 2,
-    backgroundColor: "rgba(255, 255, 255, 0.75)",
+    backgroundColor: "#a9a7ba",
     borderColor: "#fff",
   },
   inactiveStreakDay: {
@@ -180,6 +198,13 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  todayWaitingForStreakIndicator: {
+    position: "absolute",
+    width: "18%",
+    height: 2,
+    backgroundColor: "#fff",
+    borderRadius: 2,
   },
   streakDayIndicator: {
     position: "absolute",
@@ -224,7 +249,7 @@ const styles = StyleSheet.create({
   restDayTextWrapper: {
     width: 24,
     height: 24,
-    backgroundColor: "rgba(12, 8, 52, 0.8)",
+    backgroundColor: "#120e3a",
     borderRadius: 24,
   },
   dayText: {
@@ -237,5 +262,10 @@ const styles = StyleSheet.create({
   },
   otherMonthDay: {
     opacity: 0.25,
+  },
+  streakDayText: {
+    fontFamily: "Rubik-SemiBold",
+    color: "#0C0834",
+    opacity: 0.8,
   },
 });
