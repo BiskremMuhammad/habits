@@ -52,6 +52,42 @@ export const MonthDay = (props: MonthDayProps) => {
   );
   return (
     <View style={styles.day}>
+      {dayState !== DayState.NORMAL &&
+        dayState !== DayState.REST &&
+        dayState !== DayState.TODAY &&
+        dayState !== DayState.TODAY_REST &&
+        dayState !== DayState.TODAY_LOGGED && (
+          <View style={styles.streakDayIndicatorContainer}>
+            {dayState !== DayState.INACTIVE_STREAK_START &&
+              dayState !== DayState.STREAK_START && (
+                <View
+                  style={[
+                    styles.streakDayIndicator,
+                    styles.streakDayIndicatorLeft,
+                    dayState === DayState.INACTIVE_STREAK_END ||
+                    dayState === DayState.INACTIVE_STREAK ||
+                    dayState === DayState.REST_BETWEEN_INACTIVE_STREAK
+                      ? styles.inactiveStreakDayIndicator
+                      : {},
+                  ]}
+                ></View>
+              )}
+            {dayState !== DayState.INACTIVE_STREAK_END &&
+              dayState !== DayState.TODAY_STREAK && (
+                <View
+                  style={[
+                    styles.streakDayIndicator,
+                    styles.streakDayIndicatorRight,
+                    dayState === DayState.INACTIVE_STREAK_START ||
+                    dayState === DayState.INACTIVE_STREAK ||
+                    dayState === DayState.REST_BETWEEN_INACTIVE_STREAK
+                      ? styles.inactiveStreakDayIndicator
+                      : {},
+                  ]}
+                ></View>
+              )}
+          </View>
+        )}
       <View
         style={[
           styles.dayContainer,
@@ -69,6 +105,20 @@ export const MonthDay = (props: MonthDayProps) => {
             : {},
         ]}
       >
+        {dayState === DayState.TODAY ||
+        dayState === DayState.TODAY_LOGGED ||
+        dayState === DayState.TODAY_REST ||
+        dayState === DayState.TODAY_STREAK ? (
+          <View
+            style={[
+              styles.todayCircle,
+              dayState === DayState.TODAY_STREAK ||
+              dayState === DayState.TODAY_REST
+                ? styles.todayStreakCircle
+                : {},
+            ]}
+          ></View>
+        ) : null}
         <View
           style={[
             styles.dayTextWrapper,
@@ -79,6 +129,7 @@ export const MonthDay = (props: MonthDayProps) => {
               : {},
           ]}
         >
+          <View></View>
           <Text
             style={[
               styles.dayText,
@@ -99,6 +150,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
     marginBottom: 10,
   },
   dayContainer: {
@@ -120,9 +172,48 @@ const styles = StyleSheet.create({
     borderColor: "#8987a3",
     backgroundColor: "#605f84",
   },
+  streakDayIndicatorContainer: {
+    position: "absolute",
+    zIndex: -1,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  streakDayIndicator: {
+    position: "absolute",
+    width: "50%",
+    height: 2,
+    backgroundColor: "#fff",
+    borderRadius: 2,
+  },
+  inactiveStreakDayIndicator: {
+    backgroundColor: "#8D8BA6",
+  },
+  streakDayIndicatorLeft: {
+    left: -2,
+  },
+  streakDayIndicatorRight: {
+    right: -2,
+  },
   today: {
     borderWidth: 1,
     borderColor: "#fff",
+  },
+  todayCircle: {
+    position: "absolute",
+    top: 4,
+    right: 0,
+    width: 5,
+    height: 5,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#fff",
+    backgroundColor: "#242154",
+  },
+  todayStreakCircle: {
+    backgroundColor: "#9F9EB4",
   },
   dayTextWrapper: {
     display: "flex",
