@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   todayWaitingForStreakIndicator: {
     position: "absolute",
-    width: "18%",
+    width: "20%",
     height: 2,
     backgroundColor: "#fff",
     borderRadius: 2,
