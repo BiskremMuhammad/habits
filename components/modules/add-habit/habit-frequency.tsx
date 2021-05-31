@@ -1,3 +1,9 @@
+/**
+ * @author Muhammad Omran
+ * @date 31-05-2021
+ * @description Implement a reusable habit frequency controller component
+ */
+
 import { MotiView } from "moti";
 import React, { useState } from "react";
 import { View, Pressable, Text, StyleSheet } from "react-native";
