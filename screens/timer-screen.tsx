@@ -556,7 +556,7 @@ const TimeScreenStyles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 8,
     paddingVertical: 16,
-    marginTop: 16,
+    marginTop: 21,
     backgroundColor: "rgba(12, 8, 52, 0.6)",
     borderRadius: 16,
     marginHorizontal: "9%",
