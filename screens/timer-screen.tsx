@@ -495,6 +495,7 @@ const TimeScreenStyles = StyleSheet.create({
   peersText: {
     fontFamily: "Rubik-Regular",
     fontSize: 14,
+    marginBottom: 2,
     color: "#BDBDBD",
   },
   timerContainer: {
