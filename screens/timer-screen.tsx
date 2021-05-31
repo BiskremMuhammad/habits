@@ -447,7 +447,7 @@ const TimeScreenStyles = StyleSheet.create({
     position: "absolute",
     alignSelf: "flex-start",
     top: 0,
-    opacity: 0.3,
+    opacity: 0.55,
   },
   header: {
     display: "flex",
