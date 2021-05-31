@@ -4,16 +4,9 @@
  * @description implement the add habit form
  */
 
-import { MotiView } from "@motify/components";
 import { useNavigation } from "@react-navigation/core";
-import React, {
-  Dispatch,
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-  useState,
-} from "react";
-import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
+import React, { Dispatch, useReducer } from "react";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   HabitActions,
@@ -24,15 +17,11 @@ import { TimerScreenRouteParams } from "../../../screens/timer-screen";
 import { CommonStyles } from "../../../styles/common";
 import { Habit, HabitTypes } from "../../../types/habit";
 import { Routes } from "../../../types/route-names";
-import { WeekDays, WeekDaysFullName } from "../../../types/week-days";
+import { WeekDays } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
-import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 import { Button } from "../../elements/button";
 import { Input } from "../../elements/input";
-import { Radio } from "../../elements/radio";
 import BookIcon from "../../svgs/book";
-import InfoIcon from "../../svgs/info-icon";
-import TimerIcon from "../../svgs/timer-icon";
 import {
   AddHabitActionTypes,
   addHabitReducer,
@@ -40,7 +29,6 @@ import {
 } from "./add-habit-reducer";
 import { HabitDurationInput } from "./habit-duration";
 import { HabitFrequencyInput } from "./habit-frequency";
-import { WeekDaysSelect } from "./week-days-select";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
