@@ -39,6 +39,7 @@ import {
   INITIAL_ADD_HABIT_STATE,
 } from "./add-habit-reducer";
 import { HabitDurationInput } from "./habit-duration";
+import { HabitFrequencyInput } from "./habit-frequency";
 import { WeekDaysSelect } from "./week-days-select";
 
 const { height: screenHeight } = Dimensions.get("screen");
@@ -89,11 +90,6 @@ export const AddHabit = (props: AddHabitProps) => {
     INITIAL_ADD_HABIT_STATE
   );
   const { type, isEveryDay, days, duration } = state;
-
-  const [freqChangeOpen, setFreqChangeOpenState] = useState<boolean>(
-    !isEveryDay
-  );
-  const [freqSelection, setFreqSelection] = useState<number>(1);
   const navigation = useNavigation();
 
   const onChangeHabit = (val: string) => {
@@ -113,9 +109,6 @@ export const AddHabit = (props: AddHabitProps) => {
   };
 
   const onChangeFreq = (radio: number) => {
-    if (radio === freqSelection) return;
-
-    setFreqSelection(radio);
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_EVERYDAY_STATE,
       payload:
@@ -126,6 +119,13 @@ export const AddHabit = (props: AddHabitProps) => {
               .filter((_, i) => i > 0)
               .map<WeekDays>((k) => k as WeekDays)
           : [],
+    });
+  };
+
+  const dispatchDays = (selectedDays: WeekDays[]) => {
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_FREQUENCY,
+      payload: selectedDays,
     });
   };
 
@@ -167,134 +167,12 @@ export const AddHabit = (props: AddHabitProps) => {
         />
       </View>
       {props.enableFrequencySelect && (
-        <View>
-          <MotiView
-            from={{ backgroundColor: "rgba(12, 8, 52, 0)" }}
-            animate={
-              freqChangeOpen
-                ? {
-                    backgroundColor: "rgba(12, 8, 52, 0.6)",
-                  }
-                : {}
-            }
-            transition={{ delay: 200 }}
-            style={[
-              addHabitStyles.frequency,
-              freqChangeOpen && addHabitStyles.freqChangeOpened,
-            ]}
-          >
-            <Pressable
-              style={addHabitStyles.frequencyButton}
-              onPress={() => setFreqChangeOpenState(!freqChangeOpen)}
-            >
-              <Text
-                style={[
-                  addHabitStyles.frequencyText,
-                  !isEveryDay && addHabitStyles.frequencyTextNotEveryday,
-                  !isEveryDay &&
-                    freqSelection === 3 &&
-                    days!.length > 5 &&
-                    addHabitStyles.frequencyTextCustomScheduleTooLong,
-                ]}
-              >
-                {isEveryDay
-                  ? "everyday"
-                  : freqSelection === 2
-                  ? `everyday day but ${
-                      WeekDaysFullName[
-                        getEnumKeyByEnumValue(
-                          WeekDays,
-                          Object.keys(WeekDays).find(
-                            (d) => !days?.includes(d as WeekDays)
-                          )!
-                        )!
-                      ]
-                    }`
-                  : days?.length
-                  ? days.join(", ")
-                  : "select your schedule"}
-              </Text>
-              <InfoIcon
-                style={[
-                  addHabitStyles.frequencyIcon,
-                  freqSelection === 3 && { marginBottom: 5 },
-                ]}
-                fill="#fff"
-              />
-            </Pressable>
-          </MotiView>
-          {freqChangeOpen && (
-            <MotiView
-              from={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "100%" }}
-              style={addHabitStyles.frequencyChangeContainer}
-            >
-              <View style={addHabitStyles.frequencyChangeBorderContainer}>
-                <View style={addHabitStyles.frequencyChangeBorder}></View>
-              </View>
-              <View style={addHabitStyles.frequencyChangeForm}>
-                <Text style={addHabitStyles.frequencyChangeFormText}>
-                  Research has shown more consistent change when doing limited
-                  amounts every day and scaling the amount instead of the number
-                  of days
-                </Text>
-                <Radio
-                  index={1}
-                  label="Ok, I’ll do it everyday"
-                  selected={freqSelection === 1}
-                  onChange={() => onChangeFreq(1)}
-                />
-                <Radio
-                  index={2}
-                  label={
-                    <View
-                      style={addHabitStyles.frequencyCustomRadioLabelContainer}
-                    >
-                      <Text style={addHabitStyles.frequencyCustomRadioText}>
-                        I understand. I still want a
-                      </Text>
-                      <Text
-                        style={[
-                          addHabitStyles.frequencyCustomRadioText,
-                          addHabitStyles.frequencyCustomRadioTextAccent,
-                        ]}
-                      >
-                        {"  "}
-                        rest day{"  "}
-                      </Text>
-                      <Text style={addHabitStyles.frequencyCustomRadioText}>
-                        on:
-                      </Text>
-                    </View>
-                  }
-                  selected={freqSelection === 2}
-                  onChange={() => onChangeFreq(2)}
-                >
-                  <WeekDaysSelect
-                    days={days!}
-                    clickable={true}
-                    limitOneSelection={true}
-                    dispatch={dispatch}
-                    containerStyle={{ marginTop: 15, marginBottom: 2 }}
-                  />
-                </Radio>
-                <Radio
-                  index={3}
-                  label="Let me choose my own schedule"
-                  selected={freqSelection === 3}
-                  onChange={() => onChangeFreq(3)}
-                >
-                  <WeekDaysSelect
-                    days={days!}
-                    clickable={true}
-                    dispatch={dispatch}
-                    containerStyle={{ marginTop: 15, marginBottom: 2 }}
-                  />
-                </Radio>
-              </View>
-            </MotiView>
-          )}
-        </View>
+        <HabitFrequencyInput
+          isEveryDay={isEveryDay}
+          days={days}
+          dispatchDays={dispatchDays}
+          onChangeFreq={onChangeFreq}
+        />
       )}
       <HabitDurationInput
         enableDurationSelect={props.enableDurationSelect}
@@ -335,105 +213,6 @@ const addHabitStyles = StyleSheet.create({
     fontSize: 24,
     color: "#fff",
     marginRight: 8,
-  },
-  frequency: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    alignSelf: "flex-start",
-    marginTop: 4,
-    paddingVertical: 0,
-    paddingHorizontal: 13,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    marginLeft: CONSTANTS.PADDING - 13,
-  },
-  freqChangeOpened: {
-    backgroundColor: "rgba(12, 8, 52, 0.6)",
-  },
-  frequencyButton: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    alignSelf: "flex-start",
-  },
-  frequencyText: {
-    fontFamily: "JosefinSans-Regular",
-    fontSize: 24,
-    lineHeight: 32,
-    color: "#fff",
-  },
-  frequencyTextNotEveryday: {
-    fontSize: 20,
-  },
-  frequencyTextCustomScheduleTooLong: {
-    fontSize: 16,
-  },
-  frequencyIcon: {
-    width: 15,
-    height: 15,
-    alignSelf: "flex-end",
-    marginLeft: 5,
-    marginBottom: 3,
-    opacity: 0.5,
-  },
-  frequencyChangeContainer: {
-    position: "relative",
-  },
-  frequencyChangeBorderContainer: {
-    position: "absolute",
-    bottom: -1,
-    right: -2,
-    width: "45%",
-    height: 53,
-    overflow: "hidden",
-  },
-  frequencyChangeBorder: {
-    position: "absolute",
-    bottom: 0,
-    right: -4,
-    width: "200%",
-    height: "200%",
-    borderRadius: 28,
-    borderColor: "#6F698F",
-    borderBottomWidth: 2,
-    borderRightWidth: 2,
-    opacity: 0.47,
-  },
-  frequencyChangeForm: {
-    marginHorizontal: 2,
-    marginBottom: 4,
-    backgroundColor: "rgba(12, 8, 52, 0.6)",
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 22,
-  },
-  frequencyChangeFormText: {
-    fontFamily: "Rubik-Regular",
-    fontSize: 14,
-    lineHeight: 24,
-    color: "#fff",
-    paddingLeft: 9,
-    paddingRight: 38,
-    marginBottom: 5,
-  },
-  frequencyCustomRadioLabelContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  frequencyCustomRadioText: {
-    fontFamily: "Rubik-Medium",
-    fontSize: 14,
-    lineHeight: 23,
-    color: "#fff",
-  },
-  frequencyCustomRadioTextAccent: {
-    backgroundColor: "#151032",
-    borderRadius: 20,
-    marginHorizontal: 2,
   },
   buttonContainer: {
     alignSelf: "stretch",

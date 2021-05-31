@@ -14,7 +14,6 @@ import {
   ViewStyle,
 } from "react-native";
 import { WeekDays } from "../../../types/week-days";
-import { AddHabitAction, AddHabitActionTypes } from "./add-habit-reducer";
 
 /**
  * define the component props
@@ -44,11 +43,11 @@ interface WeekDaysSelectProps {
   days: WeekDays[];
 
   /**
-   * dispatch action to the add habit form
+   * dispatch change of the days set
    *
-   * @type {React.Dispatch<AddHabitAction>}
+   * @type {(WeekDays[]) => void}
    */
-  dispatch?: React.Dispatch<AddHabitAction>;
+  dispatchDays: (selectedDays: WeekDays[]) => void;
 
   /**
    * to limit the selection of days to only one day
@@ -69,11 +68,8 @@ export const WeekDaysSelect = (props: WeekDaysSelectProps) => {
       ? (props.days.filter((day) => day !== d) as WeekDays[])
       : [...props.days, d];
 
-    if (props.dispatch) {
-      props.dispatch({
-        type: AddHabitActionTypes.CHANGE_HABIT_FREQUENCY,
-        payload: selectedDays,
-      });
+    if (props.dispatchDays) {
+      props.dispatchDays(selectedDays);
     }
   };
 
