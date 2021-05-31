@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { ScrollView, View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
@@ -16,7 +16,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
 export const SplashScreen = () => {
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <View style={SplashScreenStyles.container}>
         <View style={SplashScreenStyles.bgIconContainer}>
           <AddIconSvg style={SplashScreenStyles.bgIcon} />
@@ -49,7 +49,7 @@ export const SplashScreen = () => {
           <AddHabit isIntroduction={true} />
         </MotiView>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 

@@ -337,7 +337,6 @@ const addHabitStyles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "flex-start",
     paddingHorizontal: 6,
-    paddingBottom: 95,
   },
   addHabitSection: {
     display: "flex",
