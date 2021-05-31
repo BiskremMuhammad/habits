@@ -38,6 +38,7 @@ import {
   addHabitReducer,
   INITIAL_ADD_HABIT_STATE,
 } from "./add-habit-reducer";
+import { HabitDurationInput } from "./habit-duration";
 import { WeekDaysSelect } from "./week-days-select";
 
 const { height: screenHeight } = Dimensions.get("screen");
@@ -295,31 +296,12 @@ export const AddHabit = (props: AddHabitProps) => {
           )}
         </View>
       )}
-      <View style={addHabitStyles.addHabitSection}>
-        <Text style={addHabitStyles.label}>for</Text>
-        <Input
-          text={`${duration >= 60 ? duration / 60 : duration} ${
-            duration >= 60 ? "hr" : "min"
-          }`}
-          width={props.enableDurationSelect ? "short" : "minimal"}
-          icon={
-            <TimerIcon width={24} height={21} style={CommonStyles.withIcon} />
-          }
-          onChange={onChangeDuration}
-          isDropdown={props.enableDurationSelect}
-          dropdownOptions={[
-            "1 min",
-            "5 min",
-            "10 min",
-            "15 min",
-            "30 min",
-            "1 hr",
-            "2 hr",
-          ]}
-          hasBorder={props.enableDurationSelect}
-          customTextStyle={{ textTransform: "none" }}
-        />
-      </View>
+      <HabitDurationInput
+        enableDurationSelect={props.enableDurationSelect}
+        extraStyles={addHabitStyles.addHabitSection}
+        initialDuration={duration}
+        onChangeDuration={onChangeDuration}
+      />
       <View style={addHabitStyles.buttonContainer}>
         <Button
           shape={props.isIntroduction ? "circle" : "oval"}
@@ -337,6 +319,7 @@ const addHabitStyles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "flex-start",
     paddingHorizontal: 6,
+    paddingBottom: 0.0855 * screenHeight,
   },
   addHabitSection: {
     display: "flex",
