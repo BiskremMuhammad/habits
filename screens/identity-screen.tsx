@@ -33,7 +33,7 @@ export const IdentityReinforcement = () => {
   const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
     (store: GlobalStore): Habit[] => store.habits
   );
-  const [__, setHabit] = useState<Habit>();
+  const [habit, setHabit] = useState<Habit>();
 
   const [_, setTransitionFrame] = useState<number>(0);
   const line1_dx = useSharedValue<number>(28);
@@ -43,7 +43,7 @@ export const IdentityReinforcement = () => {
   const circleRadius = useSharedValue<number>(4);
   const circle1_xPosition = useSharedValue<number>(0.5 * width);
   const circle2_xPosition = useSharedValue<number>(0.5 * width);
-  const circle2_yPosition = useSharedValue<number>(57.5);
+  const circle2_yPosition = useSharedValue<number>(81 + line1_dy.value);
 
   const line1_dxAnimation = useRef(new Animated.Value(28)).current;
   const line1_dyAnimation = useRef(new Animated.Value(-19.5)).current;
@@ -56,7 +56,9 @@ export const IdentityReinforcement = () => {
   const circle2_xPositionAnimation = useRef(
     new Animated.Value(0.5 * width)
   ).current;
-  const circle2_yPositionAnimation = useRef(new Animated.Value(57.5)).current;
+  const circle2_yPositionAnimation = useRef(
+    new Animated.Value(81 + line1_dy.value)
+  ).current;
 
   useEffect(() => {
     Animated.timing(line1_dxAnimation, {
@@ -185,7 +187,9 @@ export const IdentityReinforcement = () => {
         <View style={styles.identityTextContainer}>
           <View style={CommonStyles.textWithIcon}>
             <BookIcon width={16} height={21} style={CommonStyles.withIcon} />
-            <Text style={styles.identityText}>Reader</Text>
+            <Text style={styles.identityText}>
+              {habit?.type.replace(/ing/gi, "er")}
+            </Text>
           </View>
           <View style={styles.identityBorderContainer}>
             <Svg height={78} width={0.5 * width + 56}>
@@ -294,6 +298,7 @@ const styles = StyleSheet.create({
     lineHeight: 48,
     color: "#fff",
     marginLeft: 4,
+    textTransform: "capitalize",
   },
   identityBorderContainer: {
     position: "absolute",
