@@ -184,11 +184,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     backgroundColor: "#a9a7ba",
     borderColor: "#fff",
+    borderRadius: 32,
   },
   inactiveStreakDay: {
     borderWidth: 2,
     borderColor: "#8987a3",
     backgroundColor: "#605f84",
+    borderRadius: 32,
   },
   streakDayIndicatorContainer: {
     position: "absolute",
@@ -225,6 +227,7 @@ const styles = StyleSheet.create({
   today: {
     borderWidth: 1,
     borderColor: "#fff",
+    borderRadius: 32,
   },
   todayCircle: {
     position: "absolute",
