@@ -149,6 +149,9 @@ export function calculateStreak(
   habitProgress: Date[],
   habitFrequency: WeekDays[]
 ): [number, Date | undefined, Date | undefined] {
+  if (!habitProgress.length || !habitFrequency.length) {
+    return [0, undefined, undefined];
+  }
   day.setHours(0, 0, 0, 0);
   let streak: number = 0;
   // streak will be calculated starting of today or yesterday if no progress stil not committed for today

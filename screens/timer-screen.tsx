@@ -8,6 +8,7 @@ import React, {
   Dispatch,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -34,6 +35,7 @@ import { Plant, PlantState } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
 import { Routes } from "../types/route-names";
+import { calculateStreak } from "../utils/calendar-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -268,6 +270,17 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     }
   };
 
+  const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
+  const [streak, _, __] = useMemo(
+    () =>
+      calculateStreak(
+        today,
+        habit ? habit.progress : [],
+        habit ? habit.days : []
+      ),
+    [habit]
+  );
+
   return (
     <View style={TimeScreenStyles.container}>
       <LinearGradient
@@ -282,8 +295,10 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         <MaterialIcons name="arrow-back" size={24} color="white" />
         <Text style={TimeScreenStyles.identity}>I am a</Text>
         <BookIcon width={16} height={21} style={CommonStyles.withIcon} />
-        <Text style={TimeScreenStyles.habit}>Reader</Text>
-        <Text style={TimeScreenStyles.streak}>3</Text>
+        <Text style={TimeScreenStyles.habit}>
+          {habit?.type.replace(/ing/gi, "er")}
+        </Text>
+        {streak > 0 && <Text style={TimeScreenStyles.streak}>{streak}</Text>}
       </View>
       <View style={TimeScreenStyles.peers}>
         <Text style={TimeScreenStyles.peersNum}>2K</Text>
@@ -469,6 +484,7 @@ const TimeScreenStyles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 32,
     color: "#fff",
+    textTransform: "capitalize",
   },
   streak: {
     fontFamily: "Rubik-Regular",
