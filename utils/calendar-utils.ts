@@ -113,7 +113,12 @@ export function stateOfTheDay(
       habitProgress.find((d: Date, _) => d.getTime() === day.getTime())
     ) {
       return DayState.STREAK;
-    } else if (streak > 0 && end && end.getTime() === today.getTime()) {
+    } else if (
+      streak > 0 &&
+      end &&
+      end.getTime() === today.getTime() &&
+      day.getTime() < today.getTime()
+    ) {
       return DayState.REST_BETWEEN_STREAK;
     } else if (streak > 1 && start && start.getTime() === day.getTime()) {
       return DayState.INACTIVE_STREAK_START;
@@ -126,7 +131,7 @@ export function stateOfTheDay(
       habitProgress.find((d: Date, _) => d.getTime() === day.getTime())
     ) {
       return DayState.INACTIVE_STREAK;
-    } else if (streak > 0) {
+    } else if (streak > 0 && day.getTime() < today.getTime()) {
       return DayState.REST_BETWEEN_INACTIVE_STREAK;
     } else if (!habitFrequency.includes(getTheWeekDay(day))) {
       return DayState.REST;
@@ -203,8 +208,8 @@ export function calculateStreak(
   }
   // after the loop is done >> lastStreakDay value will be the day next because the day next is one of which is gonna break the loop
   lastStreakDay =
-    lastStreakDay.getTime() === today.getTime()
-      ? lastStreakDay
+    lastStreakDay.getTime() >= today.getTime()
+      ? today
       : new Date(lastStreakDay.getTime() - 24 * 60 * 60 * 1000);
 
   return [streak, firstStreakDay, lastStreakDay];
