@@ -111,8 +111,10 @@ export const MonthDay = (props: MonthDayProps) => {
               dayState === DayState.INACTIVE_STREAK_START ||
               dayState === DayState.LOGGED_DAY
             ? styles.inactiveStreakDay
-            : dayState === DayState.TODAY || dayState === DayState.TODAY_REST
+            : dayState === DayState.TODAY
             ? styles.today
+            : dayState === DayState.TODAY_REST
+            ? { ...styles.today, backgroundColor: "#120e3a" }
             : {},
         ]}
       >
@@ -123,8 +125,7 @@ export const MonthDay = (props: MonthDayProps) => {
           <View
             style={[
               styles.todayCircle,
-              dayState === DayState.TODAY_STREAK ||
-              dayState === DayState.TODAY_REST
+              dayState === DayState.TODAY_STREAK
                 ? styles.todayStreakCircle
                 : {},
             ]}
@@ -140,7 +141,6 @@ export const MonthDay = (props: MonthDayProps) => {
               : {},
           ]}
         >
-          <View></View>
           <Text
             style={[
               styles.dayText,
