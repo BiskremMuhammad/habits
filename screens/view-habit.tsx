@@ -11,7 +11,7 @@ import {
 } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useLayoutEffect, useReducer, useState } from "react";
+import React, { useLayoutEffect, useMemo, useReducer, useState } from "react";
 import {
   View,
   Text,
@@ -43,6 +43,7 @@ import {
   addHabitReducer,
   INITIAL_ADD_HABIT_STATE,
 } from "../components/modules/add-habit/add-habit-reducer";
+import { calculateStreak } from "../utils/calendar-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -66,6 +67,16 @@ export const ViewHabitScreen = () => {
     habit ? habit : INITIAL_ADD_HABIT_STATE
   );
   const { type, isEveryDay, days, duration } = state;
+  const toady: Date = new Date(new Date().setHours(0, 0, 0, 0));
+  const [streak, _, __] = useMemo(
+    () =>
+      calculateStreak(
+        toady,
+        habit ? habit.progress : [],
+        habit ? habit.days : []
+      ),
+    [habit]
+  );
 
   useLayoutEffect(() => {
     const getHabit = habits.find((h) => h.id === habitId);
@@ -148,7 +159,7 @@ export const ViewHabitScreen = () => {
                 >
                   {habit?.type.replace(/ing/gi, "er")}
                 </Text>
-                <Text style={styles.streak}>3</Text>
+                <Text style={styles.streak}>{streak}</Text>
               </View>
             </View>
             {!!habit && (

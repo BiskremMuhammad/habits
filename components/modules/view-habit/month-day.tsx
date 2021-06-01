@@ -4,7 +4,7 @@
  * @description implement the day component and it's related calculations
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Habit } from "../../../types/habit";
 import { DayState, stateOfTheDay } from "../../../utils/calendar-utils";
@@ -45,10 +45,9 @@ interface MonthDayProps {
 }
 
 export const MonthDay = (props: MonthDayProps) => {
-  const dayState: DayState = stateOfTheDay(
-    props.day,
-    props.habit.progress,
-    props.habit.days
+  const dayState: DayState = useMemo(
+    () => stateOfTheDay(props.day, props.habit.progress, props.habit.days),
+    [props.day, props.habit.progress, props.habit.days]
   );
   return (
     <View style={styles.day}>
