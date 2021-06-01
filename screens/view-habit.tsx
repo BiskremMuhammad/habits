@@ -71,6 +71,10 @@ export const ViewHabitScreen = () => {
     const getHabit = habits.find((h) => h.id === habitId);
     if (getHabit) {
       setHabit(getHabit);
+      dispatch({
+        type: AddHabitActionTypes.UPDATE_HABIT,
+        payload: getHabit,
+      });
     } else if (isOnFocus) {
       navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
     }

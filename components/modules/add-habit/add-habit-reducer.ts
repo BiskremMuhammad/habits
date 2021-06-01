@@ -44,6 +44,7 @@ export enum AddHabitActionTypes {
   CHANGE_HABIT_EVERYDAY_STATE = "CHANGE_HABIT_EVERYDAY_STATE",
   CHANGE_HABIT_FREQUENCY = "CHANGE_HABIT_FREQUENCY",
   CHANGE_HABIT_DURATION = "CHANGE_HABIT_DURATION",
+  UPDATE_HABIT = "UPDATE_HABIT",
 }
 
 /**
@@ -100,6 +101,11 @@ export const addHabitReducer = (
         duration:
           Number(action.payload.match(/\d+/g)[0]) *
           (action.payload.includes("h") ? 60 : 1),
+      };
+
+    case AddHabitActionTypes.UPDATE_HABIT:
+      return {
+        ...action.payload,
       };
 
     default:
