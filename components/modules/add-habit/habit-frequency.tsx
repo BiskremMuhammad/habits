@@ -6,13 +6,23 @@
 
 import { MotiView } from "moti";
 import React, { useState } from "react";
-import { View, Pressable, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Pressable,
+  Text,
+  StyleSheet,
+  Dimensions,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import { WeekDaysFullName, WeekDays } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 import { Radio } from "../../elements/radio";
 import InfoIcon from "../../svgs/info-icon";
 import { WeekDaysSelect } from "./week-days-select";
+
+const { width: screenWidth } = Dimensions.get("screen");
 
 interface HabitFrequencyInputProps {
   /**
@@ -30,11 +40,25 @@ interface HabitFrequencyInputProps {
   dispatchDays: (selectedDays: WeekDays[]) => void;
 
   /**
+   * flag to display the frequency change panel as absolute floating panel
+   *
+   * @type {boolean}
+   */
+  floatingPanel?: boolean;
+
+  /**
    * if the state of the habit is set to everyday
    *
    * @type {boolean}
    */
   isEveryDay: boolean;
+
+  /**
+   * custom styles for the handler toggler
+   *
+   * @type {StyleProp<ViewStyle>}
+   */
+  handlerStyle?: StyleProp<ViewStyle>;
 
   /**
    * on change the frequency callback
@@ -67,13 +91,20 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
             : {}
         }
         transition={{ delay: 200 }}
-        style={[styles.frequency, freqChangeOpen && styles.freqChangeOpened]}
+        style={[
+          styles.frequency,
+          freqChangeOpen && styles.freqChangeOpened,
+          freqChangeOpen &&
+            props.floatingPanel && { backgroundColor: "rgba(12, 8, 52, 1)" },
+          props.handlerStyle,
+        ]}
       >
         <Pressable
           style={styles.frequencyButton}
           onPress={() => setFreqChangeOpenState(!freqChangeOpen)}
         >
           <Text
+            numberOfLines={1}
             style={[
               styles.frequencyText,
               !props.isEveryDay && styles.frequencyTextNotEveryday,
@@ -85,8 +116,8 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
           >
             {props.isEveryDay
               ? "everyday"
-              : freqSelection === 2
-              ? `everyday day but ${
+              : freqSelection === 2 || props.days.length === 6
+              ? `everyday but ${
                   WeekDaysFullName[
                     getEnumKeyByEnumValue(
                       WeekDays,
@@ -110,71 +141,80 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
         </Pressable>
       </MotiView>
       {freqChangeOpen && (
-        <MotiView
-          from={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "100%" }}
-          style={styles.frequencyChangeContainer}
-        >
-          <View style={styles.frequencyChangeBorderContainer}>
-            <View style={styles.frequencyChangeBorder}></View>
-          </View>
-          <View style={styles.frequencyChangeForm}>
-            <Text style={styles.frequencyChangeFormText}>
-              Research has shown more consistent change when doing limited
-              amounts every day and scaling the amount instead of the number of
-              days
-            </Text>
-            <Radio
-              index={1}
-              label="Ok, I’ll do it everyday"
-              selected={freqSelection === 1}
-              onChange={() => onChangeFreq(1)}
-            />
-            <Radio
-              index={2}
-              label={
-                <View style={styles.frequencyCustomRadioLabelContainer}>
-                  <Text style={styles.frequencyCustomRadioText}>
-                    I understand. I still want a
-                  </Text>
-                  <Text
-                    style={[
-                      styles.frequencyCustomRadioText,
-                      styles.frequencyCustomRadioTextAccent,
-                    ]}
-                  >
-                    {"  "}
-                    rest day{"  "}
-                  </Text>
-                  <Text style={styles.frequencyCustomRadioText}>on:</Text>
-                </View>
-              }
-              selected={freqSelection === 2}
-              onChange={() => onChangeFreq(2)}
+        <View style={props.floatingPanel && styles.floatingPanelContainer}>
+          <MotiView
+            from={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "100%" }}
+            style={styles.frequencyChangeContainer}
+          >
+            <View style={styles.frequencyChangeBorderContainer}>
+              <View style={styles.frequencyChangeBorder}></View>
+            </View>
+            <View
+              style={[
+                styles.frequencyChangeForm,
+                props.floatingPanel && {
+                  backgroundColor: "rgba(12, 8, 52, 1)",
+                },
+              ]}
             >
-              <WeekDaysSelect
-                days={props.days!}
-                clickable={true}
-                limitOneSelection={true}
-                dispatchDays={props.dispatchDays}
-                containerStyle={{ marginTop: 15, marginBottom: 2 }}
+              <Text style={styles.frequencyChangeFormText}>
+                Research has shown more consistent change when doing limited
+                amounts every day and scaling the amount instead of the number
+                of days
+              </Text>
+              <Radio
+                index={1}
+                label="Ok, I’ll do it everyday"
+                selected={freqSelection === 1}
+                onChange={() => onChangeFreq(1)}
               />
-            </Radio>
-            <Radio
-              index={3}
-              label="Let me choose my own schedule"
-              selected={freqSelection === 3}
-              onChange={() => onChangeFreq(3)}
-            >
-              <WeekDaysSelect
-                days={props.days!}
-                clickable={true}
-                dispatchDays={props.dispatchDays}
-                containerStyle={{ marginTop: 15, marginBottom: 2 }}
-              />
-            </Radio>
-          </View>
-        </MotiView>
+              <Radio
+                index={2}
+                label={
+                  <View style={styles.frequencyCustomRadioLabelContainer}>
+                    <Text style={styles.frequencyCustomRadioText}>
+                      I understand. I still want a
+                    </Text>
+                    <Text
+                      style={[
+                        styles.frequencyCustomRadioText,
+                        styles.frequencyCustomRadioTextAccent,
+                      ]}
+                    >
+                      {"  "}
+                      rest day{"  "}
+                    </Text>
+                    <Text style={styles.frequencyCustomRadioText}>on:</Text>
+                  </View>
+                }
+                selected={freqSelection === 2}
+                onChange={() => onChangeFreq(2)}
+              >
+                <WeekDaysSelect
+                  days={props.days!}
+                  clickable={true}
+                  limitOneSelection={true}
+                  dispatchDays={props.dispatchDays}
+                  containerStyle={{ marginTop: 15, marginBottom: 2 }}
+                />
+              </Radio>
+              <Radio
+                index={3}
+                label="Let me choose my own schedule"
+                selected={freqSelection === 3}
+                onChange={() => onChangeFreq(3)}
+              >
+                <WeekDaysSelect
+                  days={props.days!}
+                  clickable={true}
+                  dispatchDays={props.dispatchDays}
+                  containerStyle={{ marginTop: 15, marginBottom: 2 }}
+                />
+              </Radio>
+            </View>
+          </MotiView>
+        </View>
       )}
     </View>
   );
@@ -223,6 +263,13 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginBottom: 3,
     opacity: 0.5,
+  },
+  floatingPanelContainer: {
+    position: "absolute",
+    width: screenWidth,
+    left: 0,
+    top: 32,
+    zIndex: 10,
   },
   frequencyChangeContainer: {
     position: "relative",

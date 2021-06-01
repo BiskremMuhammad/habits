@@ -131,6 +131,7 @@ export const Input = (props: InputProps) => {
             InputStyles.text,
             props.customTextStyle,
             props.width !== "long" && InputStyles.short,
+            props.width === "minimal" && { marginRight: 18 },
           ]}
         >
           {props.text}

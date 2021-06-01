@@ -17,6 +17,20 @@ import TimerIcon from "../../svgs/timer-icon";
  */
 interface HabitDurationInputProps {
   /**
+   * custom width for the input
+   *
+   * @type {"short"  "minimal"}
+   */
+  customWidth?: "short" | "minimal";
+
+  /**
+   * flag to disable the input border
+   *
+   * @type {boolean}
+   */
+  disableBorder?: boolean;
+
+  /**
    * flag of which to display the habit Duration change
    *
    * @type {boolean}
@@ -55,7 +69,13 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
             ? props.initialDuration / 60
             : props.initialDuration
         } ${props.initialDuration >= 60 ? "hr" : "min"}`}
-        width={props.enableDurationSelect ? "short" : "minimal"}
+        width={
+          props.customWidth
+            ? props.customWidth
+            : props.enableDurationSelect
+            ? "short"
+            : "minimal"
+        }
         icon={
           <TimerIcon width={24} height={21} style={CommonStyles.withIcon} />
         }
@@ -70,7 +90,7 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
           "1 hr",
           "2 hr",
         ]}
-        hasBorder={props.enableDurationSelect}
+        hasBorder={props.enableDurationSelect && !props.disableBorder}
         customTextStyle={{ textTransform: "none" }}
       />
     </View>

@@ -11,7 +11,7 @@ import {
 } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useReducer, useState } from "react";
 import {
   View,
   Text,
@@ -24,7 +24,7 @@ import { useSelector } from "react-redux";
 import BookIcon from "../components/svgs/book";
 import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
-import { Habit } from "../types/habit";
+import { Habit, HabitTypes } from "../types/habit";
 import { Routes } from "../types/route-names";
 import { TimerScreenRouteParams } from "./timer-screen";
 import { NotificationIcon } from "../components/svgs/notification-icon";
@@ -36,6 +36,13 @@ import { Button } from "../components/elements/button";
 import { useSharedValue } from "react-native-reanimated";
 import { MotiView } from "@motify/components";
 import { MonthView } from "../components/modules/view-habit/month-view";
+import { HabitDurationInput } from "../components/modules/add-habit/habit-duration";
+import { HabitFrequencyInput } from "../components/modules/add-habit/habit-frequency";
+import {
+  AddHabitActionTypes,
+  addHabitReducer,
+  INITIAL_ADD_HABIT_STATE,
+} from "../components/modules/add-habit/add-habit-reducer";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -54,6 +61,12 @@ export const ViewHabitScreen = () => {
   const plantHeight = useSharedValue<number>(250);
   const plantPosition = useSharedValue<number>(20);
 
+  const [state, dispatch] = useReducer(
+    addHabitReducer,
+    habit ? habit : INITIAL_ADD_HABIT_STATE
+  );
+  const { type, isEveryDay, days, duration } = state;
+
   useLayoutEffect(() => {
     const getHabit = habits.find((h) => h.id === habitId);
     if (getHabit) {
@@ -62,6 +75,34 @@ export const ViewHabitScreen = () => {
       navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
     }
   }, [isOnFocus, habits, navigation, habitId]);
+
+  const onChangeDuration = (val: string) => {
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_DURATION,
+      payload: val,
+    });
+  };
+
+  const onChangeFreq = (radio: number) => {
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_EVERYDAY_STATE,
+      payload:
+        radio === 1
+          ? true
+          : radio === 2
+          ? Object.keys(WeekDays)
+              .filter((_, i) => i > 0)
+              .map<WeekDays>((k) => k as WeekDays)
+          : [],
+    });
+  };
+
+  const dispatchDays = (selectedDays: WeekDays[]) => {
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_FREQUENCY,
+      payload: selectedDays,
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -82,54 +123,53 @@ export const ViewHabitScreen = () => {
         <View style={styles.habitDetailsContainer}>
           <View style={styles.habitDetails}>
             <Text style={styles.habitDetailsText}>I am a</Text>
-            <View style={CommonStyles.textWithIcon}>
-              <BookIcon
-                width={16}
-                height={21}
-                style={{ marginTop: -12, marginRight: 8 }}
-              />
-              <Text
-                style={[styles.habitDetailsText, styles.habitDetailsAccentText]}
-              >
-                {habit?.type.replace(/ing/gi, "er")}
-              </Text>
-              <Text style={styles.streak}>3</Text>
+            <View
+              style={{
+                paddingHorizontal: habitDetailsPadding,
+                paddingLeft: habitDetailsMargin,
+              }}
+            >
+              <View style={CommonStyles.textWithIcon}>
+                <BookIcon
+                  width={16}
+                  height={21}
+                  style={{ marginTop: -12, marginRight: 8 }}
+                />
+                <Text
+                  style={[
+                    styles.habitDetailsText,
+                    { paddingHorizontal: 0, paddingLeft: 0 },
+                    styles.habitDetailsAccentText,
+                  ]}
+                >
+                  {habit?.type.replace(/ing/gi, "er")}
+                </Text>
+                <Text style={styles.streak}>3</Text>
+              </View>
             </View>
-            <Text style={styles.habitDetailsText}>
-              {habit?.isEveryDay
-                ? "everyday"
-                : habit?.days?.length === 6
-                ? `everyday day but ${
-                    WeekDaysFullName[
-                      getEnumKeyByEnumValue(
-                        WeekDays,
-                        Object.keys(WeekDays).find(
-                          (d) => !habit.days.includes(d as WeekDays)
-                        )!
-                      )!
-                    ]
-                  }`
-                : habit?.days?.length
-                ? habit?.days.join(", ")
-                : "everyday"}
-            </Text>
-            <View style={CommonStyles.textWithIcon}>
-              <Text style={styles.habitDetailsText}>for</Text>
-              <TimerIcon
-                width={24}
-                height={21}
-                style={{ marginTop: -8, marginLeft: 8, marginRight: 2 }}
+            {!!habit && (
+              <HabitFrequencyInput
+                isEveryDay={isEveryDay}
+                floatingPanel={true}
+                handlerStyle={{
+                  marginTop: 0,
+                  marginLeft: habitDetailsMargin - 13,
+                }}
+                days={days}
+                dispatchDays={dispatchDays}
+                onChangeFreq={onChangeFreq}
               />
-              <Text
-                style={[styles.habitDetailsText, styles.habitDetailsAccentText]}
-              >
-                {`${
-                  habit && habit.duration >= 60
-                    ? habit.duration / 60
-                    : habit?.duration
-                } ${habit && habit.duration >= 60 ? "hr" : "min"}`}
-              </Text>
-            </View>
+            )}
+            {!!habit && (
+              <HabitDurationInput
+                extraStyles={styles.habitDurationContainer}
+                disableBorder={true}
+                customWidth="minimal"
+                enableDurationSelect={true}
+                initialDuration={duration}
+                onChangeDuration={onChangeDuration}
+              />
+            )}
           </View>
           <View style={styles.plantContainer}>
             <Plant
@@ -205,6 +245,9 @@ export const ViewHabitScreen = () => {
   );
 };
 
+const habitDetailsMargin: number = 56;
+const habitDetailsPadding: number = 6;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -253,13 +296,11 @@ const styles = StyleSheet.create({
   habitDetailsContainer: {
     display: "flex",
     flexDirection: "row",
-    paddingHorizontal: 6,
-    paddingLeft: 56,
   },
   habitDetails: {
     display: "flex",
     paddingVertical: 48,
-    flex: 1,
+    flex: 1.5,
   },
   habitDetailsText: {
     fontFamily: "JosefinSans-Regular",
@@ -268,11 +309,24 @@ const styles = StyleSheet.create({
     color: "#fff",
     opacity: 0.5,
     paddingBottom: 14,
+    paddingHorizontal: habitDetailsPadding,
+    paddingLeft: habitDetailsMargin,
   },
   habitDetailsAccentText: {
     fontFamily: "JosefinSans-Bold",
     opacity: 1,
     textTransform: "capitalize",
+  },
+  habitDurationContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    alignSelf: "stretch",
+    width: "100%",
+    paddingHorizontal: habitDetailsPadding,
+    paddingLeft: habitDetailsMargin,
+    zIndex: 9,
   },
   streak: {
     fontFamily: "Rubik-Regular",
@@ -291,10 +345,10 @@ const styles = StyleSheet.create({
   },
   plant: {
     position: "absolute",
-    width: "165%",
+    width: "175%",
     transform: [
       {
-        translateX: -55,
+        translateX: -60,
       },
     ],
     height: "100%",
