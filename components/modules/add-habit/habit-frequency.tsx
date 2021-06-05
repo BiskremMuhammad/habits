@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     width: screenWidth,
     left: 0,
     top: 32,
-    zIndex: 10,
+    zIndex: 11,
   },
   frequencyChangeContainer: {
     position: "relative",

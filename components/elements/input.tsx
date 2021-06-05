@@ -252,7 +252,7 @@ const InputStyles = StyleSheet.create({
   dropdownContainer: {
     position: "absolute",
     zIndex: 10,
-    width: "115%",
+    width: "120%",
     top: 5,
     left: 0,
   },

@@ -341,7 +341,6 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: habitDetailsPadding,
     paddingLeft: habitDetailsMargin,
-    zIndex: 9,
   },
   streak: {
     fontFamily: "Rubik-Regular",
