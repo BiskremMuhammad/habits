@@ -124,7 +124,7 @@ export const ViewHabitScreen = () => {
       />
       <ScrollView>
         <View style={{ paddingVertical: 65 }}>
-          <Header />
+          <Header leftAction="back" />
           <View style={styles.habitDetailsContainer}>
             <View style={styles.habitDetails}>
               <Text style={styles.habitDetailsText}>I am a</Text>

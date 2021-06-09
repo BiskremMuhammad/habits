@@ -1,12 +1,29 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/core";
 import { MaterialIcons } from "@expo/vector-icons";
 import { NotificationIcon } from "../svgs/notification-icon";
+import { Routes } from "../../types/route-names";
+import { AnnouncementIcon } from "../svgs/announcement-icon";
 
-export const Header = () => {
+interface HeaderProps {
+  leftAction: "back" | "announcement";
+}
+
+export const Header = ({ leftAction }: HeaderProps) => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.header}>
-      <MaterialIcons name="arrow-back" size={24} color="white" />
+      {leftAction === "back" ? (
+        <Pressable onPress={() => navigation.navigate(Routes.HOME)}>
+          <MaterialIcons name="arrow-back" size={24} color="white" />
+        </Pressable>
+      ) : (
+        <Pressable>
+          <AnnouncementIcon />
+        </Pressable>
+      )}
       <View style={styles.notificationContainer}>
         <NotificationIcon />
         <View style={styles.notificationBadge}>
