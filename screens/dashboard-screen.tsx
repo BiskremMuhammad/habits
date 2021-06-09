@@ -7,6 +7,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Header } from "../components/elements/header";
+import { DashboardRoom } from "../components/modules/dashboard-room";
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { DashboardIcon } from "../components/svgs/dashboard-graphic";
 
@@ -19,7 +20,17 @@ export const DashboardScreen = () => {
         icon={({ style }) => <DashboardIcon style={style} />}
         title="My Habits"
       />
-      <View style={{ flex: 2 }}></View>
+      <View
+        style={{
+          flex: 2.5,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          paddingBottom: 65,
+        }}
+      >
+        <DashboardRoom />
+      </View>
     </View>
   );
 };
