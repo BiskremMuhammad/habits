@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { Button } from "../components/elements/button";
 import { Plant, PlantState } from "../components/elements/plant";
 import { Spoiler } from "../components/elements/spoiler";
+import { TitlePanel } from "../components/modules/panels/title-panel";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
 import {
@@ -49,20 +50,15 @@ export const SuccessScreen = () => {
 
   return (
     <View style={SuccessScreenStyles.container}>
-      <View style={SuccessScreenStyles.bgIconContainer}>
-        <AddIconSvg style={SuccessScreenStyles.bgIcon} />
-        <View style={SuccessScreenStyles.titleWithIcon}>
-          <Plant
-            state={PlantState.GLOW}
-            extraStyles={SuccessScreenStyles.plant}
-          />
-          <Text style={SuccessScreenStyles.title}>GREAT!</Text>
-        </View>
-      </View>
+      <TitlePanel
+        icon={({ style }) => <AddIconSvg style={style} />}
+        showPlant={true}
+        title="GREAT!"
+      />
       <Text
         style={[
           CommonStyles.infoTxt,
-          { marginVertical: 14, paddingHorizontal: 10 },
+          { marginBottom: 14, marginTop: 32, paddingHorizontal: 10 },
         ]}
       >
         You completed a session and have illuminated your Reading plant.
@@ -98,39 +94,5 @@ const SuccessScreenStyles = StyleSheet.create({
     paddingTop: 0.222 * screenHeight,
     paddingBottom: 0.08 * screenHeight,
     paddingHorizontal: 0.8 * CONSTANTS.PADDING,
-  },
-  bgIconContainer: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-  },
-  bgIcon: {
-    width: "100%",
-    height: "14.44%",
-    opacity: 0.4,
-    position: "absolute",
-  },
-  titleWithIcon: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  plant: {
-    transform: [{ scale: 0.5 }],
-    left: -2.3 * CONSTANTS.PADDING,
-    bottom: -15,
-  },
-  title: {
-    fontFamily: "JosefinSans-Medium",
-    fontSize: 32,
-    letterSpacing: 3,
-    color: "#fff",
-    lineHeight: 72,
-    textTransform: "uppercase",
-    marginBottom: 16,
-    marginLeft: 19,
   },
 });

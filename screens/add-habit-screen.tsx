@@ -10,6 +10,7 @@ import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import { useNavigation } from "@react-navigation/native";
+import { TitlePanel } from "../components/modules/panels/title-panel";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -50,11 +51,9 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
   return (
     <ScrollView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <View style={styles.bgIconContainer}>
-          <AddIconSvg style={styles.bgIcon} />
-        </View>
+        <TitlePanel icon={({ style }) => <AddIconSvg style={style} />} />
         <MotiView
-          style={{ alignSelf: "stretch" }}
+          style={{ alignSelf: "stretch", marginTop: 96 }}
           from={{ opacity: 0, translateY: 10 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ duration: 1000, type: "timing" }}
@@ -76,28 +75,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 0.26 * screenHeight,
     paddingBottom: 0.08 * screenHeight,
-  },
-  bgIconContainer: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    marginBottom: 92,
-  },
-  bgIcon: {
-    width: "100%",
-    height: "14.44%",
-    opacity: 0.4,
-    position: "absolute",
-  },
-  welcome: {
-    fontFamily: "JosefinSans-Medium",
-    fontSize: 32,
-    letterSpacing: 3,
-    color: "#fff",
-    lineHeight: 72,
-    textTransform: "uppercase",
-    marginBottom: 16,
   },
 });
