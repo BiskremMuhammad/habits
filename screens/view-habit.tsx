@@ -9,7 +9,6 @@ import {
   useNavigation,
   useIsFocused,
 } from "@react-navigation/native";
-import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useLayoutEffect, useMemo, useReducer, useState } from "react";
 import {
@@ -24,13 +23,10 @@ import { useSelector } from "react-redux";
 import BookIcon from "../components/svgs/book";
 import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
-import { Habit, HabitTypes } from "../types/habit";
+import { Habit } from "../types/habit";
 import { Routes } from "../types/route-names";
 import { TimerScreenRouteParams } from "./timer-screen";
-import { NotificationIcon } from "../components/svgs/notification-icon";
-import { WeekDaysFullName, WeekDays } from "../types/week-days";
-import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
-import TimerIcon from "../components/svgs/timer-icon";
+import { WeekDays } from "../types/week-days";
 import { Plant, PlantState } from "../components/elements/plant";
 import { Button } from "../components/elements/button";
 import { useSharedValue } from "react-native-reanimated";
@@ -44,6 +40,7 @@ import {
   INITIAL_ADD_HABIT_STATE,
 } from "../components/modules/add-habit/add-habit-reducer";
 import { calculateStreak } from "../utils/calendar-utils";
+import { Header } from "../components/elements/header";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -125,16 +122,8 @@ export const ViewHabitScreen = () => {
         colors={["rgb(13, 9, 39)", "rgb(33, 29, 66)"]}
         style={styles.backgroundOverlay}
       />
-      <View style={styles.header}>
-        <MaterialIcons name="arrow-back" size={24} color="white" />
-        <View style={styles.notificationContainer}>
-          <NotificationIcon />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.NotificationBadgeText}>3</Text>
-          </View>
-        </View>
-      </View>
       <ScrollView>
+        <Header />
         <View style={styles.habitDetailsContainer}>
           <View style={styles.habitDetails}>
             <Text style={styles.habitDetailsText}>I am a</Text>
@@ -275,38 +264,6 @@ const styles = StyleSheet.create({
     width: screenWidth,
     height: screenHeight,
     opacity: 0.6,
-  },
-  header: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 21,
-    marginBottom: 26,
-  },
-  notificationContainer: {
-    position: "relative",
-    opacity: 0.66,
-  },
-  notificationBadge: {
-    position: "absolute",
-    top: -4,
-    right: -2,
-    width: 14,
-    height: 14,
-    backgroundColor: "#FAFAFB",
-    borderWidth: 2,
-    borderColor: "#0E0928",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 50,
-  },
-  NotificationBadgeText: {
-    fontFamily: "Rubik-Bold",
-    fontSize: 10,
-    lineHeight: 11,
-    color: "#2B2645",
   },
   habitDetailsContainer: {
     display: "flex",
