@@ -12,6 +12,13 @@ import { AddIconSvg } from "../../svgs/add-icon";
  */
 interface TitlePanelProps {
   /**
+   * to give the component extra styles
+   *
+   * @type {StyleProp<ViewStyle>}
+   */
+  extraStyles?: StyleProp<ViewStyle>;
+
+  /**
    * the icon to use as a background
    *
    * @type {(style = {style: StyleProp<ViewStyle>}) => JSX.Element}
@@ -37,7 +44,9 @@ export const TitlePanel = (props: TitlePanelProps) => {
   const Icon = props.icon;
 
   return (
-    <View style={styles.bgIconContainer}>
+    <View
+      style={[styles.bgIconContainer, !!props.extraStyles && props.extraStyles]}
+    >
       <Icon style={styles.bgIcon} />
       <MotiView
         from={{ opacity: 0, translateY: 10 }}
@@ -90,6 +99,5 @@ const styles = StyleSheet.create({
     lineHeight: 72,
     textTransform: "uppercase",
     marginBottom: 16,
-    marginLeft: 19,
   },
 });

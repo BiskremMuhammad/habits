@@ -5,12 +5,30 @@
  */
 
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { Header } from "../components/elements/header";
+import { TitlePanel } from "../components/modules/panels/title-panel";
+import { DashboardIcon } from "../components/svgs/dashboard-graphic";
 
 export const DashboardScreen = () => {
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Welcome to the Dashboard Screen</Text>
+    <View style={styles.container}>
+      <Header leftAction="announcement" />
+      <TitlePanel
+        extraStyles={{ flex: 1 }}
+        icon={({ style }) => <DashboardIcon style={style} />}
+        title="My Habits"
+      />
+      <View style={{ flex: 2 }}></View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+    paddingVertical: 65,
+  },
+});
