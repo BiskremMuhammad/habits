@@ -123,127 +123,129 @@ export const ViewHabitScreen = () => {
         style={styles.backgroundOverlay}
       />
       <ScrollView>
-        <Header />
-        <View style={styles.habitDetailsContainer}>
-          <View style={styles.habitDetails}>
-            <Text style={styles.habitDetailsText}>I am a</Text>
-            <View
-              style={{
-                paddingHorizontal: habitDetailsPadding,
-                paddingLeft: habitDetailsMargin,
-              }}
-            >
-              <View style={CommonStyles.textWithIcon}>
-                <BookIcon
-                  width={16}
-                  height={21}
-                  style={{ marginTop: -12, marginRight: 8 }}
-                />
-                <Text
-                  style={[
-                    styles.habitDetailsText,
-                    { paddingHorizontal: 0, paddingLeft: 0 },
-                    styles.habitDetailsAccentText,
-                  ]}
-                >
-                  {habit?.type.replace(/ing/gi, "er")}
-                </Text>
-                <Text style={styles.streak}>{streak}</Text>
-              </View>
-            </View>
-            {!!habit && (
-              <HabitFrequencyInput
-                isEveryDay={isEveryDay}
-                floatingPanel={true}
-                handlerStyle={{
-                  marginTop: 0,
-                  marginLeft: habitDetailsMargin - 13,
+        <View style={{ paddingVertical: 65 }}>
+          <Header />
+          <View style={styles.habitDetailsContainer}>
+            <View style={styles.habitDetails}>
+              <Text style={styles.habitDetailsText}>I am a</Text>
+              <View
+                style={{
+                  paddingHorizontal: habitDetailsPadding,
+                  paddingLeft: habitDetailsMargin,
                 }}
-                days={days}
-                dispatchDays={dispatchDays}
-                onChangeFreq={onChangeFreq}
-              />
-            )}
-            {!!habit && (
-              <HabitDurationInput
-                extraStyles={styles.habitDurationContainer}
-                disableBorder={true}
-                customWidth="minimal"
-                enableDurationSelect={true}
-                initialDuration={duration}
-                onChangeDuration={onChangeDuration}
-              />
-            )}
-          </View>
-          <View style={styles.plantContainer}>
-            <Plant
-              state={PlantState.GLOW}
-              potWidth="20%"
-              potGlowTopPosition={6}
-              height={plantHeight}
-              positionBottom={plantPosition}
-              extraStyles={styles.plant}
-            />
-            <Text style={styles.weekday}>Monday</Text>
-            <Button
-              shape="circle"
-              text="start"
-              onPress={() => {}}
-              hasCircleBorder={true}
-            />
-          </View>
-        </View>
-        <View style={styles.accentSection}>
-          <BookIcon width={40} height={53} style={{ opacity: 0.66 }} />
-          <View style={styles.lvlContainer}>
-            <Text style={styles.lvlLabel}>lvl</Text>
-            <Text style={styles.lvlText}>3</Text>
-          </View>
-          <View style={styles.currentProgressContainer}>
-            <View style={styles.progressContainer}>
-              <View style={styles.progressbarContainer}>
-                <View style={styles.processBar}></View>
-                <View style={[styles.progress, { width: "40%" }]}></View>
+              >
+                <View style={CommonStyles.textWithIcon}>
+                  <BookIcon
+                    width={16}
+                    height={21}
+                    style={{ marginTop: -12, marginRight: 8 }}
+                  />
+                  <Text
+                    style={[
+                      styles.habitDetailsText,
+                      { paddingHorizontal: 0, paddingLeft: 0 },
+                      styles.habitDetailsAccentText,
+                    ]}
+                  >
+                    {habit?.type.replace(/ing/gi, "er")}
+                  </Text>
+                  <Text style={styles.streak}>{streak}</Text>
+                </View>
               </View>
-              <View style={styles.nextLvlContainer}>
-                <Text style={styles.nextLvlText}>4</Text>
-              </View>
-            </View>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text style={[styles.progressText, styles.currentProgressText]}>
-                14{" "}
-              </Text>
-              <Text style={styles.progressText}>/ 21</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.tabs}>
-          {tabs.map((t: "CALENDAR" | "GRAPH", i: number) => (
-            <View key={i} style={styles.tabContainer}>
-              <Pressable onPress={() => setTab(t)}>
-                <Text
-                  style={[styles.tabText, t === tab && styles.tabTextActive]}
-                >
-                  {t}
-                </Text>
-              </Pressable>
-              {t === tab && (
-                <MotiView
-                  from={{ width: 0 }}
-                  animate={{ width: 24 }}
-                  style={styles.tabActiveIndicator}
-                ></MotiView>
+              {!!habit && (
+                <HabitFrequencyInput
+                  isEveryDay={isEveryDay}
+                  floatingPanel={true}
+                  handlerStyle={{
+                    marginTop: 0,
+                    marginLeft: habitDetailsMargin - 13,
+                  }}
+                  days={days}
+                  dispatchDays={dispatchDays}
+                  onChangeFreq={onChangeFreq}
+                />
+              )}
+              {!!habit && (
+                <HabitDurationInput
+                  extraStyles={styles.habitDurationContainer}
+                  disableBorder={true}
+                  customWidth="minimal"
+                  enableDurationSelect={true}
+                  initialDuration={duration}
+                  onChangeDuration={onChangeDuration}
+                />
               )}
             </View>
-          ))}
+            <View style={styles.plantContainer}>
+              <Plant
+                state={PlantState.GLOW}
+                potWidth="20%"
+                potGlowTopPosition={6}
+                height={plantHeight}
+                positionBottom={plantPosition}
+                extraStyles={styles.plant}
+              />
+              <Text style={styles.weekday}>Monday</Text>
+              <Button
+                shape="circle"
+                text="start"
+                onPress={() => {}}
+                hasCircleBorder={true}
+              />
+            </View>
+          </View>
+          <View style={styles.accentSection}>
+            <BookIcon width={40} height={53} style={{ opacity: 0.66 }} />
+            <View style={styles.lvlContainer}>
+              <Text style={styles.lvlLabel}>lvl</Text>
+              <Text style={styles.lvlText}>3</Text>
+            </View>
+            <View style={styles.currentProgressContainer}>
+              <View style={styles.progressContainer}>
+                <View style={styles.progressbarContainer}>
+                  <View style={styles.processBar}></View>
+                  <View style={[styles.progress, { width: "40%" }]}></View>
+                </View>
+                <View style={styles.nextLvlContainer}>
+                  <Text style={styles.nextLvlText}>4</Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={[styles.progressText, styles.currentProgressText]}>
+                  14{" "}
+                </Text>
+                <Text style={styles.progressText}>/ 21</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.tabs}>
+            {tabs.map((t: "CALENDAR" | "GRAPH", i: number) => (
+              <View key={i} style={styles.tabContainer}>
+                <Pressable onPress={() => setTab(t)}>
+                  <Text
+                    style={[styles.tabText, t === tab && styles.tabTextActive]}
+                  >
+                    {t}
+                  </Text>
+                </Pressable>
+                {t === tab && (
+                  <MotiView
+                    from={{ width: 0 }}
+                    animate={{ width: 24 }}
+                    style={styles.tabActiveIndicator}
+                  ></MotiView>
+                )}
+              </View>
+            ))}
+          </View>
+          {tab === "CALENDAR" && !!habit && <MonthView habit={habit} />}
         </View>
-        {tab === "CALENDAR" && !!habit && <MonthView habit={habit} />}
       </ScrollView>
     </View>
   );
@@ -255,7 +257,6 @@ const habitDetailsPadding: number = 6;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 65,
   },
   backgroundOverlay: {
     position: "absolute",
