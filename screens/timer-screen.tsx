@@ -257,13 +257,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   };
 
   const onCancelSessionHandler = (openState: boolean) => {
-    if (isIntroduction) {
-      dispatch({
-        type: HabitActionTypes.DELETE_HABIT,
-        payload: habitId,
-      });
-      navigation.navigate(Routes.SPLASH);
-    } else {
+    if (!isIntroduction) {
       setExitSessionModalOpenState(openState);
       // also pause the timer
       changeState(ProgressState.PAUSED);
