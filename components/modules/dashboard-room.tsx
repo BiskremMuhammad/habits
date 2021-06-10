@@ -18,7 +18,7 @@ import { CONSTANTS } from "../../utils/constants";
 import { Button } from "../elements/button";
 import { AddIconSvg } from "../svgs/add-icon";
 import BookIcon from "../svgs/book";
-import TimerIcon from "../svgs/timer-icon";
+import { ClockIcon } from "../svgs/clock-icon";
 import { DashboardRoomDay } from "./dashboard/dashboard-room-day";
 
 /**
@@ -116,7 +116,7 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
                 )}
               </View>
               <View style={styles.habitFrequ}>
-                <TimerIcon
+                <ClockIcon
                   width={18}
                   height={18}
                   style={[CommonStyles.withIcon, styles.habitFreqIcon]}
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   habitFreqIcon: {
-    opacity: 0.5,
+    opacity: 0.6,
     marginRight: 5.5,
   },
   habitDuration: {
