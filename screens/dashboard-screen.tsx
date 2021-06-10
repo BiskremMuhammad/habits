@@ -4,14 +4,34 @@
  * @description Implement the Dashboard screen
  */
 
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Animated, Platform } from "react-native";
+import { useSelector } from "react-redux";
 import { Header } from "../components/elements/header";
+import { INITIAL_ADD_HABIT_STATE } from "../components/modules/add-habit/add-habit-reducer";
 import { DashboardRoom } from "../components/modules/dashboard-room";
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { DashboardIcon } from "../components/svgs/dashboard-graphic";
+import { GlobalStore } from "../redux/store";
+import { Habit } from "../types/habit";
+import { CONSTANTS } from "../utils/constants";
 
 export const DashboardScreen = () => {
+  const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
+    (store: GlobalStore): Habit[] => store.habits
+  );
+  const [rooms, setRooms] = useState<Habit[]>(habits);
+  const scrollX = React.useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    setRooms([
+      { ...INITIAL_ADD_HABIT_STATE, id: "empty-Left" },
+      ...habits,
+      { ...INITIAL_ADD_HABIT_STATE, id: "ADD_HABIT" },
+      { ...INITIAL_ADD_HABIT_STATE, id: "empty-right" },
+    ]);
+  }, [habits]);
+
   return (
     <View style={styles.container}>
       <Header leftAction="announcement" />
@@ -23,13 +43,63 @@ export const DashboardScreen = () => {
       <View
         style={{
           flex: 2.5,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          paddingBottom: 65,
         }}
       >
-        <DashboardRoom />
+        <Animated.FlatList
+          showsHorizontalScrollIndicator={false}
+          data={rooms}
+          keyExtractor={(item: Habit) => item.id}
+          horizontal={true}
+          bounces={false}
+          decelerationRate={Platform.OS === "ios" ? 0 : 0.98}
+          renderToHardwareTextureAndroid
+          contentContainerStyle={{ alignItems: "center" }}
+          snapToInterval={CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE}
+          snapToAlignment="start"
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            { useNativeDriver: false }
+          )}
+          scrollEventThrottle={16}
+          renderItem={({ item, index }) => {
+            if (item.id.includes("empty")) {
+              return (
+                <View
+                  style={{ width: CONSTANTS.DASHBOARD_ROOM_EMPTY_ITEM_SIZE }}
+                />
+              );
+            }
+
+            const inputRange = [
+              (index - 2) * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
+              (index - 1) * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
+              index * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
+            ];
+
+            const translateY = scrollX.interpolate({
+              inputRange,
+              outputRange: [-20, -50, -20],
+              extrapolate: "clamp",
+            });
+
+            return (
+              <View style={{ width: CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE }}>
+                <Animated.View
+                  style={{
+                    marginHorizontal: CONSTANTS.DASHBOARD_ROOM_SPACING,
+                    padding: CONSTANTS.DASHBOARD_ROOM_SPACING * 2,
+                    alignItems: "center",
+                    transform: [{ translateY }],
+                  }}
+                >
+                  <DashboardRoom
+                    habit={item.id.includes("ADD_HABIT") ? undefined : item}
+                  />
+                </Animated.View>
+              </View>
+            );
+          }}
+        />
       </View>
     </View>
   );
