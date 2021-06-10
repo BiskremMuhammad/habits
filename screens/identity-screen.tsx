@@ -12,6 +12,7 @@ import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
 import { useSelector } from "react-redux";
+import { TitlePanel } from "../components/modules/panels/title-panel";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import BookIcon from "../components/svgs/book";
 import { RadialGradientShape } from "../components/svgs/radial-gradient";
@@ -192,9 +193,14 @@ export const IdentityReinforcement = () => {
           translateToTransparent={true}
         />
       </MotiView>
-      <View style={styles.bgIconContainer}>
-        <AddIconSvg style={styles.bgIcon} />
-      </View>
+      <TitlePanel
+        icon={({ style }) => <AddIconSvg style={style} />}
+        extraStyles={{
+          width,
+          position: "absolute",
+          paddingTop: 0.54 * height,
+        }}
+      />
       <View style={styles.identityContainer}>
         <Text style={styles.title}>I am a</Text>
         <View style={styles.identityTextContainer}>
@@ -273,20 +279,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-  },
-  bgIconContainer: {
-    width,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    paddingTop: 0.54 * height,
-  },
-  bgIcon: {
-    width: "100%",
-    height: "14.44%",
-    opacity: 0.4,
-    position: "absolute",
   },
   identityContainer: {
     flex: 1,
