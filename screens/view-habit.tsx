@@ -138,18 +138,17 @@ export const ViewHabitScreen = () => {
                   <BookIcon
                     width={16}
                     height={21}
-                    style={{ marginTop: -12, marginRight: 8 }}
+                    style={CommonStyles.habitTypeIcon}
                   />
                   <Text
                     style={[
-                      styles.habitDetailsText,
-                      { paddingHorizontal: 0, paddingLeft: 0 },
-                      styles.habitDetailsAccentText,
+                      CommonStyles.habitTypeText,
+                      CommonStyles.habitTypeAccentText,
                     ]}
                   >
                     {habit?.type.replace(/ing/gi, "er")}
                   </Text>
-                  <Text style={styles.streak}>{streak}</Text>
+                  <Text style={CommonStyles.habitStreak}>{streak}</Text>
                 </View>
               </View>
               {!!habit && (
@@ -276,19 +275,9 @@ const styles = StyleSheet.create({
     flex: 1.5,
   },
   habitDetailsText: {
-    fontFamily: "JosefinSans-Regular",
-    fontSize: 24,
-    lineHeight: 32,
-    color: "#fff",
-    opacity: 0.5,
     paddingBottom: 14,
     paddingHorizontal: habitDetailsPadding,
     paddingLeft: habitDetailsMargin,
-  },
-  habitDetailsAccentText: {
-    fontFamily: "JosefinSans-Bold",
-    opacity: 1,
-    textTransform: "capitalize",
   },
   habitDurationContainer: {
     display: "flex",
@@ -299,15 +288,6 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: habitDetailsPadding,
     paddingLeft: habitDetailsMargin,
-  },
-  streak: {
-    fontFamily: "Rubik-Regular",
-    fontSize: 16,
-    lineHeight: 24,
-    alignSelf: "flex-start",
-    marginLeft: 5,
-    color: "#fff",
-    opacity: 0.5,
   },
   plantContainer: {
     flex: 1,

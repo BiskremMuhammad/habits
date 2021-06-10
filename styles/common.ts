@@ -35,4 +35,29 @@ export const CommonStyles = StyleSheet.create({
     lineHeight: 26,
     color: "#fff",
   },
+  habitTypeIcon: {
+    marginRight: 8,
+  },
+  habitTypeText: {
+    fontFamily: "JosefinSans-Regular",
+    fontSize: 24,
+    lineHeight: 32,
+    color: "#fff",
+    opacity: 0.5,
+    paddingBottom: 14,
+  },
+  habitTypeAccentText: {
+    fontFamily: "JosefinSans-Bold",
+    opacity: 1,
+    textTransform: "capitalize",
+  },
+  habitStreak: {
+    fontFamily: "Rubik-Regular",
+    fontSize: 16,
+    lineHeight: 24,
+    alignSelf: "flex-start",
+    marginLeft: 5,
+    color: "#fff",
+    opacity: 0.5,
+  },
 });

@@ -1,9 +1,25 @@
-import React from "react";
+/**
+ * @author Muhammad Omran
+ * @date 09-06-2021
+ * @description Implement the Dashboard Habit Room Component
+ */
+
+import React, { useMemo } from "react";
 import { Image, StyleSheet, View, Text } from "react-native";
+import Svg, { Line, Path } from "react-native-svg";
+import { CommonStyles } from "../../styles/common";
 import { Habit, HabitTypes } from "../../types/habit";
+import {
+  calculateStreak,
+  DayState,
+  stateOfTheDay,
+} from "../../utils/calendar-utils";
 import { CONSTANTS } from "../../utils/constants";
 import { Button } from "../elements/button";
 import { AddIconSvg } from "../svgs/add-icon";
+import BookIcon from "../svgs/book";
+import TimerIcon from "../svgs/timer-icon";
+import { DashboardRoomDay } from "./dashboard/dashboard-room-day";
 
 /**
  * interface that defines the props of the component
@@ -33,6 +49,44 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
     }
   }
 
+  const daysLabels = ["Su", "Mo", "Tu", "Wd", "Th", "Fr", "Sa"];
+  const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
+  const recentDays: { day: Date; label: string; state: DayState }[] = [];
+  if (habit) {
+    Array(6)
+      .fill(0)
+      .forEach((_, i: number) => {
+        const day: Date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+        const dayState: DayState = stateOfTheDay(
+          day,
+          habit.progress,
+          habit.days
+        );
+        recentDays.push({
+          day,
+          label: daysLabels[day.getDay()],
+          state: dayState,
+        });
+      });
+    recentDays.reverse();
+  }
+
+  const [streak, curStreakStart, __] = useMemo(
+    () =>
+      calculateStreak(
+        today,
+        habit ? habit.progress : [],
+        habit ? habit.days : []
+      ),
+    [habit]
+  );
+
+  const roomBottomBorderWidth: number =
+    CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE -
+    2 * CONSTANTS.DASHBOARD_ROOM_SPACING -
+    16 -
+    60;
+
   return (
     <View style={styles.container}>
       <View style={styles.roomContainer}>
@@ -42,7 +96,98 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
         {habit ? (
           <View style={styles.info}>
             <View style={styles.habitDetails}>
-              <Text>Habit details</Text>
+              <View style={CommonStyles.textWithIcon}>
+                <BookIcon
+                  width={18}
+                  height={23}
+                  style={CommonStyles.habitTypeIcon}
+                />
+                <Text
+                  style={[
+                    CommonStyles.habitTypeText,
+                    CommonStyles.habitTypeAccentText,
+                    { paddingBottom: 0 },
+                  ]}
+                >
+                  {habit.type.replace(/ing/gi, "er")}
+                </Text>
+                {streak > 0 && (
+                  <Text style={CommonStyles.habitStreak}>{streak}</Text>
+                )}
+              </View>
+              <View style={styles.habitFrequ}>
+                <TimerIcon
+                  width={18}
+                  height={18}
+                  style={[CommonStyles.withIcon, styles.habitFreqIcon]}
+                />
+                <Text style={styles.habitDuration}>{`${
+                  habit.duration >= 60 ? habit.duration / 60 : habit.duration
+                } ${habit.duration >= 60 ? "hr" : "min"}`}</Text>
+                <Text style={styles.habitFreqText}>
+                  {habit.isEveryDay
+                    ? "everyday"
+                    : `${habit.days.length} days/week`}
+                </Text>
+              </View>
+              <View style={styles.habitStreakInGlance}>
+                <Svg
+                  height={78}
+                  width={roomBottomBorderWidth}
+                  style={styles.roomBottomBorder}
+                >
+                  <Line
+                    x1={0}
+                    x2={roomBottomBorderWidth - 39}
+                    y1={77}
+                    y2={77}
+                    stroke="#88849D"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                  />
+                  <Path
+                    d={`M${
+                      roomBottomBorderWidth - 39
+                    } 77 a 39 39 0 0 0 28 -19.5`} // dx, dy will change from 28 -19.5 to 11 -74
+                    stroke="#88849D"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                  />
+                </Svg>
+                <View style={styles.recentDaysCombo}>
+                  {recentDays.slice(0, 3).map((d, i: number) => (
+                    <DashboardRoomDay
+                      key={i}
+                      curStreak={streak}
+                      curStreakStartDay={curStreakStart}
+                      index={i}
+                      isCombo={true}
+                      day={d.day}
+                      dayLabel={d.label}
+                      dayState={d.state}
+                      habitProgress={habit.progress}
+                      mostRecentDays={recentDays
+                        .slice(3)
+                        .reduce<Date[]>((a, v) => a.concat(v.day), [])}
+                    />
+                  ))}
+                </View>
+                {recentDays.slice(3).map((d, i: number) => (
+                  <DashboardRoomDay
+                    key={i}
+                    curStreak={streak}
+                    curStreakStartDay={curStreakStart}
+                    index={i}
+                    day={d.day}
+                    dayLabel={d.label}
+                    dayState={d.state}
+                    habitProgress={habit.progress}
+                    mostRecentDays={recentDays
+                      .slice(3)
+                      .reduce<Date[]>((a, v) => a.concat(v.day), [])}
+                  />
+                ))}
+              </View>
             </View>
             <Button
               shape="circle"
@@ -89,6 +234,12 @@ const styles = StyleSheet.create({
       CONSTANTS.DASHBOARD_ROOM_SPACING * 2,
     resizeMode: "contain",
   },
+  roomBottomBorder: {
+    position: "absolute",
+    bottom: 10,
+    left: 11,
+    opacity: 0.6,
+  },
   infoContianer: {
     marginTop: 22,
   },
@@ -103,15 +254,17 @@ const styles = StyleSheet.create({
   addTextContainer: {
     display: "flex",
     flexDirection: "column",
+    flex: 1,
   },
   addHabitText: {
     fontFamily: "JosefinSans-SemiBold",
     fontSize: 18,
     lineHeight: 26,
     color: "#fff",
+    marginBottom: 6,
   },
   addHabitDescription: {
-    fontFamily: "Rubik-Medium",
+    fontFamily: "Rubik-Regular",
     fontSize: 13,
     lineHeight: 21,
     color: "#fff",
@@ -126,5 +279,44 @@ const styles = StyleSheet.create({
   habitDetails: {
     flex: 1,
     marginTop: 2,
+  },
+  habitFrequ: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 3,
+  },
+  habitFreqIcon: {
+    opacity: 0.5,
+    marginRight: 5.5,
+  },
+  habitDuration: {
+    fontFamily: "Rubik-Regular",
+    fontSize: 14,
+    lineHeight: 23,
+    color: "#fff",
+  },
+  habitFreqText: {
+    marginLeft: 4,
+    fontFamily: "Rubik-Regular",
+    fontSize: 14,
+    lineHeight: 23,
+    color: "#fff",
+    opacity: 0.5,
+  },
+  habitStreakInGlance: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+    marginTop: 6,
+  },
+  recentDaysCombo: {
+    position: "relative",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    width: 27,
+    height: 22,
   },
 });

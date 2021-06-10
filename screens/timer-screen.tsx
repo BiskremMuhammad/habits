@@ -295,10 +295,12 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         <MaterialIcons name="arrow-back" size={24} color="white" />
         <Text style={TimeScreenStyles.identity}>I am a</Text>
         <BookIcon width={16} height={21} style={CommonStyles.withIcon} />
-        <Text style={TimeScreenStyles.habit}>
+        <Text
+          style={[CommonStyles.habitTypeText, CommonStyles.habitTypeAccentText]}
+        >
           {habit?.type.replace(/ing/gi, "er")}
         </Text>
-        {streak > 0 && <Text style={TimeScreenStyles.streak}>{streak}</Text>}
+        {streak > 0 && <Text style={CommonStyles.habitStreak}>{streak}</Text>}
       </View>
       <View style={TimeScreenStyles.peers}>
         <Text style={TimeScreenStyles.peersNum}>2K</Text>
@@ -478,22 +480,6 @@ const TimeScreenStyles = StyleSheet.create({
     marginLeft: 21,
     marginRight: 13,
     opacity: 0.7,
-  },
-  habit: {
-    fontFamily: "JosefinSans-Bold",
-    fontSize: 24,
-    lineHeight: 32,
-    color: "#fff",
-    textTransform: "capitalize",
-  },
-  streak: {
-    fontFamily: "Rubik-Regular",
-    fontSize: 16,
-    lineHeight: 24,
-    alignSelf: "flex-start",
-    marginLeft: 5,
-    color: "#fff",
-    opacity: 0.5,
   },
   peers: {
     display: "flex",
