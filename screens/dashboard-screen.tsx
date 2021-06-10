@@ -4,6 +4,7 @@
  * @description Implement the Dashboard screen
  */
 
+import { MotiView } from "@motify/components";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Animated, Platform } from "react-native";
 import { useSelector } from "react-redux";
@@ -45,61 +46,67 @@ export const DashboardScreen = () => {
           flex: 2.5,
         }}
       >
-        <Animated.FlatList
-          showsHorizontalScrollIndicator={false}
-          data={rooms}
-          keyExtractor={(item: Habit) => item.id}
-          horizontal={true}
-          bounces={false}
-          decelerationRate={Platform.OS === "ios" ? 0 : 0.98}
-          renderToHardwareTextureAndroid
-          contentContainerStyle={{ alignItems: "center" }}
-          snapToInterval={CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE}
-          snapToAlignment="start"
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: false }
-          )}
-          scrollEventThrottle={16}
-          renderItem={({ item, index }) => {
-            if (item.id.includes("empty")) {
-              return (
-                <View
-                  style={{ width: CONSTANTS.DASHBOARD_ROOM_EMPTY_ITEM_SIZE }}
-                />
-              );
-            }
-
-            const inputRange = [
-              (index - 2) * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
-              (index - 1) * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
-              index * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
-            ];
-
-            const translateY = scrollX.interpolate({
-              inputRange,
-              outputRange: [-20, -50, -20],
-              extrapolate: "clamp",
-            });
-
-            return (
-              <View style={{ width: CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE }}>
-                <Animated.View
-                  style={{
-                    marginHorizontal: CONSTANTS.DASHBOARD_ROOM_SPACING,
-                    padding: CONSTANTS.DASHBOARD_ROOM_SPACING * 2,
-                    alignItems: "center",
-                    transform: [{ translateY }],
-                  }}
-                >
-                  <DashboardRoom
-                    habit={item.id.includes("ADD_HABIT") ? undefined : item}
+        <MotiView
+          style={{ flex: 1 }}
+          from={{ opacity: 0, translateX: -20 }}
+          animate={{ opacity: 1, translateX: 0 }}
+        >
+          <Animated.FlatList
+            showsHorizontalScrollIndicator={false}
+            data={rooms}
+            keyExtractor={(item: Habit) => item.id}
+            horizontal={true}
+            bounces={false}
+            decelerationRate={Platform.OS === "ios" ? 0 : 0.98}
+            renderToHardwareTextureAndroid
+            contentContainerStyle={{ alignItems: "center" }}
+            snapToInterval={CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE}
+            snapToAlignment="start"
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+              { useNativeDriver: false }
+            )}
+            scrollEventThrottle={16}
+            renderItem={({ item, index }) => {
+              if (item.id.includes("empty")) {
+                return (
+                  <View
+                    style={{ width: CONSTANTS.DASHBOARD_ROOM_EMPTY_ITEM_SIZE }}
                   />
-                </Animated.View>
-              </View>
-            );
-          }}
-        />
+                );
+              }
+
+              const inputRange = [
+                (index - 2) * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
+                (index - 1) * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
+                index * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
+              ];
+
+              const translateY = scrollX.interpolate({
+                inputRange,
+                outputRange: [-20, -50, -20],
+                extrapolate: "clamp",
+              });
+
+              return (
+                <View style={{ width: CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE }}>
+                  <Animated.View
+                    style={{
+                      marginHorizontal: CONSTANTS.DASHBOARD_ROOM_SPACING,
+                      padding: CONSTANTS.DASHBOARD_ROOM_SPACING * 2,
+                      alignItems: "center",
+                      transform: [{ translateY }],
+                    }}
+                  >
+                    <DashboardRoom
+                      habit={item.id.includes("ADD_HABIT") ? undefined : item}
+                    />
+                  </Animated.View>
+                </View>
+              );
+            }}
+          />
+        </MotiView>
       </View>
     </View>
   );
