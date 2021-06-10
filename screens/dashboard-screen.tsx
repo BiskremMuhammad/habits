@@ -5,6 +5,7 @@
  */
 
 import { MotiView } from "@motify/components";
+import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Animated, Platform } from "react-native";
 import { useSelector } from "react-redux";
@@ -18,11 +19,25 @@ import { Habit } from "../types/habit";
 import { CONSTANTS } from "../utils/constants";
 
 export const DashboardScreen = () => {
+  const navigation = useNavigation();
   const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
     (store: GlobalStore): Habit[] => store.habits
   );
   const [rooms, setRooms] = useState<Habit[]>(habits);
   const scrollX = React.useRef(new Animated.Value(0)).current;
+
+  /**
+   * Disable user from going back
+   */
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        return;
+      }),
+    [navigation]
+  );
 
   useEffect(() => {
     setRooms([
