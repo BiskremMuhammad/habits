@@ -65,6 +65,7 @@ export const DashboardScreen = () => {
           style={{ flex: 1 }}
           from={{ opacity: 0, translateX: -20 }}
           animate={{ opacity: 1, translateX: 0 }}
+          transition={{ type: "spring", delay: 300 }}
         >
           <Animated.FlatList
             showsHorizontalScrollIndicator={false}
