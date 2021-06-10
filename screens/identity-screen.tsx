@@ -60,6 +60,19 @@ export const IdentityReinforcement = () => {
     new Animated.Value(81 + line1_dy.value)
   ).current;
 
+  /**
+   * Disable user from going back
+   */
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        return;
+      }),
+    [navigation]
+  );
+
   useEffect(() => {
     Animated.timing(line1_dxAnimation, {
       toValue: 11,
