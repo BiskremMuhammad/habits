@@ -296,7 +296,11 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         <Text style={TimeScreenStyles.identity}>I am a</Text>
         <BookIcon width={16} height={21} style={CommonStyles.withIcon} />
         <Text
-          style={[CommonStyles.habitTypeText, CommonStyles.habitTypeAccentText]}
+          style={[
+            CommonStyles.habitTypeText,
+            CommonStyles.habitTypeAccentText,
+            { paddingBottom: 0 },
+          ]}
         >
           {habit?.type.replace(/ing/gi, "er")}
         </Text>

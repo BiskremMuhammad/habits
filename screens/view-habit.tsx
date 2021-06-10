@@ -138,7 +138,7 @@ export const ViewHabitScreen = () => {
                   <BookIcon
                     width={16}
                     height={21}
-                    style={CommonStyles.habitTypeIcon}
+                    style={[CommonStyles.habitTypeIcon, { marginTop: -11 }]}
                   />
                   <Text
                     style={[
@@ -275,6 +275,11 @@ const styles = StyleSheet.create({
     flex: 1.5,
   },
   habitDetailsText: {
+    fontFamily: "JosefinSans-Regular",
+    fontSize: 24,
+    lineHeight: 32,
+    color: "#fff",
+    opacity: 0.5,
     paddingBottom: 14,
     paddingHorizontal: habitDetailsPadding,
     paddingLeft: habitDetailsMargin,
