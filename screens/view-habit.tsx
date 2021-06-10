@@ -10,7 +10,13 @@ import {
   useIsFocused,
 } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useLayoutEffect, useMemo, useReducer, useState } from "react";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import {
   View,
   Text,
@@ -73,6 +79,19 @@ export const ViewHabitScreen = () => {
         habit ? habit.days : []
       ),
     [habit]
+  );
+
+  /**
+   * Disable user from going back
+   */
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        navigation.navigate(Routes.HOME);
+      }),
+    [navigation]
   );
 
   useLayoutEffect(() => {
