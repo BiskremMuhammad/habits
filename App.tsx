@@ -83,9 +83,8 @@ export default function App() {
               backgroundColor: "transparent",
             },
           }}
-          initialRouteName={playIntroduction ? "graph" : Routes.HOME}
+          initialRouteName={playIntroduction ? Routes.SPLASH : Routes.HOME}
         >
-          <Route.Screen name={"graph"} component={Graph} />
           {playIntroduction && (
             <Route.Screen name={Routes.SPLASH} component={SplashScreen} />
           )}
