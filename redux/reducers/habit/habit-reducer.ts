@@ -20,16 +20,29 @@ export const habitReducer = (
       return [...(action.payload as Habit[])];
 
     case HabitActionTypes.SAVE_DAY_PROGRESS:
+      const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
       newState = state.map((h: Habit, i: number) => {
         if (
           h.id === action.payload &&
-          !h.progress.includes(new Date(new Date().setHours(0, 0, 0, 0)))
+          !h.progress.find((data, i) => data.date.getTime() === today.getTime())
         ) {
           return {
             ...h,
-            progress: h.progress.concat(
-              new Date(new Date().setHours(0, 0, 0, 0))
-            ),
+            progress: h.progress.concat({
+              date: today,
+              duration: h.duration,
+            }),
+          };
+        } else if (h.id === action.payload) {
+          return {
+            ...h,
+            progress: h.progress.map((data, i) => ({
+              date: data.date,
+              duration:
+                data.date.getTime() === today.getTime()
+                  ? data.duration + h.duration
+                  : data.duration,
+            })),
           };
         }
         return h;

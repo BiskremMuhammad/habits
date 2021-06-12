@@ -6,6 +6,7 @@
 
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { HabitProgressData } from "../../../types/habit";
 import { DayState } from "../../../utils/calendar-utils";
 
 /**
@@ -52,9 +53,9 @@ interface DashboardRoomDayProps {
   /**
    * the habit progress
    *
-   * @type {Date[]}
+   * @type {HabitProgressData[]}
    */
-  habitProgress: Date[];
+  habitProgress: HabitProgressData[];
 
   /**
    * the index of the displayed item
@@ -143,7 +144,7 @@ export const DashboardRoomDay = (props: DashboardRoomDayProps) => {
                 props.mostRecentDays.reduce(
                   (a, v) =>
                     !!props.habitProgress.find(
-                      (d, _) => d.getTime() === v.getTime()
+                      (d, _) => d.date.getTime() === v.getTime()
                     )
                       ? a + 1
                       : a,

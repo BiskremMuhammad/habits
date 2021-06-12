@@ -20,6 +20,28 @@ export enum HabitTypes {
 }
 
 /**
+ * interface that defines the Progress data object
+ *
+ * @interface
+ * @exports
+ */
+export interface HabitProgressData {
+  /**
+   * the tracked date info
+   *
+   * @type {Date}
+   */
+  date: Date;
+
+  /**
+   * the tracked duration
+   *
+   * @type {number}
+   */
+  duration: number;
+}
+
+/**
  * interface that defines the habit object
  *
  * @interface
@@ -64,7 +86,7 @@ export interface Habit {
   /**
    * habit tracker daily progress array
    *
-   * @type {Date[]}
+   * @type {HabitProgressData[]}
    */
-  progress: Date[];
+  progress: HabitProgressData[];
 }
