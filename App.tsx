@@ -24,6 +24,7 @@ import { DashboardScreen } from "./screens/dashboard-screen";
 import { Routes } from "./types/route-names";
 import { IdentityReinforcement } from "./screens/identity-screen";
 import { ViewHabitScreen } from "./screens/view-habit";
+import { Graph } from "./components/modules/view-habit/graph";
 enableScreens();
 
 const { width, height } = Dimensions.get("screen");
@@ -82,8 +83,9 @@ export default function App() {
               backgroundColor: "transparent",
             },
           }}
-          initialRouteName={playIntroduction ? Routes.SPLASH : Routes.HOME}
+          initialRouteName={playIntroduction ? "graph" : Routes.HOME}
         >
+          <Route.Screen name={"graph"} component={Graph} />
           {playIntroduction && (
             <Route.Screen name={Routes.SPLASH} component={SplashScreen} />
           )}
