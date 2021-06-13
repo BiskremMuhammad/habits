@@ -16,6 +16,10 @@ export const CommonStyles = StyleSheet.create({
     marginTop: 4,
     marginRight: 8,
   },
+  rowContainer: {
+    display: "flex",
+    flexDirection: "row",
+  },
   infoTxt: {
     fontFamily: "Rubik-Light",
     fontSize: 16,

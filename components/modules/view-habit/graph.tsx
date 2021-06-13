@@ -6,9 +6,10 @@
 
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, StyleSheet } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import Svg, { Line } from "react-native-svg";
+import { CommonStyles } from "../../../styles/common";
 
 const { width: screenWidth } = Dimensions.get("screen");
 
@@ -48,40 +49,26 @@ export const Graph = ({ labels, data }: GraphProps) => {
   const graphHeight: number = 158;
   const margin: number = 56;
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "flex-start",
-      }}
-    >
+    <View style={styles.container}>
       <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          paddingHorizontal: margin,
-        }}
+        style={[
+          CommonStyles.rowContainer,
+          {
+            paddingHorizontal: margin,
+          },
+        ]}
       >
         <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            position: "absolute",
-            height: 1.3 * graphHeight,
-            left: margin,
-          }}
+          style={[
+            styles.yAxisContainer,
+            {
+              height: 1.3 * graphHeight,
+              left: margin,
+            },
+          ]}
         >
           {yAxisLabels.map((v, i) => (
-            <Text
-              key={i}
-              style={{
-                flex: 1,
-                textAlignVertical: "bottom",
-                fontSize: 14,
-                fontWeight: "bold",
-                color: "#fff",
-              }}
-            >
+            <Text key={i} style={styles.yAxisLabel}>
               {Number(v) >= 60
                 ? Number(v) % 60 === 0
                   ? `${Math.floor(Number(v) / 60)}h`
@@ -90,7 +77,7 @@ export const Graph = ({ labels, data }: GraphProps) => {
             </Text>
           ))}
         </View>
-        <View style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <View style={{ flex: 1 }}>
           <LineChart
             data={{
               labels,
@@ -114,15 +101,13 @@ export const Graph = ({ labels, data }: GraphProps) => {
             renderDotContent={({ x }) => (
               <View
                 key={x}
-                style={{
-                  position: "relative",
-                  top: 0,
-                  left: x - 17,
-                  width: 34,
-                  height: graphHeight,
-                  display: "flex",
-                  alignItems: "center",
-                }}
+                style={[
+                  styles.heighPeakHeighlighter,
+                  {
+                    left: x - 17,
+                    height: graphHeight,
+                  },
+                ]}
               >
                 <LinearGradient
                   colors={[
@@ -160,8 +145,6 @@ export const Graph = ({ labels, data }: GraphProps) => {
                 r: 10,
               },
               style: {
-                borderColor: "green",
-                borderWidth: 1,
                 borderRadius: 16,
                 backgroundColor: "rgba(0,0,0,0)",
               },
@@ -175,25 +158,21 @@ export const Graph = ({ labels, data }: GraphProps) => {
             }}
           />
           <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              position: "absolute",
-              marginLeft: 0.7 * margin,
-              marginRight: -0.25 * margin,
-              bottom: 0,
-            }}
+            style={[
+              styles.xAxisContainer,
+              {
+                marginLeft: 0.7 * margin,
+                marginRight: -0.25 * margin,
+              },
+            ]}
           >
             {labels.map((l, i) => (
               <Text
-                style={{
-                  flex: 1,
-                  textAlign: "right",
-                  fontSize: 14,
-                  fontWeight: "bold",
-                  color: "#fff",
-                }}
+                style={[
+                  styles.xAxisLabel,
+                  i === data.findIndex((d) => d >= Math.max(...data)) &&
+                    styles.xAxisLabelHeighest,
+                ]}
                 key={i}
               >
                 {l}
@@ -205,3 +184,51 @@ export const Graph = ({ labels, data }: GraphProps) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  yAxisContainer: {
+    display: "flex",
+    flexDirection: "column",
+    position: "absolute",
+  },
+  yAxisLabel: {
+    flex: 1,
+    fontFamily: "Rubik-Regular",
+    textAlignVertical: "bottom",
+    fontSize: 14,
+    lineHeight: 18,
+    color: "#fff",
+    opacity: 0.4,
+  },
+  heighPeakHeighlighter: {
+    position: "relative",
+    top: 0,
+    width: 34,
+    display: "flex",
+    alignItems: "center",
+  },
+  xAxisContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 0,
+  },
+  xAxisLabel: {
+    flex: 1,
+    fontFamily: "Rubik-Regular",
+    textAlign: "right",
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#fff",
+    opacity: 0.4,
+  },
+  xAxisLabelHeighest: {
+    opacity: 1,
+  },
+});
