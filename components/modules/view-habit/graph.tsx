@@ -1,3 +1,9 @@
+/**
+ * @author Muhammad Omran
+ * @date 12-06-2021
+ * @description Implement the Graph Component
+ */
+
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { View, Text, Dimensions } from "react-native";
@@ -6,9 +12,28 @@ import Svg, { Line } from "react-native-svg";
 
 const { width: screenWidth } = Dimensions.get("screen");
 
-export const Graph = () => {
-  const labels: string[] = ["5/14", "5/15", "5/16", "5/17", "5/18"];
-  const data: number[] = [30, 50, 80, 40, 70];
+/**
+ * interface that defines the props of the component
+ *
+ * @interface
+ */
+interface GraphProps {
+  /**
+   * x axis labels
+   *
+   * @type {string[]}
+   */
+  labels: string[];
+
+  /**
+   * data points
+   *
+   * @type {number[]}
+   */
+  data: number[];
+}
+
+export const Graph = ({ labels, data }: GraphProps) => {
   const yLabelMinValue: number = Math.floor(Math.min(...data) / 30.00001) * 30;
   const yLabelMaxValue: number = Math.ceil(Math.max(...data) / 30) * 30;
   const yLabelsData: number[] = [];
@@ -27,10 +52,9 @@ export const Graph = () => {
       style={{
         flex: 1,
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
       }}
     >
-      <Text>Bezier Line Chart</Text>
       <View
         style={{
           display: "flex",

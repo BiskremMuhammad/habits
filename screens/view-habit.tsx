@@ -47,6 +47,7 @@ import {
 } from "../components/modules/add-habit/add-habit-reducer";
 import { calculateStreak } from "../utils/calendar-utils";
 import { Header } from "../components/elements/header";
+import { Graph } from "../components/modules/view-habit/graph";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -134,6 +135,31 @@ export const ViewHabitScreen = () => {
       payload: selectedDays,
     });
   };
+
+  const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
+  const recentDays: { day: string; duration: number }[] = [];
+  if (habit) {
+    Array(5)
+      .fill(0)
+      .forEach((_, i: number) => {
+        const day: Date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+        let dayProgress: number = 0;
+        if (
+          habit.progress.find(
+            (data, _) => data.date.getTime() === day.getTime()
+          )
+        ) {
+          dayProgress = habit.progress.find(
+            (data, _) => data.date.getTime() === day.getTime()
+          )!.duration;
+        }
+        recentDays.push({
+          day: `${day.getMonth() + 1}/${day.getDate()}`,
+          duration: dayProgress,
+        });
+      });
+    recentDays.reverse();
+  }
 
   return (
     <View style={styles.container}>
@@ -263,6 +289,18 @@ export const ViewHabitScreen = () => {
             ))}
           </View>
           {tab === "CALENDAR" && !!habit && <MonthView habit={habit} />}
+          {tab === "GRAPH" && !!habit && (
+            <Graph
+              labels={recentDays.reduce<string[]>(
+                (a, v) => a.concat(v.day),
+                []
+              )}
+              data={recentDays.reduce<number[]>(
+                (a, v) => a.concat(v.duration),
+                []
+              )}
+            />
+          )}
         </View>
       </ScrollView>
     </View>
