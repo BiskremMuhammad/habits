@@ -24,6 +24,7 @@ import {
   Dimensions,
   ScrollView,
   Pressable,
+  Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 import BookIcon from "../components/svgs/book";
@@ -170,13 +171,24 @@ export const ViewHabitScreen = () => {
       <ScrollView>
         <View style={{ paddingVertical: 65 }}>
           <Header leftAction="back" />
-          <View style={styles.habitDetailsContainer}>
-            <View style={styles.habitDetails}>
+          <View
+            style={[
+              styles.habitDetailsContainer,
+              Platform.OS === "ios" && { zIndex: 4 },
+            ]}
+          >
+            <View
+              style={[
+                styles.habitDetails,
+                Platform.OS === "ios" && { zIndex: 2 },
+              ]}
+            >
               <Text style={styles.habitDetailsText}>I am a</Text>
               <View
                 style={{
                   paddingHorizontal: habitDetailsPadding,
                   paddingLeft: habitDetailsMargin,
+                  zIndex: 4,
                 }}
               >
                 <View style={CommonStyles.textWithIcon}>
@@ -211,7 +223,10 @@ export const ViewHabitScreen = () => {
               )}
               {!!habit && (
                 <HabitDurationInput
-                  extraStyles={styles.habitDurationContainer}
+                  extraStyles={[
+                    styles.habitDurationContainer,
+                    Platform.OS === "ios" && { zIndex: 2 },
+                  ]}
                   disableBorder={true}
                   customWidth="minimal"
                   enableDurationSelect={true}
@@ -220,7 +235,12 @@ export const ViewHabitScreen = () => {
                 />
               )}
             </View>
-            <View style={styles.plantContainer}>
+            <View
+              style={[
+                styles.plantContainer,
+                Platform.OS === "ios" && { zIndex: 2 },
+              ]}
+            >
               <Plant
                 state={PlantState.GLOW}
                 potWidth="20%"

@@ -14,6 +14,7 @@ import {
   Dimensions,
   StyleProp,
   ViewStyle,
+  Platform,
 } from "react-native";
 import { WeekDaysFullName, WeekDays } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
@@ -80,7 +81,7 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
   };
 
   return (
-    <View>
+    <View style={Platform.OS === "ios" && { zIndex: 3 }}>
       <MotiView
         from={{ backgroundColor: "rgba(12, 8, 52, 0)" }}
         animate={

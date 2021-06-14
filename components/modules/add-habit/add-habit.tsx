@@ -135,7 +135,7 @@ export const AddHabit = (props: AddHabitProps) => {
 
   return (
     <View style={addHabitStyles.container}>
-      <View style={addHabitStyles.addHabitSection}>
+      <View style={[addHabitStyles.addHabitSection, { zIndex: 4 }]}>
         <Text style={addHabitStyles.label}>I will</Text>
         <Input
           text={type.replace(/ing/gi, "")}
@@ -164,7 +164,7 @@ export const AddHabit = (props: AddHabitProps) => {
       )}
       <HabitDurationInput
         enableDurationSelect={props.enableDurationSelect}
-        extraStyles={addHabitStyles.addHabitSection}
+        extraStyles={[addHabitStyles.addHabitSection, { zIndex: 3 }]}
         initialDuration={duration}
         onChangeDuration={onChangeDuration}
       />
