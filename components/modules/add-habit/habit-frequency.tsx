@@ -5,7 +5,7 @@
  */
 
 import { MotiView } from "moti";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Pressable,
@@ -48,6 +48,13 @@ interface HabitFrequencyInputProps {
   floatingPanel?: boolean;
 
   /**
+   * to force open the dropdown state from parent
+   *
+   * @type {boolean}
+   */
+  forceState?: boolean;
+
+  /**
    * if the state of the habit is set to everyday
    *
    * @type {boolean}
@@ -67,11 +74,29 @@ interface HabitFrequencyInputProps {
    * @type {(radio: number) => void}
    */
   onChangeFreq: (radio: number) => void;
+
+  /**
+   * to send a callback to parent of state changing
+   *
+   * @type {(state: boolean) => void}
+   */
+  toggleCallback?: (state: boolean) => void;
 }
 
 export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
   const [freqChangeOpen, setFreqChangeOpenState] = useState<boolean>(false);
   const [freqSelection, setFreqSelection] = useState<number>(1);
+
+  useEffect(() => {
+    setFreqChangeOpenState(!!props.forceState);
+  }, [props.forceState]);
+
+  const toggleChangeState = (state: boolean) => {
+    setFreqChangeOpenState(state);
+    if (props.toggleCallback) {
+      props.toggleCallback(state);
+    }
+  };
 
   const onChangeFreq = (radio: number) => {
     if (radio === freqSelection) return;
@@ -102,7 +127,7 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
       >
         <Pressable
           style={styles.frequencyButton}
-          onPress={() => setFreqChangeOpenState(!freqChangeOpen)}
+          onPress={() => toggleChangeState(!freqChangeOpen)}
         >
           <Text
             numberOfLines={1}

@@ -5,7 +5,7 @@
  */
 
 import { useNavigation } from "@react-navigation/core";
-import React, { Dispatch, useReducer } from "react";
+import React, { Dispatch, useReducer, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -31,6 +31,13 @@ import { HabitDurationInput } from "./habit-duration";
 import { HabitFrequencyInput } from "./habit-frequency";
 
 const { height: screenHeight } = Dimensions.get("screen");
+
+export enum OpenedDropDown {
+  NONE = "NONE",
+  HABIT_TYPE = "HABIT_TYPE",
+  HABIT_FREQUENCY = "HABIT_FREQUENCY",
+  HABIT_DURATION = "HABIT_DURATION",
+}
 
 /**
  * interface that defines the props of the component
@@ -79,6 +86,11 @@ export const AddHabit = (props: AddHabitProps) => {
   );
   const { type, isEveryDay, days, duration } = state;
   const navigation = useNavigation();
+  const [currentOpenInput, setCurrentOpenInput] = useState(OpenedDropDown.NONE);
+
+  const onChangeOpenedDropdown = (state: boolean, input: OpenedDropDown) => {
+    setCurrentOpenInput(state ? input : OpenedDropDown.NONE);
+  };
 
   const onChangeHabit = (val: string) => {
     dispatch({
@@ -135,9 +147,18 @@ export const AddHabit = (props: AddHabitProps) => {
 
   return (
     <View style={addHabitStyles.container}>
-      <View style={[addHabitStyles.addHabitSection, { zIndex: 5 }]}>
+      <View
+        style={[
+          addHabitStyles.addHabitSection,
+          Platform.OS === "ios" && { zIndex: 5 },
+        ]}
+      >
         <Text style={addHabitStyles.label}>I will</Text>
         <Input
+          forceState={currentOpenInput === OpenedDropDown.HABIT_TYPE}
+          toggleCallback={(state: boolean) =>
+            onChangeOpenedDropdown(state, OpenedDropDown.HABIT_TYPE)
+          }
           text={type.replace(/ing/gi, "")}
           width="long"
           icon={
@@ -163,6 +184,10 @@ export const AddHabit = (props: AddHabitProps) => {
       </View>
       {props.enableFrequencySelect && (
         <HabitFrequencyInput
+          forceState={currentOpenInput === OpenedDropDown.HABIT_FREQUENCY}
+          toggleCallback={(state: boolean) =>
+            onChangeOpenedDropdown(state, OpenedDropDown.HABIT_FREQUENCY)
+          }
           isEveryDay={isEveryDay}
           days={days}
           dispatchDays={dispatchDays}
@@ -170,8 +195,15 @@ export const AddHabit = (props: AddHabitProps) => {
         />
       )}
       <HabitDurationInput
+        forceState={currentOpenInput === OpenedDropDown.HABIT_DURATION}
+        toggleCallback={(state: boolean) =>
+          onChangeOpenedDropdown(state, OpenedDropDown.HABIT_DURATION)
+        }
         enableDurationSelect={props.enableDurationSelect}
-        extraStyles={[addHabitStyles.addHabitSection, { zIndex: 3 }]}
+        extraStyles={[
+          addHabitStyles.addHabitSection,
+          Platform.OS === "ios" && { zIndex: 3 },
+        ]}
         initialDuration={duration}
         onChangeDuration={onChangeDuration}
       />

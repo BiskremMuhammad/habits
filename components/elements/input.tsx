@@ -5,7 +5,7 @@
  */
 
 import { MotiView } from "moti";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -37,6 +37,13 @@ interface InputProps {
    * @type {string[]}
    */
   dropdownOptions?: string[];
+
+  /**
+   * to force open the dropdown state from parent
+   *
+   * @type {boolean}
+   */
+  forceState?: boolean;
 
   /**
    * flag wheather the input has a bottom border or not
@@ -81,6 +88,13 @@ interface InputProps {
   text: string;
 
   /**
+   * to send a callback to parent of state changing
+   *
+   * @type {(state: boolean) => void}
+   */
+  toggleCallback?: (state: boolean) => void;
+
+  /**
    * width of the input, is it long or short
    *
    * @type {"long" | "short"}
@@ -91,13 +105,23 @@ interface InputProps {
 export const Input = (props: InputProps) => {
   const [dropdownOpen, setDropdownState] = useState<boolean>(false);
 
+  useEffect(() => {
+    setDropdownState(!!props.forceState);
+  }, [props.forceState]);
+
   const onInputPress = () => {
     if (!props.isDropdown || !props.dropdownOptions) return;
     setDropdownState(!dropdownOpen);
+    if (props.toggleCallback) {
+      props.toggleCallback(!dropdownOpen);
+    }
   };
 
   const onChange = (val: string) => {
     setDropdownState(false);
+    if (props.toggleCallback) {
+      props.toggleCallback(false);
+    }
     props.onChange(val);
   };
 

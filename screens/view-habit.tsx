@@ -49,6 +49,7 @@ import {
 import { calculateStreak } from "../utils/calendar-utils";
 import { Header } from "../components/elements/header";
 import { Graph } from "../components/modules/view-habit/graph";
+import { OpenedDropDown } from "../components/modules/add-habit/add-habit";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -66,6 +67,11 @@ export const ViewHabitScreen = () => {
   const tabs: Array<"CALENDAR" | "GRAPH"> = ["CALENDAR", "GRAPH"];
   const plantHeight = useSharedValue<number>(250);
   const plantPosition = useSharedValue<number>(20);
+  const [currentOpenInput, setCurrentOpenInput] = useState(OpenedDropDown.NONE);
+
+  const onChangeOpenedDropdown = (state: boolean, input: OpenedDropDown) => {
+    setCurrentOpenInput(state ? input : OpenedDropDown.NONE);
+  };
 
   const [state, dispatch] = useReducer(
     addHabitReducer,
@@ -213,6 +219,15 @@ export const ViewHabitScreen = () => {
               </View>
               {!!habit && (
                 <HabitFrequencyInput
+                  forceState={
+                    currentOpenInput === OpenedDropDown.HABIT_FREQUENCY
+                  }
+                  toggleCallback={(state: boolean) =>
+                    onChangeOpenedDropdown(
+                      state,
+                      OpenedDropDown.HABIT_FREQUENCY
+                    )
+                  }
                   isEveryDay={isEveryDay}
                   floatingPanel={true}
                   handlerStyle={{
@@ -226,6 +241,12 @@ export const ViewHabitScreen = () => {
               )}
               {!!habit && (
                 <HabitDurationInput
+                  forceState={
+                    currentOpenInput === OpenedDropDown.HABIT_DURATION
+                  }
+                  toggleCallback={(state: boolean) =>
+                    onChangeOpenedDropdown(state, OpenedDropDown.HABIT_DURATION)
+                  }
                   extraStyles={[
                     styles.habitDurationContainer,
                     Platform.OS === "ios" && { zIndex: 3 },

@@ -45,6 +45,13 @@ interface HabitDurationInputProps {
   extraStyles?: StyleProp<ViewStyle>;
 
   /**
+   * to force open the dropdown state from parent
+   *
+   * @type {boolean}
+   */
+  forceState?: boolean;
+
+  /**
    * the initial duration to be displayed when the component is loaded
    *
    * @type {number}
@@ -57,6 +64,13 @@ interface HabitDurationInputProps {
    * @type {(val: string) => void}
    */
   onChangeDuration: (val: string) => void;
+
+  /**
+   * to send a callback to parent of state changing
+   *
+   * @type {(state: boolean) => void}
+   */
+  toggleCallback?: (state: boolean) => void;
 }
 
 export const HabitDurationInput = (props: HabitDurationInputProps) => {
@@ -64,6 +78,8 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
     <View style={props.extraStyles}>
       <Text style={styles.label}>for</Text>
       <Input
+        forceState={props.forceState}
+        toggleCallback={props.toggleCallback}
         text={`${
           props.initialDuration >= 60
             ? props.initialDuration / 60
