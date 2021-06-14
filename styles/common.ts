@@ -4,7 +4,7 @@
  * @description define some common styles will be globaly available for the app
  */
 
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 export const CommonStyles = StyleSheet.create({
   textWithIcon: {
@@ -13,7 +13,7 @@ export const CommonStyles = StyleSheet.create({
     alignItems: "center",
   },
   withIcon: {
-    marginTop: 4,
+    marginTop: Platform.OS === "ios" ? 0 : 4,
     marginRight: 8,
   },
   rowContainer: {
@@ -41,6 +41,7 @@ export const CommonStyles = StyleSheet.create({
   },
   habitTypeIcon: {
     marginRight: 8,
+    marginTop: Platform.OS === "ios" ? -8 : 0,
   },
   habitTypeText: {
     fontFamily: "JosefinSans-Regular",
@@ -63,5 +64,6 @@ export const CommonStyles = StyleSheet.create({
     marginLeft: 5,
     color: "#fff",
     opacity: 0.5,
+    marginTop: Platform.OS === "ios" ? -4 : 0,
   },
 });

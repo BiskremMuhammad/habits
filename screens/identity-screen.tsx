@@ -8,7 +8,14 @@ import { MotiView } from "@motify/components";
 import { useNavigation } from "@react-navigation/core";
 import { useRoute, useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Dimensions,
+  Animated,
+  Platform,
+} from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
 import { useSelector } from "react-redux";
@@ -205,7 +212,14 @@ export const IdentityReinforcement = () => {
         <Text style={styles.title}>I am a</Text>
         <View style={styles.identityTextContainer}>
           <View style={CommonStyles.textWithIcon}>
-            <BookIcon width={16} height={21} style={CommonStyles.withIcon} />
+            <BookIcon
+              width={18}
+              height={23}
+              style={[
+                CommonStyles.withIcon,
+                Platform.OS === "ios" && { marginTop: -8 },
+              ]}
+            />
             <Text style={styles.identityText}>
               {habit?.type.replace(/ing/gi, "er")}
             </Text>

@@ -6,7 +6,7 @@
 
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { View, Text, Dimensions, StyleSheet } from "react-native";
+import { View, Text, Dimensions, StyleSheet, Platform } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import Svg, { Line } from "react-native-svg";
 import { CommonStyles } from "../../../styles/common";
@@ -36,7 +36,7 @@ interface GraphProps {
 
 export const Graph = ({ labels, data }: GraphProps) => {
   const yLabelMinValue: number = Math.floor(Math.min(...data) / 30.00001) * 30;
-  const yLabelMaxValue: number = Math.ceil(Math.max(...data) / 30) * 30;
+  const yLabelMaxValue: number = Math.ceil(Math.max(...data) / 29.99999) * 30;
   const yLabelsData: number[] = [];
   for (let i = yLabelMinValue + 30; i < yLabelMaxValue; i += 30) {
     yLabelsData.push(i);
@@ -62,19 +62,22 @@ export const Graph = ({ labels, data }: GraphProps) => {
           style={[
             styles.yAxisContainer,
             {
-              height: 1.3 * graphHeight,
+              height: 1.48 * graphHeight,
+              bottom: 0.22 * graphHeight,
               left: margin,
             },
           ]}
         >
           {yAxisLabels.map((v, i) => (
-            <Text key={i} style={styles.yAxisLabel}>
-              {Number(v) >= 60
-                ? Number(v) % 60 === 0
-                  ? `${Math.floor(Number(v) / 60)}h`
-                  : `${Math.floor(Number(v) / 60)}h ${Number(v) % 60}m`
-                : `${Number(v) % 60}m`}
-            </Text>
+            <View key={i} style={styles.yAxisLabelContainer}>
+              <Text style={styles.yAxisLabel}>
+                {Number(v) >= 60
+                  ? Number(v) % 60 === 0
+                    ? `${Math.floor(Number(v) / 60)}h`
+                    : `${Math.floor(Number(v) / 60)}h ${Number(v) % 60}m`
+                  : `${Number(v) % 60}m`}
+              </Text>
+            </View>
           ))}
         </View>
         <View style={{ flex: 1 }}>
@@ -162,7 +165,8 @@ export const Graph = ({ labels, data }: GraphProps) => {
               styles.xAxisContainer,
               {
                 marginLeft: 0.7 * margin,
-                marginRight: -0.25 * margin,
+                marginRight:
+                  Platform.OS === "ios" ? -0.1 * margin : -0.25 * margin,
               },
             ]}
           >
@@ -196,10 +200,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     position: "absolute",
   },
-  yAxisLabel: {
+  yAxisLabelContainer: {
     flex: 1,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "flex-start",
+  },
+  yAxisLabel: {
     fontFamily: "Rubik-Regular",
-    textAlignVertical: "bottom",
     fontSize: 14,
     lineHeight: 18,
     color: "#fff",

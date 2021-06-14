@@ -81,7 +81,7 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
   };
 
   return (
-    <View style={Platform.OS === "ios" && { zIndex: 3 }}>
+    <View style={Platform.OS === "ios" && { zIndex: 4 }}>
       <MotiView
         from={{ backgroundColor: "rgba(12, 8, 52, 0)" }}
         animate={
@@ -135,7 +135,9 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
           <InfoIcon
             style={[
               styles.frequencyIcon,
-              freqSelection === 3 && { marginBottom: 5 },
+              freqSelection === 3 && {
+                marginBottom: Platform.OS === "ios" ? 8 : 5,
+              },
             ]}
             fill="#fff"
           />
@@ -262,7 +264,7 @@ const styles = StyleSheet.create({
     height: 15,
     alignSelf: "flex-end",
     marginLeft: 5,
-    marginBottom: 3,
+    marginBottom: Platform.OS === "ios" ? 6 : 3,
     opacity: 0.5,
   },
   floatingPanelContainer: {

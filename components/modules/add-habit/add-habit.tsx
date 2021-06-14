@@ -6,7 +6,7 @@
 
 import { useNavigation } from "@react-navigation/core";
 import React, { Dispatch, useReducer } from "react";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   HabitActions,
@@ -135,13 +135,20 @@ export const AddHabit = (props: AddHabitProps) => {
 
   return (
     <View style={addHabitStyles.container}>
-      <View style={[addHabitStyles.addHabitSection, { zIndex: 4 }]}>
+      <View style={[addHabitStyles.addHabitSection, { zIndex: 5 }]}>
         <Text style={addHabitStyles.label}>I will</Text>
         <Input
           text={type.replace(/ing/gi, "")}
           width="long"
           icon={
-            <BookIcon width={16} height={21} style={CommonStyles.withIcon} />
+            <BookIcon
+              width={16}
+              height={21}
+              style={[
+                CommonStyles.withIcon,
+                Platform.OS === "ios" && { marginTop: -8 },
+              ]}
+            />
           }
           onChange={onChangeHabit}
           isDropdown={true}

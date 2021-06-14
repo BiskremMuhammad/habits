@@ -12,7 +12,15 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StyleSheet, View, Image, Text, Dimensions, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  Dimensions,
+  Alert,
+  Platform,
+} from "react-native";
 import { AnimatePresence, MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -288,7 +296,14 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       <View style={TimeScreenStyles.header}>
         <MaterialIcons name="arrow-back" size={24} color="white" />
         <Text style={TimeScreenStyles.identity}>I am a</Text>
-        <BookIcon width={16} height={21} style={CommonStyles.withIcon} />
+        <BookIcon
+          width={16}
+          height={21}
+          style={[
+            CommonStyles.withIcon,
+            Platform.OS === "ios" && { marginTop: -8 },
+          ]}
+        />
         <Text
           style={[
             CommonStyles.habitTypeText,
@@ -456,9 +471,9 @@ const TimeScreenStyles = StyleSheet.create({
     opacity: 0.6,
   },
   illustrationBackground: {
-    width: "100%",
-    height: "60%",
-    resizeMode: "contain",
+    width: screenWidth,
+    height: screenWidth * (362 / 375),
+    resizeMode: "cover",
     position: "absolute",
     alignSelf: "flex-start",
     top: 0,

@@ -180,7 +180,7 @@ export const ViewHabitScreen = () => {
             <View
               style={[
                 styles.habitDetails,
-                Platform.OS === "ios" && { zIndex: 2 },
+                Platform.OS === "ios" && { zIndex: 4 },
               ]}
             >
               <Text style={styles.habitDetailsText}>I am a</Text>
@@ -195,7 +195,10 @@ export const ViewHabitScreen = () => {
                   <BookIcon
                     width={16}
                     height={21}
-                    style={[CommonStyles.habitTypeIcon, { marginTop: -11 }]}
+                    style={[
+                      CommonStyles.habitTypeIcon,
+                      { marginTop: Platform.OS === "ios" ? -18 : -11 },
+                    ]}
                   />
                   <Text
                     style={[
@@ -225,7 +228,7 @@ export const ViewHabitScreen = () => {
                 <HabitDurationInput
                   extraStyles={[
                     styles.habitDurationContainer,
-                    Platform.OS === "ios" && { zIndex: 2 },
+                    Platform.OS === "ios" && { zIndex: 3 },
                   ]}
                   disableBorder={true}
                   customWidth="minimal"
