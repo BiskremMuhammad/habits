@@ -251,6 +251,7 @@ export const ViewHabitScreen = () => {
                     styles.habitDurationContainer,
                     Platform.OS === "ios" && { zIndex: 3 },
                   ]}
+                  grayedLabel={true}
                   disableBorder={true}
                   customWidth="minimal"
                   enableDurationSelect={true}

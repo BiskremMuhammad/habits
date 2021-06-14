@@ -52,6 +52,13 @@ interface HabitDurationInputProps {
   forceState?: boolean;
 
   /**
+   * flag to gray out the input label
+   *
+   * @type {boolean}
+   */
+  grayedLabel?: boolean;
+
+  /**
    * the initial duration to be displayed when the component is loaded
    *
    * @type {number}
@@ -76,7 +83,9 @@ interface HabitDurationInputProps {
 export const HabitDurationInput = (props: HabitDurationInputProps) => {
   return (
     <View style={props.extraStyles}>
-      <Text style={styles.label}>for</Text>
+      <Text style={[styles.label, props.grayedLabel && { opacity: 0.5 }]}>
+        for
+      </Text>
       <Input
         forceState={props.forceState}
         toggleCallback={props.toggleCallback}
