@@ -63,7 +63,7 @@ export const Radio = ({
           ? {
               backgroundColor: "rgba(151, 151, 151, 0.3)",
             }
-          : {}
+          : { backgroundColor: "rgba(151, 151, 151, 0)" }
       }
       style={RadioStyles.freqFormLabelContainer}
     >
