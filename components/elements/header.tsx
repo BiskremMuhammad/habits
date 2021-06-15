@@ -5,6 +5,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { NotificationIcon } from "../svgs/notification-icon";
 import { Routes } from "../../types/route-names";
 import { AnnouncementIcon } from "../svgs/announcement-icon";
+import { StackActions } from "@react-navigation/native";
 
 interface HeaderProps {
   leftAction: "back" | "announcement";
@@ -16,7 +17,9 @@ export const Header = ({ leftAction }: HeaderProps) => {
   return (
     <View style={styles.header}>
       {leftAction === "back" ? (
-        <Pressable onPress={() => navigation.navigate(Routes.HOME)}>
+        <Pressable
+          onPress={() => navigation.dispatch(StackActions.push(Routes.HOME))}
+        >
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </Pressable>
       ) : (

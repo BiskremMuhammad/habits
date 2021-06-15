@@ -34,6 +34,7 @@ export const DashboardScreen = () => {
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
         e.preventDefault();
+        console.log("I'm not goin anywhere wht th efuck!!!!!!!!!!!!1111");
         return;
       }),
     [navigation]

@@ -5,10 +5,13 @@
  */
 
 import React, { useMemo } from "react";
-import { Image, StyleSheet, View, Text } from "react-native";
+import { Image, StyleSheet, View, Text, Pressable } from "react-native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import Svg, { Line, Path } from "react-native-svg";
+import { TimerScreenRouteParams } from "../../screens/timer-screen";
 import { CommonStyles } from "../../styles/common";
 import { Habit, HabitTypes } from "../../types/habit";
+import { Routes } from "../../types/route-names";
 import {
   calculateStreak,
   DayState,
@@ -20,6 +23,7 @@ import { AddIconSvg } from "../svgs/add-icon";
 import BookIcon from "../svgs/book";
 import { ClockIcon } from "../svgs/clock-icon";
 import { DashboardRoomDay } from "./dashboard/dashboard-room-day";
+import { CommonActions } from "@react-navigation/native";
 
 /**
  * interface that defines the props of the component
@@ -36,6 +40,7 @@ interface DashboardRoomProps {
 }
 
 export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
+  const navigation = useNavigation();
   let roomGraphic = habit
     ? require("../../assets/rooms/reading-room.png")
     : require("../../assets/rooms/add-room.png");
@@ -81,6 +86,26 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
     [habit]
   );
 
+  const onViewHabit = () => {
+    if (!habit) return;
+
+    navigation.dispatch(
+      StackActions.push(Routes.VIEW_HABIT, {
+        habitId: habit.id,
+      } as TimerScreenRouteParams)
+    );
+  };
+
+  const onStartHabit = () => {
+    if (!habit) return;
+
+    navigation.dispatch(
+      StackActions.push(Routes.TIMER, {
+        habitId: habit.id,
+      } as TimerScreenRouteParams)
+    );
+  };
+
   const roomBottomBorderWidth: number =
     CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE -
     2 * CONSTANTS.DASHBOARD_ROOM_SPACING -
@@ -89,9 +114,11 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.roomContainer}>
-        <Image source={roomGraphic} style={styles.room} />
-      </View>
+      <Pressable onPress={onViewHabit}>
+        <View style={styles.roomContainer}>
+          <Image source={roomGraphic} style={styles.room} />
+        </View>
+      </Pressable>
       <View style={styles.infoContianer}>
         {habit ? (
           <View style={styles.info}>
@@ -192,7 +219,7 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
             <Button
               shape="circle"
               text="start"
-              onPress={() => {}}
+              onPress={onStartHabit}
               hasCircleBorder={true}
             />
           </View>

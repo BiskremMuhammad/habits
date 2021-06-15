@@ -24,7 +24,12 @@ import {
 import { AnimatePresence, MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useIsFocused, useNavigation, useRoute } from "@react-navigation/core";
+import {
+  StackActions,
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/core";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 import BookIcon from "../components/svgs/book";
@@ -106,6 +111,8 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   const [timer, setTimer] = useState<number>((habit?.duration || 1) * 60);
   const [eta, setEta] = useState<Date>(new Date());
   let timerCounter = useRef<ReturnType<typeof setInterval> | null>(null);
+  let submitAnimationComplete =
+    useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ......for exit session modal
   const [exitSessionModalOpened, setExitSessionModalOpenState] =
@@ -200,12 +207,16 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         clearInterval(timerCounter.current);
         timerCounter.current = null;
       }
+      if (submitAnimationComplete.current) {
+        clearTimeout(submitAnimationComplete.current);
+        submitAnimationComplete.current = null;
+      }
     };
   }, []);
 
   useEffect(() => {
     if (
-      isIntroduction &&
+      // isIntroduction &&
       state === ProgressState.PLAYING &&
       timer > 0 &&
       timer % 3 === 0
@@ -251,6 +262,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   const onSubmit = () => {
     setState(ProgressState.SUBMITTED);
+    submitAnimationComplete.current = setTimeout(() => {
+      onSubmitAnimationHasCompleted();
+    }, 2000);
 
     dispatch({
       type: HabitActionTypes.SAVE_DAY_PROGRESS,
@@ -259,8 +273,14 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   };
 
   const onSubmitAnimationHasCompleted = () => {
-    if (state === ProgressState.SUBMITTED) {
+    if (isIntroduction) {
       navigation.navigate(Routes.SUCCESS);
+    } else {
+      navigation.dispatch(
+        StackActions.push(Routes.VIEW_HABIT, {
+          habitId: habitId,
+        } as TimerScreenRouteParams)
+      );
     }
   };
 
@@ -268,7 +288,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     if (!isIntroduction) {
       setExitSessionModalOpenState(openState);
       // also pause the timer
-      changeState(ProgressState.PAUSED);
+      if (state === ProgressState.PLAYING) {
+        changeState(ProgressState.PAUSED);
+      }
     }
   };
 
@@ -375,7 +397,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                   duration: 300,
                 },
               }}
-              onDidAnimate={onSubmitAnimationHasCompleted}
               style={TimeScreenStyles.timerText}
             >
               {state === ProgressState.SUBMITTED

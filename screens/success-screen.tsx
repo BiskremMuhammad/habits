@@ -24,7 +24,21 @@ import { CONSTANTS } from "../utils/constants";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
-export const SuccessScreen = () => {
+/**
+ * interface that defines the props of the component
+ *
+ * @interface
+ */
+interface SuccessScreenProps {
+  /**
+   * on complete the introduction callback
+   *
+   * @type {() => void}
+   */
+  onCompleteIntro: () => void;
+}
+
+export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
   const navigation = useNavigation();
   const dispatch = useDispatch<Dispatch<HabitActions>>();
 
@@ -45,6 +59,7 @@ export const SuccessScreen = () => {
     dispatch({
       type: HabitActionTypes.INTRODUCTION_CLEAR_UP,
     });
+    onCompleteIntro();
     navigation.navigate(Routes.ADD_HABIT);
   };
 

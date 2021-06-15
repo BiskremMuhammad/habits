@@ -8,6 +8,7 @@ import {
   useRoute,
   useNavigation,
   useIsFocused,
+  StackActions,
 } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, {
@@ -97,7 +98,8 @@ export const ViewHabitScreen = () => {
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
         e.preventDefault();
-        navigation.navigate(Routes.HOME);
+        navigation.dispatch(StackActions.push(Routes.HOME));
+        return;
       }),
     [navigation]
   );
@@ -167,6 +169,14 @@ export const ViewHabitScreen = () => {
       });
     recentDays.reverse();
   }
+
+  const onStartPracticing = () => {
+    navigation.dispatch(
+      StackActions.push(Routes.TIMER, {
+        habitId: state.id,
+      } as TimerScreenRouteParams)
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -278,7 +288,7 @@ export const ViewHabitScreen = () => {
               <Button
                 shape="circle"
                 text="start"
-                onPress={() => {}}
+                onPress={onStartPracticing}
                 hasCircleBorder={true}
               />
             </View>

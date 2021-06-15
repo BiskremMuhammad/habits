@@ -85,13 +85,20 @@ export default function App() {
           }}
           initialRouteName={playIntroduction ? Routes.SPLASH : Routes.HOME}
         >
+          <Route.Screen name={Routes.HOME} component={DashboardScreen} />
           {playIntroduction && (
             <Route.Screen name={Routes.SPLASH} component={SplashScreen} />
           )}
           {playIntroduction && (
-            <Route.Screen name={Routes.SUCCESS} component={SuccessScreen} />
+            <Route.Screen name={Routes.SUCCESS}>
+              {(props) => (
+                <SuccessScreen
+                  {...props}
+                  onCompleteIntro={() => setPlayIntroduction(false)}
+                />
+              )}
+            </Route.Screen>
           )}
-          <Route.Screen name={Routes.HOME} component={DashboardScreen} />
           <Route.Screen
             name={Routes.IDENTITY_REINFORCEMENT}
             component={IdentityReinforcement}
