@@ -61,6 +61,16 @@ export const habitReducer = (
       );
       return newState;
 
+    case HabitActionTypes.UPDATE_HABIT:
+      newState = state.map((h: Habit, _) =>
+        h.id === (action.payload as Habit).id ? (action.payload as Habit) : h
+      );
+      AsyncStorage.setItem(
+        CONSTANTS.ASYNC_STORAGE_HABITS,
+        JSON.stringify(newState)
+      );
+      return newState;
+
     case HabitActionTypes.DELETE_HABIT:
       newState = state.filter((h: Habit, i: number) => h.id !== action.payload);
       AsyncStorage.setItem(

@@ -12,6 +12,7 @@ import {
 } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, {
+  Dispatch,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -27,7 +28,7 @@ import {
   Pressable,
   Platform,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BookIcon from "../components/svgs/book";
 import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
@@ -51,6 +52,10 @@ import { calculateStreak } from "../utils/calendar-utils";
 import { Header } from "../components/elements/header";
 import { Graph } from "../components/modules/view-habit/graph";
 import { OpenedDropDown } from "../components/modules/add-habit/add-habit";
+import {
+  HabitActions,
+  HabitActionTypes,
+} from "../redux/reducers/habit/habit-actions";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -63,6 +68,7 @@ export const ViewHabitScreen = () => {
   const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
     (store: GlobalStore): Habit[] => store.habits
   );
+  const storeDispatch = useDispatch<Dispatch<HabitActions>>();
   const [habit, setHabit] = useState<Habit>();
   const [tab, setTab] = useState<"CALENDAR" | "GRAPH">("CALENDAR");
   const tabs: Array<"CALENDAR" | "GRAPH"> = ["CALENDAR", "GRAPH"];
@@ -90,6 +96,13 @@ export const ViewHabitScreen = () => {
     [habit]
   );
 
+  const onSaveChanges = () => {
+    storeDispatch({
+      type: HabitActionTypes.UPDATE_HABIT,
+      payload: state,
+    });
+  };
+
   /**
    * Disable user from going back
    */
@@ -98,6 +111,7 @@ export const ViewHabitScreen = () => {
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
         e.preventDefault();
+        onSaveChanges();
         navigation.dispatch(StackActions.push(Routes.HOME));
         return;
       }),
@@ -171,6 +185,7 @@ export const ViewHabitScreen = () => {
   }
 
   const onStartPracticing = () => {
+    onSaveChanges();
     navigation.dispatch(
       StackActions.push(Routes.TIMER, {
         habitId: state.id,

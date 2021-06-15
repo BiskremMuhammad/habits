@@ -111,8 +111,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   const [timer, setTimer] = useState<number>((habit?.duration || 1) * 60);
   const [eta, setEta] = useState<Date>(new Date());
   let timerCounter = useRef<ReturnType<typeof setInterval> | null>(null);
-  let submitAnimationComplete =
-    useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ......for exit session modal
   const [exitSessionModalOpened, setExitSessionModalOpenState] =
@@ -192,11 +190,15 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   );
 
   useLayoutEffect(() => {
-    const getHabit = habits.find((h) => h.id === habitId);
-    if (getHabit) {
-      setHabit(getHabit);
-    } else if (isOnFocus) {
-      navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
+    if (isOnFocus) {
+      const getHabit = habits.find((h) => h.id === habitId);
+      if (getHabit) {
+        setHabit(getHabit);
+        setTimer((getHabit.duration || 1) * 60);
+        // setState(ProgressState.STOPPED);
+      } else {
+        navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
+      }
     }
   }, [isOnFocus, habits, navigation, habitId]);
 
@@ -206,10 +208,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       if (timerCounter.current) {
         clearInterval(timerCounter.current);
         timerCounter.current = null;
-      }
-      if (submitAnimationComplete.current) {
-        clearTimeout(submitAnimationComplete.current);
-        submitAnimationComplete.current = null;
       }
     };
   }, []);
@@ -262,9 +260,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   const onSubmit = () => {
     setState(ProgressState.SUBMITTED);
-    submitAnimationComplete.current = setTimeout(() => {
-      onSubmitAnimationHasCompleted();
-    }, 2000);
 
     dispatch({
       type: HabitActionTypes.SAVE_DAY_PROGRESS,
@@ -272,15 +267,17 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     });
   };
 
-  const onSubmitAnimationHasCompleted = () => {
-    if (isIntroduction) {
-      navigation.navigate(Routes.SUCCESS);
-    } else {
-      navigation.dispatch(
-        StackActions.push(Routes.VIEW_HABIT, {
-          habitId: habitId,
-        } as TimerScreenRouteParams)
-      );
+  const onSubmitAnimationHasCompleted = (a: string) => {
+    if (state === ProgressState.SUBMITTED && isOnFocus && a === "top") {
+      if (isIntroduction) {
+        navigation.navigate(Routes.SUCCESS);
+      } else {
+        navigation.dispatch(
+          StackActions.push(Routes.VIEW_HABIT, {
+            habitId: habitId,
+          } as TimerScreenRouteParams)
+        );
+      }
     }
   };
 
@@ -397,6 +394,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                   duration: 300,
                 },
               }}
+              onDidAnimate={onSubmitAnimationHasCompleted}
               style={TimeScreenStyles.timerText}
             >
               {state === ProgressState.SUBMITTED
