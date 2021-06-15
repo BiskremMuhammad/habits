@@ -20,6 +20,7 @@ import {
   Dimensions,
   Alert,
   Platform,
+  Pressable,
 } from "react-native";
 import { AnimatePresence, MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -272,13 +273,17 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       if (isIntroduction) {
         navigation.navigate(Routes.SUCCESS);
       } else {
-        navigation.dispatch(
-          StackActions.push(Routes.VIEW_HABIT, {
-            habitId: habitId,
-          } as TimerScreenRouteParams)
-        );
+        goToViewHabit();
       }
     }
+  };
+
+  const goToViewHabit = () => {
+    navigation.dispatch(
+      StackActions.push(Routes.VIEW_HABIT, {
+        habitId: habitId,
+      } as TimerScreenRouteParams)
+    );
   };
 
   const onCancelSessionHandler = (openState: boolean) => {
@@ -313,7 +318,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         style={TimeScreenStyles.illustrationBackground}
       />
       <View style={TimeScreenStyles.header}>
-        <MaterialIcons name="arrow-back" size={24} color="white" />
+        <Pressable onPress={() => onCancelSessionHandler(true)}>
+          <MaterialIcons name="arrow-back" size={24} color="white" />
+        </Pressable>
         <Text style={TimeScreenStyles.identity}>I am a</Text>
         <BookIcon
           width={16}
@@ -332,7 +339,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         >
           {habit?.type.replace(/ing/gi, "er")}
         </Text>
-        {streak > 0 && <Text style={CommonStyles.habitStreak}>{streak}</Text>}
+        {streak > 0 && !isIntroduction && (
+          <Text style={CommonStyles.habitStreak}>{streak}</Text>
+        )}
       </View>
       <View style={TimeScreenStyles.peers}>
         <Text style={TimeScreenStyles.peersNum}>2K</Text>
@@ -463,11 +472,11 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         )}
       </View>
       <AnimatePresence>
-        {exitSessionModalOpened && (
+        {exitSessionModalOpened && !isIntroduction && (
           <Modal>
             <ExitSessionModal
               onCancel={() => onCancelSessionHandler(false)}
-              onExit={() => {}}
+              onExit={goToViewHabit}
             />
           </Modal>
         )}

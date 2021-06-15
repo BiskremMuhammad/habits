@@ -35,7 +35,7 @@ import { CommonStyles } from "../styles/common";
 import { Habit } from "../types/habit";
 import { Routes } from "../types/route-names";
 import { TimerScreenRouteParams } from "./timer-screen";
-import { WeekDays } from "../types/week-days";
+import { WeekDays, WeekDaysFullName } from "../types/week-days";
 import { Plant, PlantState } from "../components/elements/plant";
 import { Button } from "../components/elements/button";
 import { useSharedValue } from "react-native-reanimated";
@@ -299,7 +299,11 @@ export const ViewHabitScreen = () => {
                 positionBottom={plantPosition}
                 extraStyles={styles.plant}
               />
-              <Text style={styles.weekday}>Monday</Text>
+              <Text style={styles.weekday}>
+                {Object.values(WeekDaysFullName).find(
+                  (d, i) => i === today.getDay()
+                )}
+              </Text>
               <Button
                 shape="circle"
                 text="start"
