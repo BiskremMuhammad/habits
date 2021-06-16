@@ -198,7 +198,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         setTimer((getHabit.duration || 1) * 60);
         // setState(ProgressState.STOPPED);
       } else {
-        navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
+        navigation.dispatch(
+          StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
+        );
       }
     }
   }, [isOnFocus, habits, navigation, habitId]);
@@ -215,7 +217,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   useEffect(() => {
     if (
-      // isIntroduction &&
+      isIntroduction &&
       state === ProgressState.PLAYING &&
       timer > 0 &&
       timer % 3 === 0

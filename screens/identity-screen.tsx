@@ -5,7 +5,7 @@
  */
 
 import { MotiView } from "@motify/components";
-import { useNavigation } from "@react-navigation/core";
+import { StackActions, useNavigation } from "@react-navigation/core";
 import { useRoute, useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
@@ -166,9 +166,11 @@ export const IdentityReinforcement = () => {
     // after all delays and animations and another 2 seconds navigate to view the created habit
     const automaticNavigateDuration: number = 2000 + 3000 + 2000;
     const autoNavigate = setTimeout(() => {
-      navigation.navigate(Routes.VIEW_HABIT, {
-        habitId,
-      } as TimerScreenRouteParams);
+      navigation.dispatch(
+        StackActions.push(Routes.VIEW_HABIT, {
+          habitId,
+        } as TimerScreenRouteParams)
+      );
     }, automaticNavigateDuration);
 
     return () => {
@@ -181,7 +183,9 @@ export const IdentityReinforcement = () => {
     if (getHabit) {
       setHabit(getHabit);
     } else if (isOnFocus) {
-      navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
+      navigation.dispatch(
+        StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
+      );
     }
   }, [isOnFocus, habits, navigation, habitId]);
 

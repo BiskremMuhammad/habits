@@ -127,7 +127,9 @@ export const ViewHabitScreen = () => {
         payload: getHabit,
       });
     } else if (isOnFocus) {
-      navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
+      navigation.dispatch(
+        StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
+      );
     }
   }, [isOnFocus, habits, navigation, habitId]);
 

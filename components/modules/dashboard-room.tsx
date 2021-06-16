@@ -86,14 +86,20 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
     [habit]
   );
 
-  const onViewHabit = () => {
-    if (!habit) return;
+  const goToAddHabit = () => {
+    navigation.dispatch(StackActions.push(Routes.ADD_HABIT));
+  };
 
-    navigation.dispatch(
-      StackActions.push(Routes.VIEW_HABIT, {
-        habitId: habit.id,
-      } as TimerScreenRouteParams)
-    );
+  const onViewHabit = () => {
+    if (!habit) {
+      goToAddHabit();
+    } else {
+      navigation.dispatch(
+        StackActions.push(Routes.VIEW_HABIT, {
+          habitId: habit.id,
+        } as TimerScreenRouteParams)
+      );
+    }
   };
 
   const onStartHabit = () => {
@@ -224,15 +230,17 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
             />
           </View>
         ) : (
-          <View style={styles.addHabitContainer}>
-            <AddIconSvg style={styles.addIcon} width={73} height={73} />
-            <View style={styles.addTextContainer}>
-              <Text style={styles.addHabitText}>Add a habit</Text>
-              <Text style={styles.addHabitDescription}>
-                21 days practicing your habit will unlock a new habit slot
-              </Text>
+          <Pressable onPress={goToAddHabit}>
+            <View style={styles.addHabitContainer}>
+              <AddIconSvg style={styles.addIcon} width={73} height={73} />
+              <View style={styles.addTextContainer}>
+                <Text style={styles.addHabitText}>Add a habit</Text>
+                <Text style={styles.addHabitDescription}>
+                  21 days practicing your habit will unlock a new habit slot
+                </Text>
+              </View>
             </View>
-          </View>
+          </Pressable>
         )}
       </View>
     </View>

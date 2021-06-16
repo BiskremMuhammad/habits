@@ -4,7 +4,8 @@
  * @description implement the add habit form
  */
 
-import { useNavigation } from "@react-navigation/core";
+import { v4 as uuid } from "uuid";
+import { StackActions, useNavigation } from "@react-navigation/core";
 import React, { Dispatch, useReducer, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -80,10 +81,10 @@ export const AddHabit = (props: AddHabitProps) => {
   );
   const storeDispatch = useDispatch<Dispatch<HabitActions>>();
 
-  const [state, dispatch] = useReducer(
-    addHabitReducer,
-    INITIAL_ADD_HABIT_STATE
-  );
+  const [state, dispatch] = useReducer(addHabitReducer, {
+    ...INITIAL_ADD_HABIT_STATE,
+    id: uuid(),
+  });
   const { type, isEveryDay, days, duration } = state;
   const navigation = useNavigation();
   const [currentOpenInput, setCurrentOpenInput] = useState(OpenedDropDown.NONE);
@@ -130,19 +131,21 @@ export const AddHabit = (props: AddHabitProps) => {
   };
 
   const onCallToActionPress = () => {
+    storeDispatch({
+      type: HabitActionTypes.ADD_NEW_HABIT,
+      payload: state,
+    });
     if (props.isIntroduction) {
       navigation.navigate(Routes.TIMER, {
         habitId: state.id,
       } as TimerScreenRouteParams);
     } else {
-      navigation.navigate(Routes.IDENTITY_REINFORCEMENT, {
-        habitId: state.id,
-      } as TimerScreenRouteParams);
+      navigation.dispatch(
+        StackActions.push(Routes.IDENTITY_REINFORCEMENT, {
+          habitId: state.id,
+        } as TimerScreenRouteParams)
+      );
     }
-    storeDispatch({
-      type: HabitActionTypes.ADD_NEW_HABIT,
-      payload: state,
-    });
   };
 
   return (
