@@ -20,6 +20,32 @@ export enum HabitTypes {
 }
 
 /**
+ * enum that defines the several types of habit
+ *
+ * @enum
+ * @exports
+ */
+export enum HabitTypesVerbale {
+  READING = "Read",
+  JOURNALING = "Write",
+  SKETCHING = "Sketch",
+  MEDITATING = "Meditate",
+}
+
+/**
+ * enum that defines the several types of habit
+ *
+ * @enum
+ * @exports
+ */
+export enum HabitTypesIdentity {
+  READING = "Reader",
+  JOURNALING = "Writer",
+  SKETCHING = "Sketcher",
+  MEDITATING = "Meditation",
+}
+
+/**
  * interface that defines the Progress data object
  *
  * @interface

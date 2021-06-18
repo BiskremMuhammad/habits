@@ -23,7 +23,6 @@ import { AddIconSvg } from "../svgs/add-icon";
 import BookIcon from "../svgs/book";
 import { ClockIcon } from "../svgs/clock-icon";
 import { DashboardRoomDay } from "./dashboard/dashboard-room-day";
-import { CommonActions } from "@react-navigation/native";
 
 /**
  * interface that defines the props of the component

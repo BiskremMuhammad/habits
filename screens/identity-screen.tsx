@@ -19,6 +19,7 @@ import {
 import { useSharedValue } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
 import { useSelector } from "react-redux";
+import { HabitIcon } from "../components/elements/habit-icon";
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import BookIcon from "../components/svgs/book";
@@ -216,7 +217,8 @@ export const IdentityReinforcement = () => {
         <Text style={styles.title}>I am a</Text>
         <View style={styles.identityTextContainer}>
           <View style={CommonStyles.textWithIcon}>
-            <BookIcon
+            <HabitIcon
+              type={habit?.type}
               width={18}
               height={23}
               style={[

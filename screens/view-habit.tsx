@@ -56,6 +56,7 @@ import {
   HabitActions,
   HabitActionTypes,
 } from "../redux/reducers/habit/habit-actions";
+import { HabitIcon } from "../components/elements/habit-icon";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -225,9 +226,8 @@ export const ViewHabitScreen = () => {
                 }}
               >
                 <View style={CommonStyles.textWithIcon}>
-                  <BookIcon
-                    width={16}
-                    height={21}
+                  <HabitIcon
+                    type={habit?.type}
                     style={[
                       CommonStyles.habitTypeIcon,
                       { marginTop: Platform.OS === "ios" ? -18 : -11 },

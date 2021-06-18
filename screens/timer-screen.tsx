@@ -50,6 +50,7 @@ import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
 import { Routes } from "../types/route-names";
 import { calculateStreak } from "../utils/calendar-utils";
+import { HabitIcon } from "../components/elements/habit-icon";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -324,9 +325,8 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </Pressable>
         <Text style={TimeScreenStyles.identity}>I am a</Text>
-        <BookIcon
-          width={16}
-          height={21}
+        <HabitIcon
+          type={habit?.type}
           style={[
             CommonStyles.withIcon,
             Platform.OS === "ios" && { marginTop: -8 },

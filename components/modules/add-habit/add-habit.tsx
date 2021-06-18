@@ -30,6 +30,7 @@ import {
 } from "./add-habit-reducer";
 import { HabitDurationInput } from "./habit-duration";
 import { HabitFrequencyInput } from "./habit-frequency";
+import { HabitIcon } from "../../elements/habit-icon";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -165,9 +166,8 @@ export const AddHabit = (props: AddHabitProps) => {
           text={type.replace(/ing/gi, "")}
           width="long"
           icon={
-            <BookIcon
-              width={16}
-              height={21}
+            <HabitIcon
+              type={type}
               style={[
                 CommonStyles.withIcon,
                 Platform.OS === "ios" && { marginTop: -8 },
