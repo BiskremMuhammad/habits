@@ -32,7 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 import BookIcon from "../components/svgs/book";
 import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
-import { Habit } from "../types/habit";
+import { Habit, HabitTypes, HabitTypesIdentity } from "../types/habit";
 import { Routes } from "../types/route-names";
 import { TimerScreenRouteParams } from "./timer-screen";
 import { WeekDays, WeekDaysFullName } from "../types/week-days";
@@ -57,6 +57,7 @@ import {
   HabitActionTypes,
 } from "../redux/reducers/habit/habit-actions";
 import { HabitIcon } from "../components/elements/habit-icon";
+import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -239,7 +240,7 @@ export const ViewHabitScreen = () => {
                       CommonStyles.habitTypeAccentText,
                     ]}
                   >
-                    {habit?.type.replace(/ing/gi, "er")}
+                    {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
                   </Text>
                   <Text style={CommonStyles.habitStreak}>{streak}</Text>
                 </View>

@@ -22,13 +22,13 @@ import { useSelector } from "react-redux";
 import { HabitIcon } from "../components/elements/habit-icon";
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { AddIconSvg } from "../components/svgs/add-icon";
-import BookIcon from "../components/svgs/book";
 import { RadialGradientShape } from "../components/svgs/radial-gradient";
 import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
-import { Habit } from "../types/habit";
+import { Habit, HabitTypes, HabitTypesIdentity } from "../types/habit";
 import { Routes } from "../types/route-names";
 import { CONSTANTS } from "../utils/constants";
+import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
 import { TimerScreenRouteParams } from "./timer-screen";
 
 const { width, height } = Dimensions.get("screen");
@@ -227,7 +227,7 @@ export const IdentityReinforcement = () => {
               ]}
             />
             <Text style={styles.identityText}>
-              {habit?.type.replace(/ing/gi, "er")}
+              {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
             </Text>
           </View>
           <View style={styles.identityBorderContainer}>

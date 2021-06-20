@@ -16,7 +16,12 @@ import {
 import { GlobalStore } from "../../../redux/store";
 import { TimerScreenRouteParams } from "../../../screens/timer-screen";
 import { CommonStyles } from "../../../styles/common";
-import { Habit, HabitTypes } from "../../../types/habit";
+import {
+  Habit,
+  HabitTypes,
+  HabitTypesIdentity,
+  HabitTypesVerbale,
+} from "../../../types/habit";
 import { Routes } from "../../../types/route-names";
 import { WeekDays } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
@@ -31,6 +36,7 @@ import {
 import { HabitDurationInput } from "./habit-duration";
 import { HabitFrequencyInput } from "./habit-frequency";
 import { HabitIcon } from "../../elements/habit-icon";
+import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -97,7 +103,7 @@ export const AddHabit = (props: AddHabitProps) => {
   const onChangeHabit = (val: string) => {
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_TYPE,
-      payload: `${val}ING`,
+      payload: getEnumKeyByEnumValue(HabitTypesVerbale, val),
     });
   };
 
@@ -163,7 +169,7 @@ export const AddHabit = (props: AddHabitProps) => {
           toggleCallback={(state: boolean) =>
             onChangeOpenedDropdown(state, OpenedDropDown.HABIT_TYPE)
           }
-          text={type.replace(/ing/gi, "")}
+          text={HabitTypesVerbale[type]}
           width="long"
           icon={
             <HabitIcon
@@ -178,7 +184,7 @@ export const AddHabit = (props: AddHabitProps) => {
           isDropdown={true}
           dropdownOptions={
             props.enableChangeHabit
-              ? Object.keys(HabitTypes).map((k) => k.replace(/ing/gi, ""))
+              ? Object.values(HabitTypesVerbale).map((k) => k)
               : undefined
           }
           hasBorder={true}

@@ -33,10 +33,9 @@ import {
 } from "@react-navigation/core";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
-import BookIcon from "../components/svgs/book";
 import { CommonStyles } from "../styles/common";
 import { Button } from "../components/elements/button";
-import { Habit } from "../types/habit";
+import { Habit, HabitTypes, HabitTypesIdentity } from "../types/habit";
 import { useDispatch, useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
 import InfoIcon from "../components/svgs/info-icon";
@@ -51,6 +50,7 @@ import { ExitSessionModal } from "../components/modules/modals/exit-session-moda
 import { Routes } from "../types/route-names";
 import { calculateStreak } from "../utils/calendar-utils";
 import { HabitIcon } from "../components/elements/habit-icon";
+import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -339,7 +339,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             { paddingBottom: 0 },
           ]}
         >
-          {habit?.type.replace(/ing/gi, "er")}
+          {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
         </Text>
         {streak > 0 && !isIntroduction && (
           <Text style={CommonStyles.habitStreak}>{streak}</Text>
