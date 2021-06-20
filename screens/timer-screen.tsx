@@ -51,6 +51,7 @@ import { Routes } from "../types/route-names";
 import { calculateStreak } from "../utils/calendar-utils";
 import { HabitIcon } from "../components/elements/habit-icon";
 import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
+import { CONSTANTS } from "../utils/constants";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -490,7 +491,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 const TimeScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: Platform.OS ? 32 : 36,
+    paddingVertical: CONSTANTS.HEADER_TOP_MARGIN,
   },
   backgroundOverlay: {
     position: "absolute",

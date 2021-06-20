@@ -147,6 +147,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     flex: 1,
-    paddingVertical: Platform.OS ? 32 : 36,
+    paddingVertical: CONSTANTS.HEADER_TOP_MARGIN,
   },
 });

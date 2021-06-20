@@ -58,6 +58,7 @@ import {
 } from "../redux/reducers/habit/habit-actions";
 import { HabitIcon } from "../components/elements/habit-icon";
 import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
+import { CONSTANTS } from "../utils/constants";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -204,7 +205,7 @@ export const ViewHabitScreen = () => {
         style={styles.backgroundOverlay}
       />
       <ScrollView>
-        <View style={{ paddingVertical: Platform.OS ? 32 : 36 }}>
+        <View style={{ paddingVertical: CONSTANTS.HEADER_TOP_MARGIN }}>
           <Header leftAction="back" />
           <View
             style={[

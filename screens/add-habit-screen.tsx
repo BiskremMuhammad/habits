@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect } from "react";
-import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
@@ -15,8 +15,7 @@ import { Header } from "../components/elements/header";
 import { useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
 import { Habit } from "../types/habit";
-
-const { height: screenHeight } = Dimensions.get("screen");
+import { CONSTANTS } from "../utils/constants";
 
 /**
  * interface that defines the props of the component
@@ -57,16 +56,21 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
   );
 
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <ScrollView
+      style={{
+        flex: 1,
+        position: "relative",
+      }}
+    >
+      {!isIntroduction && !!habits.length && (
+        <Header
+          leftAction="back"
+          hideNotification={true}
+          extraStyles={styles.header}
+          normalGoBack={true}
+        />
+      )}
       <View style={styles.container}>
-        {!isIntroduction && !!habits.length && (
-          <Header
-            leftAction="back"
-            hideNotification={true}
-            extraStyles={styles.header}
-            normalGoBack={true}
-          />
-        )}
         <TitlePanel icon={({ style }) => <AddIconSvg style={style} />} />
         <MotiView
           style={{ alignSelf: "stretch", marginTop: 96 }}
@@ -90,12 +94,12 @@ const styles = StyleSheet.create({
     position: "relative",
     flex: 1,
     alignItems: "center",
-    paddingTop: 0.26 * screenHeight,
-    paddingBottom: 0.08 * screenHeight,
+    paddingTop: 1.2 * CONSTANTS.SCREEN_CONTAINER_TOP_PADDING,
+    paddingBottom: CONSTANTS.SCREEN_CONTAINER_BOTTOM_PADDING,
   },
   header: {
     position: "absolute",
     alignSelf: "stretch",
-    top: 72,
+    top: CONSTANTS.HEADER_TOP_MARGIN,
   },
 });

@@ -13,6 +13,7 @@ const DASHBOARD_ROOM_ITEM_SIZE: number =
 
 export const CONSTANTS = {
   PADDING: 0.17 * width,
+  HEADER_TOP_MARGIN: Platform.OS === "ios" ? 32 : 36,
   SCREEN_CONTAINER_TOP_PADDING:
     height < 800
       ? Platform.OS === "ios"

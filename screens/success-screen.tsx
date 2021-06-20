@@ -70,12 +70,7 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
         showPlant={true}
         title="GREAT!"
       />
-      <Text
-        style={[
-          CommonStyles.infoTxt,
-          { marginBottom: 14, marginTop: 32, paddingHorizontal: 10 },
-        ]}
-      >
+      <Text style={[CommonStyles.infoTxt, SuccessScreenStyles.headDescription]}>
         You completed a session and have illuminated your Reading plant.
       </Text>
       <Spoiler
@@ -83,12 +78,7 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
         spoiler="We start with 1 minute habits because studies have shown day-to-day frequency (not duration) is the leading factor long-term habit formation. After your identity and day-to-day frequency have been established, session duration can be expanded."
         icon={<InfoIcon fill="#fff" />}
       />
-      <Text
-        style={[
-          CommonStyles.infoTxt,
-          { marginVertical: 14, paddingHorizontal: 10 },
-        ]}
-      >
+      <Text style={[CommonStyles.infoTxt, SuccessScreenStyles.oneMinuteInfo]}>
         Now set up your daily habit on the next screen.
       </Text>
       <View style={{ flex: 1 }} />
@@ -109,5 +99,15 @@ const SuccessScreenStyles = StyleSheet.create({
     paddingTop: CONSTANTS.SCREEN_CONTAINER_TOP_PADDING,
     paddingBottom: CONSTANTS.SCREEN_CONTAINER_BOTTOM_PADDING,
     paddingHorizontal: 0.8 * CONSTANTS.PADDING,
+  },
+  headDescription: {
+    marginBottom: screenHeight < 800 ? 0 : 14,
+    marginTop: screenHeight < 800 ? 8 : 32,
+    paddingHorizontal: 10,
+  },
+  oneMinuteInfo: {
+    marginTop: screenHeight < 800 ? 0 : 14,
+    marginBottom: 14,
+    paddingHorizontal: 10,
   },
 });
