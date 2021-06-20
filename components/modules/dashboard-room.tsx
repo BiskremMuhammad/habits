@@ -158,7 +158,7 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
                 } ${habit.duration >= 60 ? "hr" : "min"}`}</Text>
                 <Text style={styles.habitFreqText}>
                   {habit.isEveryDay
-                    ? "everyday"
+                    ? "every day"
                     : `${habit.days.length} days/week`}
                 </Text>
               </View>

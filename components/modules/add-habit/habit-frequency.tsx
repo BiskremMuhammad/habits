@@ -141,9 +141,9 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
             ]}
           >
             {props.isEveryDay
-              ? "everyday"
+              ? "every day"
               : freqSelection === 2 || props.days.length === 6
-              ? `everyday but ${
+              ? `every day but ${
                   WeekDaysFullName[
                     getEnumKeyByEnumValue(
                       WeekDays,
@@ -193,7 +193,7 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
               </Text>
               <Radio
                 index={1}
-                label="Ok, I’ll do it everyday"
+                label="Ok, I’ll do it every day"
                 selected={freqSelection === 1}
                 onChange={() => onChangeFreq(1)}
               />

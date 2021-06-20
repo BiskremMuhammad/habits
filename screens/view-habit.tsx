@@ -204,7 +204,7 @@ export const ViewHabitScreen = () => {
         style={styles.backgroundOverlay}
       />
       <ScrollView>
-        <View style={{ paddingVertical: 65 }}>
+        <View style={{ paddingVertical: Platform.OS ? 32 : 36 }}>
           <Header leftAction="back" />
           <View
             style={[
