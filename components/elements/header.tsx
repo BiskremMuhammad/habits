@@ -1,5 +1,18 @@
+/**
+ * @author Muhammad Omran
+ * @date 16-06-2021
+ * @description implement the reusable header component
+ */
+
 import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { MaterialIcons } from "@expo/vector-icons";
 import { NotificationIcon } from "../svgs/notification-icon";
@@ -7,18 +20,58 @@ import { Routes } from "../../types/route-names";
 import { AnnouncementIcon } from "../svgs/announcement-icon";
 import { StackActions } from "@react-navigation/native";
 
+/**
+ * interface that defines the props of the component
+ *
+ * @interface
+ */
 interface HeaderProps {
+  /**
+   * extra styles to pass to the component
+   *
+   * @type {StyleProp<ViewStyle>}
+   */
+  extraStyles?: StyleProp<ViewStyle>;
+
+  /**
+   * flag to hide the nofication ability
+   *
+   * @type {boolean}
+   */
+  hideNotification?: boolean;
+
+  /**
+   * the action of the left button
+   *
+   * @type {"back" | "announcement"}
+   */
   leftAction: "back" | "announcement";
+
+  /**
+   * flag for the back button to normally go back instead of the custom navigation
+   *
+   * @type {boolean}
+   */
+  normalGoBack?: boolean;
 }
 
-export const Header = ({ leftAction }: HeaderProps) => {
+export const Header = ({
+  extraStyles,
+  hideNotification,
+  leftAction,
+  normalGoBack,
+}: HeaderProps) => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, extraStyles]}>
       {leftAction === "back" ? (
         <Pressable
-          onPress={() => navigation.dispatch(StackActions.push(Routes.HOME))}
+          onPress={() =>
+            normalGoBack
+              ? navigation.goBack()
+              : navigation.dispatch(StackActions.push(Routes.HOME))
+          }
         >
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </Pressable>
@@ -27,12 +80,14 @@ export const Header = ({ leftAction }: HeaderProps) => {
           <AnnouncementIcon />
         </Pressable>
       )}
-      <View style={styles.notificationContainer}>
-        <NotificationIcon />
-        <View style={styles.notificationBadge}>
-          <Text style={styles.NotificationBadgeText}>3</Text>
+      {!hideNotification && (
+        <View style={styles.notificationContainer}>
+          <NotificationIcon />
+          <View style={styles.notificationBadge}>
+            <Text style={styles.NotificationBadgeText}>3</Text>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 };

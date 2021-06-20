@@ -11,6 +11,7 @@ import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import { useNavigation } from "@react-navigation/native";
 import { TitlePanel } from "../components/modules/panels/title-panel";
+import { Header } from "../components/elements/header";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -44,6 +45,7 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
         } else {
           navigation.dispatch(e.data.action);
         }
+        return;
       }),
     [navigation, isIntroduction]
   );
@@ -51,6 +53,14 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
   return (
     <ScrollView style={{ flex: 1 }}>
       <View style={styles.container}>
+        {!isIntroduction && (
+          <Header
+            leftAction="back"
+            hideNotification={true}
+            extraStyles={styles.header}
+            normalGoBack={true}
+          />
+        )}
         <TitlePanel icon={({ style }) => <AddIconSvg style={style} />} />
         <MotiView
           style={{ alignSelf: "stretch", marginTop: 96 }}
@@ -71,9 +81,15 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
 
 const styles = StyleSheet.create({
   container: {
+    position: "relative",
     flex: 1,
     alignItems: "center",
     paddingTop: 0.26 * screenHeight,
     paddingBottom: 0.08 * screenHeight,
+  },
+  header: {
+    position: "absolute",
+    alignSelf: "stretch",
+    top: 72,
   },
 });
