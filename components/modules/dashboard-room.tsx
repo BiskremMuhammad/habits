@@ -10,7 +10,7 @@ import { StackActions, useNavigation } from "@react-navigation/native";
 import Svg, { Line, Path } from "react-native-svg";
 import { TimerScreenRouteParams } from "../../screens/timer-screen";
 import { CommonStyles } from "../../styles/common";
-import { Habit, HabitTypes } from "../../types/habit";
+import { Habit, HabitTypes, HabitTypesIdentity } from "../../types/habit";
 import { Routes } from "../../types/route-names";
 import {
   calculateStreak,
@@ -23,6 +23,7 @@ import { AddIconSvg } from "../svgs/add-icon";
 import BookIcon from "../svgs/book";
 import { ClockIcon } from "../svgs/clock-icon";
 import { DashboardRoomDay } from "./dashboard/dashboard-room-day";
+import { HabitIcon } from "../elements/habit-icon";
 
 /**
  * interface that defines the props of the component
@@ -129,10 +130,9 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
           <View style={styles.info}>
             <View style={styles.habitDetails}>
               <View style={CommonStyles.textWithIcon}>
-                <BookIcon
-                  width={18}
-                  height={23}
-                  style={CommonStyles.habitTypeIcon}
+                <HabitIcon
+                  type={habit?.type}
+                  style={[CommonStyles.habitTypeIcon]}
                 />
                 <Text
                   style={[
@@ -141,7 +141,7 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
                     { paddingBottom: 0 },
                   ]}
                 >
-                  {habit.type.replace(/ing/gi, "er")}
+                  {HabitTypesIdentity[habit.type]}
                 </Text>
                 {streak > 0 && (
                   <Text style={CommonStyles.habitStreak}>{streak}</Text>
