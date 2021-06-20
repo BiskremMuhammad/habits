@@ -12,6 +12,9 @@ import { AddIconSvg } from "../components/svgs/add-icon";
 import { useNavigation } from "@react-navigation/native";
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { Header } from "../components/elements/header";
+import { useSelector } from "react-redux";
+import { GlobalStore } from "../redux/store";
+import { Habit } from "../types/habit";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -31,6 +34,9 @@ interface AddHabitScreenProps {
 
 export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
   const navigation = useNavigation();
+  const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
+    (store: GlobalStore): Habit[] => store.habits
+  );
 
   /**
    * Disable user from going back when this is the first time to prevent going back to the introduction success screen
@@ -40,7 +46,7 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
         e.preventDefault();
-        if (isIntroduction) {
+        if (isIntroduction || !habits.length) {
           return;
         } else {
           navigation.dispatch(e.data.action);
@@ -53,7 +59,7 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
   return (
     <ScrollView style={{ flex: 1 }}>
       <View style={styles.container}>
-        {!isIntroduction && (
+        {!isIntroduction && !!habits.length && (
           <Header
             leftAction="back"
             hideNotification={true}
