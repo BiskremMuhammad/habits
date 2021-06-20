@@ -352,7 +352,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       <View style={TimeScreenStyles.timerContainer}>
         <View style={TimeScreenStyles.progressContainer}>
           <AnimatedCircularProgress
-            size={screenWidth - 32 - 54}
+            size={screenWidth - 32 - 54 - (screenHeight < 800 ? 28 : 0)}
             width={5}
             fill={
               timer === (habit?.duration || 1) * 60 - 1 ? 1 : curProgress.value
@@ -490,7 +490,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 const TimeScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 65,
+    paddingVertical: Platform.OS ? 32 : 36,
   },
   backgroundOverlay: {
     position: "absolute",
@@ -529,7 +529,8 @@ const TimeScreenStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     paddingHorizontal: 24,
-    marginVertical: 46,
+    marginTop: 25,
+    marginBottom: 40,
   },
   peersNum: {
     fontFamily: "Rubik-Regular",
@@ -585,7 +586,7 @@ const TimeScreenStyles = StyleSheet.create({
     color: "#fff",
   },
   timerControls: {
-    marginTop: 36.5,
+    marginTop: screenHeight < 800 ? 0 : 33,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -594,7 +595,7 @@ const TimeScreenStyles = StyleSheet.create({
   footer: {
     display: "flex",
     alignItems: "center",
-    marginTop: -10,
+    marginTop: -16,
   },
   footerInfoSection: {
     display: "flex",

@@ -25,6 +25,7 @@ import { Routes } from "./types/route-names";
 import { IdentityReinforcement } from "./screens/identity-screen";
 import { ViewHabitScreen } from "./screens/view-habit";
 import { Graph } from "./components/modules/view-habit/graph";
+import { SafeAreaView } from "react-native-safe-area-context";
 enableScreens();
 
 const { width, height } = Dimensions.get("screen");
@@ -72,51 +73,59 @@ export default function App() {
   return loading ? (
     <></>
   ) : (
-    <Provider store={store}>
-      <NavigationContainer>
-        <StatusBar style="light" />
-        <Image source={require("./assets/bg.png")} style={styles.background} />
-        <Route.Navigator
-          screenOptions={{
-            header: () => null,
-            cardStyle: {
-              backgroundColor: "transparent",
-            },
-          }}
-          initialRouteName={playIntroduction ? Routes.SPLASH : Routes.HOME}
-        >
-          <Route.Screen name={Routes.HOME} component={DashboardScreen} />
-          {playIntroduction && (
-            <Route.Screen name={Routes.SPLASH} component={SplashScreen} />
-          )}
-          {playIntroduction && (
-            <Route.Screen name={Routes.SUCCESS}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Provider store={store}>
+        <NavigationContainer>
+          <StatusBar style="light" />
+          <Image
+            source={require("./assets/bg.png")}
+            style={styles.background}
+          />
+          <Route.Navigator
+            screenOptions={{
+              header: () => null,
+              cardStyle: {
+                backgroundColor: "transparent",
+              },
+            }}
+            initialRouteName={playIntroduction ? Routes.SPLASH : Routes.HOME}
+          >
+            <Route.Screen name={Routes.HOME} component={DashboardScreen} />
+            {playIntroduction && (
+              <Route.Screen name={Routes.SPLASH} component={SplashScreen} />
+            )}
+            {playIntroduction && (
+              <Route.Screen name={Routes.SUCCESS}>
+                {(props) => (
+                  <SuccessScreen
+                    {...props}
+                    onCompleteIntro={() => setPlayIntroduction(false)}
+                  />
+                )}
+              </Route.Screen>
+            )}
+            <Route.Screen
+              name={Routes.IDENTITY_REINFORCEMENT}
+              component={IdentityReinforcement}
+            />
+            <Route.Screen
+              name={Routes.VIEW_HABIT}
+              component={ViewHabitScreen}
+            />
+            <Route.Screen name={Routes.TIMER}>
               {(props) => (
-                <SuccessScreen
-                  {...props}
-                  onCompleteIntro={() => setPlayIntroduction(false)}
-                />
+                <TimerScreen {...props} isIntroduction={playIntroduction} />
               )}
             </Route.Screen>
-          )}
-          <Route.Screen
-            name={Routes.IDENTITY_REINFORCEMENT}
-            component={IdentityReinforcement}
-          />
-          <Route.Screen name={Routes.VIEW_HABIT} component={ViewHabitScreen} />
-          <Route.Screen name={Routes.TIMER}>
-            {(props) => (
-              <TimerScreen {...props} isIntroduction={playIntroduction} />
-            )}
-          </Route.Screen>
-          <Route.Screen name={Routes.ADD_HABIT}>
-            {(props) => (
-              <AddHabitScreen {...props} isIntroduction={playIntroduction} />
-            )}
-          </Route.Screen>
-        </Route.Navigator>
-      </NavigationContainer>
-    </Provider>
+            <Route.Screen name={Routes.ADD_HABIT}>
+              {(props) => (
+                <AddHabitScreen {...props} isIntroduction={playIntroduction} />
+              )}
+            </Route.Screen>
+          </Route.Navigator>
+        </NavigationContainer>
+      </Provider>
+    </SafeAreaView>
   );
 }
 

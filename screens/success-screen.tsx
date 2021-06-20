@@ -106,8 +106,8 @@ const SuccessScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
     height: "100%",
-    paddingTop: 0.222 * screenHeight,
-    paddingBottom: 0.08 * screenHeight,
+    paddingTop: CONSTANTS.SCREEN_CONTAINER_TOP_PADDING,
+    paddingBottom: CONSTANTS.SCREEN_CONTAINER_BOTTOM_PADDING,
     paddingHorizontal: 0.8 * CONSTANTS.PADDING,
   },
 });

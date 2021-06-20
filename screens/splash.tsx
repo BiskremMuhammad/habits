@@ -52,8 +52,8 @@ const SplashScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 0.222 * screenHeight,
-    paddingBottom: 0.08 * screenHeight,
+    paddingTop: CONSTANTS.SCREEN_CONTAINER_TOP_PADDING,
+    paddingBottom: CONSTANTS.SCREEN_CONTAINER_BOTTOM_PADDING,
   },
   valueProp: {
     display: "flex",
