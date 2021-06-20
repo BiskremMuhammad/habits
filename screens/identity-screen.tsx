@@ -7,7 +7,13 @@
 import { MotiView } from "@motify/components";
 import { StackActions, useNavigation } from "@react-navigation/core";
 import { useRoute, useIsFocused } from "@react-navigation/native";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   StyleSheet,
   View,
@@ -44,14 +50,19 @@ export const IdentityReinforcement = () => {
   );
   const [habit, setHabit] = useState<Habit>();
 
+  const lineLengthFactor: number = useMemo(
+    () => (habit?.type === HabitTypes.MEDITATING ? 0.6 * width : 0.5 * width),
+    [habit]
+  );
+
   const [_, setTransitionFrame] = useState<number>(0);
   const line1_dx = useSharedValue<number>(28);
   const line1_dy = useSharedValue<number>(-19.5);
   const line2_dx = useSharedValue<number>(0);
   const line2_dy = useSharedValue<number>(0);
   const circleRadius = useSharedValue<number>(4);
-  const circle1_xPosition = useSharedValue<number>(0.5 * width);
-  const circle2_xPosition = useSharedValue<number>(0.5 * width);
+  const circle1_xPosition = useSharedValue<number>(lineLengthFactor);
+  const circle2_xPosition = useSharedValue<number>(lineLengthFactor);
   const circle2_yPosition = useSharedValue<number>(81 + line1_dy.value);
 
   const line1_dxAnimation = useRef(new Animated.Value(28)).current;
@@ -60,10 +71,10 @@ export const IdentityReinforcement = () => {
   const line2_dyAnimation = useRef(new Animated.Value(0)).current;
   const circleRadiusAnimation = useRef(new Animated.Value(4)).current;
   const circle1_xPositionAnimation = useRef(
-    new Animated.Value(0.5 * width)
+    new Animated.Value(lineLengthFactor)
   ).current;
   const circle2_xPositionAnimation = useRef(
-    new Animated.Value(0.5 * width)
+    new Animated.Value(lineLengthFactor)
   ).current;
   const circle2_yPositionAnimation = useRef(
     new Animated.Value(81 + line1_dy.value)
@@ -83,78 +94,86 @@ export const IdentityReinforcement = () => {
   );
 
   useEffect(() => {
-    Animated.timing(line1_dxAnimation, {
-      toValue: 11,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-    line1_dxAnimation.addListener((val) => {
-      line1_dx.value = val.value;
-      setTransitionFrame((frame) => frame + 1);
-    });
+    if (circle1_xPosition.value === 0.5 * width) {
+      circle1_xPosition.value = lineLengthFactor;
+      circle2_xPosition.value = lineLengthFactor;
+      circle1_xPositionAnimation.setValue(lineLengthFactor);
+      circle2_xPositionAnimation.setValue(lineLengthFactor);
+    }
+    if (habit) {
+      Animated.timing(line1_dxAnimation, {
+        toValue: 11,
+        duration: 3000,
+        useNativeDriver: true,
+      }).start();
+      line1_dxAnimation.addListener((val) => {
+        line1_dx.value = val.value;
+        setTransitionFrame((frame) => frame + 1);
+      });
 
-    Animated.timing(line1_dyAnimation, {
-      toValue: -74,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-    line1_dyAnimation.addListener((val) => {
-      line1_dy.value = val.value;
-    });
+      Animated.timing(line1_dyAnimation, {
+        toValue: -74,
+        duration: 3000,
+        useNativeDriver: true,
+      }).start();
+      line1_dyAnimation.addListener((val) => {
+        line1_dy.value = val.value;
+      });
 
-    Animated.timing(line2_dxAnimation, {
-      toValue: 38,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-    line2_dxAnimation.addListener((val) => {
-      line2_dx.value = val.value;
-    });
+      Animated.timing(line2_dxAnimation, {
+        toValue: 38,
+        duration: 3000,
+        useNativeDriver: true,
+      }).start();
+      line2_dxAnimation.addListener((val) => {
+        line2_dx.value = val.value;
+      });
 
-    Animated.timing(line2_dyAnimation, {
-      toValue: 9,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-    line2_dyAnimation.addListener((val) => {
-      line2_dy.value = val.value;
-    });
+      Animated.timing(line2_dyAnimation, {
+        toValue: 9,
+        duration: 3000,
+        useNativeDriver: true,
+      }).start();
+      line2_dyAnimation.addListener((val) => {
+        line2_dy.value = val.value;
+      });
 
-    Animated.timing(circleRadiusAnimation, {
-      toValue: 6,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-    circleRadiusAnimation.addListener((val) => {
-      circleRadius.value = val.value;
-    });
+      Animated.timing(circleRadiusAnimation, {
+        toValue: 6,
+        duration: 3000,
+        useNativeDriver: true,
+      }).start();
+      circleRadiusAnimation.addListener((val) => {
+        circleRadius.value = val.value;
+      });
 
-    Animated.timing(circle1_xPositionAnimation, {
-      toValue: 0.5 * width - 12,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-    circle1_xPositionAnimation.addListener((val) => {
-      circle1_xPosition.value = val.value;
-    });
+      Animated.timing(circle1_xPositionAnimation, {
+        toValue: lineLengthFactor - 12,
+        duration: 3000,
+        useNativeDriver: true,
+      }).start();
+      circle1_xPositionAnimation.addListener((val) => {
+        circle1_xPosition.value = val.value;
+      });
 
-    Animated.timing(circle2_xPositionAnimation, {
-      toValue: 0.5 * width + 36,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-    circle2_xPositionAnimation.addListener((val) => {
-      circle2_xPosition.value = val.value;
-    });
+      Animated.timing(circle2_xPositionAnimation, {
+        toValue: lineLengthFactor + 36,
+        duration: 3000,
+        useNativeDriver: true,
+      }).start();
+      circle2_xPositionAnimation.addListener((val) => {
+        circle2_xPosition.value = val.value;
+      });
 
-    Animated.timing(circle2_yPositionAnimation, {
-      toValue: 62,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-    circle2_yPositionAnimation.addListener((val) => {
-      circle2_yPosition.value = val.value;
-    });
+      Animated.timing(circle2_yPositionAnimation, {
+        toValue: 62,
+        duration: 3000,
+        useNativeDriver: true,
+      }).start();
+      circle2_yPositionAnimation.addListener((val) => {
+        circle2_yPosition.value = val.value;
+      });
+    }
 
     // after all delays and animations and another 2 seconds navigate to view the created habit
     const automaticNavigateDuration: number = 3000 + 2000;
@@ -169,7 +188,7 @@ export const IdentityReinforcement = () => {
     return () => {
       clearTimeout(autoNavigate);
     };
-  }, []);
+  }, [lineLengthFactor]);
 
   useLayoutEffect(() => {
     const getHabit = habits.find((h) => h.id === habitId);
@@ -223,10 +242,17 @@ export const IdentityReinforcement = () => {
             </Text>
           </View>
           <View style={styles.identityBorderContainer}>
-            <Svg height={78} width={0.5 * width + 56}>
+            <Svg
+              height={78}
+              width={
+                lineLengthFactor +
+                56 +
+                (habit?.type === HabitTypes.MEDITATING ? 56 : 0)
+              }
+            >
               <Line
                 x1={0}
-                x2={0.5 * width - 28}
+                x2={lineLengthFactor - 28}
                 y1={77}
                 y2={77}
                 stroke="#88849D"
@@ -234,15 +260,15 @@ export const IdentityReinforcement = () => {
                 strokeLinecap="round"
               />
               <Path
-                d={`M${0.5 * width - 28} 77 a 39 39 0 0 0 ${line1_dx.value} ${
-                  line1_dy.value
-                }`} // dx, dy will change from 28 -19.5 to 11 -74
+                d={`M${lineLengthFactor - 28} 77 a 39 39 0 0 0 ${
+                  line1_dx.value
+                } ${line1_dy.value}`} // dx, dy will change from 28 -19.5 to 11 -74
                 stroke="#88849D"
                 strokeWidth={2}
                 strokeLinecap="round"
               />
               <Path
-                d={`M${0.5 * width + 1} 57.5 a 24 24 45 0 1  ${
+                d={`M${lineLengthFactor + 1} 57.5 a 24 24 45 0 1  ${
                   line2_dx.value
                 } ${line2_dy.value}`} // (dx = the last x position, dy = the last y position) will move to 38 9
                 stroke="#88849D"
