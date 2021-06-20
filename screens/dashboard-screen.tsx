@@ -7,7 +7,14 @@
 import { MotiView } from "@motify/components";
 import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Animated, Platform } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+  Platform,
+  Dimensions,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { Header } from "../components/elements/header";
 import { INITIAL_ADD_HABIT_STATE } from "../components/modules/add-habit/add-habit-reducer";
@@ -17,6 +24,8 @@ import { DashboardIcon } from "../components/svgs/dashboard-graphic";
 import { GlobalStore } from "../redux/store";
 import { Habit } from "../types/habit";
 import { CONSTANTS } from "../utils/constants";
+
+const { height: screenHeight } = Dimensions.get("screen");
 
 export const DashboardScreen = () => {
   const navigation = useNavigation();
@@ -58,7 +67,7 @@ export const DashboardScreen = () => {
       />
       <View
         style={{
-          flex: 2.5,
+          flex: screenHeight < 800 ? 5 : 2.5,
         }}
       >
         <MotiView
@@ -82,7 +91,7 @@ export const DashboardScreen = () => {
               [{ nativeEvent: { contentOffset: { x: scrollX } } }],
               { useNativeDriver: false }
             )}
-            scrollEventThrottle={16}
+            scrollEventThrottle={48}
             renderItem={({ item, index }) => {
               if (item.id.includes("empty")) {
                 return (
@@ -105,7 +114,12 @@ export const DashboardScreen = () => {
               });
 
               return (
-                <View style={{ width: CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE }}>
+                <View
+                  style={{
+                    width: CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
+                    paddingTop: screenHeight < 800 ? 50 : 0,
+                  }}
+                >
                   <Animated.View
                     style={{
                       marginHorizontal: CONSTANTS.DASHBOARD_ROOM_SPACING,
@@ -133,6 +147,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     flex: 1,
-    paddingVertical: 65,
+    paddingVertical: Platform.OS ? 32 : 36,
   },
 });
