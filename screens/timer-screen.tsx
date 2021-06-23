@@ -186,6 +186,8 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         e.preventDefault();
         if (!isIntroduction) {
           onCancelSessionHandler(true);
+        } else {
+          navigation.dispatch(e.data.action);
         }
         return;
       }),
@@ -297,6 +299,8 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       if (state === ProgressState.PLAYING) {
         changeState(ProgressState.PAUSED);
       }
+    } else {
+      navigation.goBack();
     }
   };
 
