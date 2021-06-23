@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect } from "react";
-import { ScrollView, View, StyleSheet } from "react-native";
+import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
 import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
@@ -16,6 +16,8 @@ import { useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
 import { Habit } from "../types/habit";
 import { CONSTANTS } from "../utils/constants";
+
+const { height: screenHeight } = Dimensions.get("screen");
 
 /**
  * interface that defines the props of the component
@@ -94,7 +96,8 @@ const styles = StyleSheet.create({
     position: "relative",
     flex: 1,
     alignItems: "center",
-    paddingTop: 1.2 * CONSTANTS.SCREEN_CONTAINER_TOP_PADDING,
+    marginTop:
+      (screenHeight < 846 ? 1.6 : 1.2) * CONSTANTS.SCREEN_CONTAINER_TOP_PADDING,
     paddingBottom: CONSTANTS.SCREEN_CONTAINER_BOTTOM_PADDING,
   },
   header: {

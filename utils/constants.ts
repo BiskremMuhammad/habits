@@ -13,19 +13,19 @@ const DASHBOARD_ROOM_ITEM_SIZE: number =
 
 export const CONSTANTS = {
   PADDING: 0.17 * width,
-  HEADER_TOP_MARGIN: Platform.OS === "ios" ? 32 : 36,
+  HEADER_TOP_MARGIN: Platform.OS === "ios" ? 48 : 56,
   SCREEN_CONTAINER_TOP_PADDING:
     height < 800
       ? Platform.OS === "ios"
-        ? 0.1 * height
-        : 0.11 * height
+        ? 0.11 * height
+        : 0.12 * height
       : height < 846
       ? Platform.OS === "ios"
-        ? 0.13 * height
-        : 0.14 * height
+        ? 0.14 * height
+        : 0.15 * height
       : Platform.OS === "ios"
-      ? 0.17 * height
-      : 0.18 * height,
+      ? 0.18 * height
+      : 0.21 * height,
   SCREEN_CONTAINER_BOTTOM_PADDING: 0.08 * height,
   ASYNC_STORAGE_HABITS: "ASYNC_STORAGE_HABITS",
   PLAY_INTRODUCTION_ASYNC_STORAGE_KEY: "PLAY_INTRODUCTION_ASYNC_STORAGE_KEY",
