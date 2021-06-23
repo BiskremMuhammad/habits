@@ -188,7 +188,7 @@ export const IdentityReinforcement = () => {
     return () => {
       clearTimeout(autoNavigate);
     };
-  }, [lineLengthFactor]);
+  }, [habit]);
 
   useLayoutEffect(() => {
     const getHabit = habits.find((h) => h.id === habitId);

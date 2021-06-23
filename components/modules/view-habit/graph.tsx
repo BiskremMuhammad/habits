@@ -119,16 +119,27 @@ export const Graph = ({ labels, data }: GraphProps) => {
                   ]}
                   style={{ width: "100%", height: "100%" }}
                 />
-                <Svg width={x} height={graphHeight}>
-                  <Line
-                    x1={x}
-                    y1={0}
-                    x2={x}
-                    y2={graphHeight}
-                    stroke="#fff"
-                    strokeDasharray={8}
-                  />
-                </Svg>
+                <View
+                  style={{
+                    position: "absolute",
+                    top: graphHeight / 2,
+                    left: -graphHeight / 2 + 16,
+                    zIndex: 1,
+                    transform: [{ rotate: "90deg" }],
+                  }}
+                >
+                  <Svg width={graphHeight} height={2}>
+                    <Line
+                      x1={0}
+                      y1={0}
+                      x2={graphHeight}
+                      y2={0}
+                      strokeWidth={1}
+                      stroke="#fff"
+                      strokeDasharray="8, 8"
+                    />
+                  </Svg>
+                </View>
               </View>
             )}
             // formatYLabel={(v) => ""}
@@ -166,7 +177,7 @@ export const Graph = ({ labels, data }: GraphProps) => {
               {
                 marginLeft: 0.7 * margin,
                 marginRight:
-                  Platform.OS === "ios" ? -0.1 * margin : -0.25 * margin,
+                  Platform.OS === "ios" ? -0.07 * margin : -0.25 * margin,
               },
             ]}
           >
