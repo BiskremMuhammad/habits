@@ -47,6 +47,7 @@ export const ExitSessionModal = ({
           type: "spring",
         },
       }}
+      exitTransition={{ type: "timing", duration: 100 }}
       style={styles.container}
     >
       <Text style={styles.headerTitle}>Exit Session?</Text>

@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, Pressable } from "react-native";
 import { MotiView } from "@motify/components";
 
 const { width, height } = Dimensions.get("screen");
@@ -16,6 +16,7 @@ export const Modal = ({ children }: { children: React.ReactChild }) => {
       from={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      exitTransition={{ type: "timing", duration: 100 }}
       style={ModalStyles.container}
     >
       {children}

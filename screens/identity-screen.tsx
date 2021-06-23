@@ -178,11 +178,13 @@ export const IdentityReinforcement = () => {
     // after all delays and animations and another 2 seconds navigate to view the created habit
     const automaticNavigateDuration: number = 3000 + 2000;
     const autoNavigate = setTimeout(() => {
-      navigation.dispatch(
-        StackActions.push(Routes.VIEW_HABIT, {
-          habitId,
-        } as TimerScreenRouteParams)
-      );
+      if (isOnFocus) {
+        navigation.dispatch(
+          StackActions.push(Routes.VIEW_HABIT, {
+            habitId,
+          } as TimerScreenRouteParams)
+        );
+      }
     }, automaticNavigateDuration);
 
     return () => {
