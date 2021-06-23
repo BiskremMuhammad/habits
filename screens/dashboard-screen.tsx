@@ -67,7 +67,7 @@ export const DashboardScreen = () => {
       />
       <View
         style={{
-          flex: screenHeight < 800 ? 5 : screenHeight < 846 ? 3.5 : 2.5,
+          flex: screenHeight < 800 ? 5 : screenHeight < 846 ? 4 : 2.5,
         }}
       >
         <MotiView
