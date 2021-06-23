@@ -19,6 +19,10 @@ export const CONSTANTS = {
       ? Platform.OS === "ios"
         ? 0.1 * height
         : 0.11 * height
+      : height < 846
+      ? Platform.OS === "ios"
+        ? 0.13 * height
+        : 0.14 * height
       : Platform.OS === "ios"
       ? 0.17 * height
       : 0.18 * height,
