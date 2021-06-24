@@ -90,7 +90,7 @@ export const Graph = ({ labels, data }: GraphProps) => {
                 },
               ],
             }}
-            width={screenWidth - 1.25 * margin} // from react-native
+            width={screenWidth - 1.25 * margin}
             withInnerLines={false}
             withOuterLines={false}
             withHorizontalLabels={false}
@@ -175,9 +175,8 @@ export const Graph = ({ labels, data }: GraphProps) => {
             style={[
               styles.xAxisContainer,
               {
-                marginLeft: 0.7 * margin,
-                marginRight:
-                  Platform.OS === "ios" ? -0.07 * margin : -0.25 * margin,
+                marginLeft: (Platform.OS === "ios" ? 0.75 : 0.55) * margin,
+                marginRight: -18,
               },
             ]}
           >
