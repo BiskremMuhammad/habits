@@ -175,8 +175,9 @@ export const Graph = ({ labels, data }: GraphProps) => {
             style={[
               styles.xAxisContainer,
               {
-                marginLeft: (Platform.OS === "ios" ? 0.75 : 0.55) * margin,
-                marginRight: -18,
+                width:
+                  screenWidth - 2 * margin - (screenWidth - 2 * margin) / 5 / 4,
+                marginLeft: margin,
               },
             ]}
           >
@@ -241,7 +242,7 @@ const styles = StyleSheet.create({
   xAxisLabel: {
     flex: 1,
     fontFamily: "Rubik-Regular",
-    textAlign: "right",
+    textAlign: "left",
     fontSize: 14,
     lineHeight: 20,
     color: "#fff",
