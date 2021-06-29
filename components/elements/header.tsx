@@ -17,15 +17,30 @@ import { useNavigation } from "@react-navigation/core";
 import { MaterialIcons } from "@expo/vector-icons";
 import { NotificationIcon } from "../svgs/notification-icon";
 import { Routes } from "../../types/route-names";
-import { AnnouncementIcon } from "../svgs/announcement-icon";
+import { DrawerIcon } from "../svgs/drawer-icon";
 import { StackActions } from "@react-navigation/native";
+
+/**
+ * interface that defines the actions of the header
+ *
+ * @interface
+ * @exports
+ */
+export interface HeaderActions {
+  /**
+   * a function that triggers toggle the drawer
+   *
+   * @type {() => void}
+   */
+  toggleDrawer?: () => void;
+}
 
 /**
  * interface that defines the props of the component
  *
  * @interface
  */
-interface HeaderProps {
+interface HeaderProps extends HeaderActions {
   /**
    * extra styles to pass to the component
    *
@@ -60,6 +75,7 @@ export const Header = ({
   hideNotification,
   leftAction,
   normalGoBack,
+  toggleDrawer,
 }: HeaderProps) => {
   const navigation = useNavigation();
 
@@ -70,14 +86,14 @@ export const Header = ({
           onPress={() =>
             normalGoBack
               ? navigation.goBack()
-              : navigation.dispatch(StackActions.push(Routes.HOME))
+              : navigation.dispatch(StackActions.push(Routes.HOME_ROUTE))
           }
         >
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </Pressable>
       ) : (
-        <Pressable>
-          <AnnouncementIcon />
+        <Pressable onPress={() => !!toggleDrawer && toggleDrawer()}>
+          <DrawerIcon />
         </Pressable>
       )}
       {!hideNotification && (
@@ -104,11 +120,12 @@ const styles = StyleSheet.create({
   notificationContainer: {
     position: "relative",
     opacity: 0.66,
+    padding: 4,
   },
   notificationBadge: {
     position: "absolute",
-    top: -4,
-    right: -2,
+    top: 0,
+    right: 2,
     width: 14,
     height: 14,
     backgroundColor: "#FAFAFB",
