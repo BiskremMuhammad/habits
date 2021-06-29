@@ -4,7 +4,8 @@
  * @description Implement the Drawer item
  */
 
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useNavigationState } from "@react-navigation/core";
+import { ParamListBase, PartialRoute, Route } from "@react-navigation/native";
 import React from "react";
 import { Pressable, Text, StyleSheet } from "react-native";
 import { CommonStyles } from "../../styles/common";
@@ -24,13 +25,6 @@ interface DrawerItemProps {
   icon: JSX.Element;
 
   /**
-   * if the current drawer iten is the active one
-   *
-   * @type {boolean}
-   */
-  isActive?: boolean;
-
-  /**
    * the route of the drawer item to avigate to
    *
    * @type {Routes}
@@ -47,6 +41,14 @@ interface DrawerItemProps {
 
 export const DrawerItem = (props: DrawerItemProps) => {
   const navigation = useNavigation();
+  const navState = useNavigationState((s) => s);
+  let actualRoute: any = navState.routes[navState.index];
+
+  while (actualRoute.state) {
+    actualRoute = actualRoute.state.routes[actualRoute.state.index!];
+  }
+  const activeRoute: Routes =
+    actualRoute.name !== Routes.HOME_ROUTE ? actualRoute.name : Routes.HOME;
 
   return (
     <Pressable
@@ -54,7 +56,7 @@ export const DrawerItem = (props: DrawerItemProps) => {
       style={[
         CommonStyles.textWithIcon,
         styles.item,
-        props.isActive && styles.activeItem,
+        activeRoute === props.route && styles.activeItem,
       ]}
     >
       {props.icon}
@@ -66,7 +68,7 @@ export const DrawerItem = (props: DrawerItemProps) => {
 const styles = StyleSheet.create({
   item: {
     marginVertical: 19,
-    opacity: 0.66,
+    opacity: 0.5,
   },
   activeItem: {
     opacity: 1,

@@ -52,7 +52,6 @@ export const Drawer = ({
       route={Routes.HOME}
       text="My Habits"
       icon={<DashboardIcon width={48} height={48} />}
-      isActive={true}
     />
     <DrawerItem
       route={Routes.ANNOUNCEMENTS}
