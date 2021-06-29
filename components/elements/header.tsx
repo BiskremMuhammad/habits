@@ -18,29 +18,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { NotificationIcon } from "../svgs/notification-icon";
 import { Routes } from "../../types/route-names";
 import { DrawerIcon } from "../svgs/drawer-icon";
-import { StackActions } from "@react-navigation/native";
-
-/**
- * interface that defines the actions of the header
- *
- * @interface
- * @exports
- */
-export interface HeaderActions {
-  /**
-   * a function that triggers toggle the drawer
-   *
-   * @type {() => void}
-   */
-  toggleDrawer?: () => void;
-}
+import { DrawerActions, StackActions } from "@react-navigation/native";
 
 /**
  * interface that defines the props of the component
  *
  * @interface
  */
-interface HeaderProps extends HeaderActions {
+interface HeaderProps {
   /**
    * extra styles to pass to the component
    *
@@ -75,7 +60,6 @@ export const Header = ({
   hideNotification,
   leftAction,
   normalGoBack,
-  toggleDrawer,
 }: HeaderProps) => {
   const navigation = useNavigation();
 
@@ -92,7 +76,9 @@ export const Header = ({
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </Pressable>
       ) : (
-        <Pressable onPress={() => !!toggleDrawer && toggleDrawer()}>
+        <Pressable
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        >
           <DrawerIcon />
         </Pressable>
       )}

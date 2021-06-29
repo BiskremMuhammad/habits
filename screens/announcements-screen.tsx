@@ -18,10 +18,7 @@ export const AnnouncementsScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Header
-        leftAction="announcement"
-        toggleDrawer={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-      />
+      <Header leftAction="announcement" />
       <TitlePanel
         extraStyles={{ minHeight: 200 }}
         icon={({ style }) => <AnnouncementIcon style={style} />}

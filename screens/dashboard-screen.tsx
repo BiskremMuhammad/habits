@@ -16,7 +16,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { Header, HeaderActions } from "../components/elements/header";
+import { Header } from "../components/elements/header";
 import { INITIAL_ADD_HABIT_STATE } from "../components/modules/add-habit/add-habit-reducer";
 import { DashboardRoom } from "../components/modules/dashboard-room";
 import { TitlePanel } from "../components/modules/panels/title-panel";
@@ -59,10 +59,7 @@ export const DashboardScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header
-        leftAction="announcement"
-        toggleDrawer={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-      />
+      <Header leftAction="announcement" />
       <TitlePanel
         extraStyles={{ flex: 1 }}
         icon={({ style }) => <DashboardIcon style={style} />}
