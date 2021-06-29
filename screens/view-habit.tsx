@@ -115,7 +115,7 @@ export const ViewHabitScreen = () => {
         // Prevent default behavior of leaving the screen
         e.preventDefault();
         onSaveChanges();
-        navigation.dispatch(StackActions.push(Routes.HOME));
+        navigation.dispatch(StackActions.push(Routes.HOME_ROUTE));
         return;
       }),
     [navigation]
@@ -131,7 +131,7 @@ export const ViewHabitScreen = () => {
       });
     } else if (isOnFocus) {
       navigation.dispatch(
-        StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
+        StackActions.push(habits.length ? Routes.HOME_ROUTE : Routes.SPLASH)
       );
     }
   }, [isOnFocus, habits, navigation, habitId]);

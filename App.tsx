@@ -9,6 +9,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { Dimensions, Image, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { enableScreens } from "react-native-screens";
 import * as Font from "expo-font";
 import { Provider } from "react-redux";
@@ -24,6 +25,9 @@ import { DashboardScreen } from "./screens/dashboard-screen";
 import { Routes } from "./types/route-names";
 import { IdentityReinforcement } from "./screens/identity-screen";
 import { ViewHabitScreen } from "./screens/view-habit";
+import { Drawer } from "./components/elements/drawer";
+import { AnimatePresence } from "moti";
+import { AnnouncementsScreen } from "./screens/announcements-screen";
 enableScreens();
 
 const { width, height } = Dimensions.get("screen");
@@ -32,6 +36,7 @@ const { width, height } = Dimensions.get("screen");
  * App Routing instance
  */
 const Route = createStackNavigator();
+const DrawerNav = createDrawerNavigator();
 
 // import fonts
 let fonts = {
@@ -50,6 +55,7 @@ let fonts = {
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [playIntroduction, setPlayIntroduction] = useState<boolean>(false);
+  const [drawerOpened, toggleDrawer] = useState<boolean>(false);
 
   useEffect(() => {
     const loadFonts = async () => {
@@ -82,9 +88,37 @@ export default function App() {
               backgroundColor: "transparent",
             },
           }}
-          initialRouteName={playIntroduction ? Routes.SPLASH : Routes.HOME}
+          initialRouteName={
+            playIntroduction ? Routes.SPLASH : Routes.HOME_ROUTE
+          }
         >
-          <Route.Screen name={Routes.HOME} component={DashboardScreen} />
+          <Route.Screen name={Routes.HOME_ROUTE}>
+            {() => (
+              <DrawerNav.Navigator
+                initialRouteName={Routes.HOME}
+                drawerContent={(props) => <Drawer {...props} />}
+                drawerStyle={{
+                  backgroundColor: "transparent",
+                  width: 0.81 * width,
+                }}
+                sceneContainerStyle={{
+                  backgroundColor: "transparent",
+                }}
+                screenOptions={{
+                  header: () => null,
+                }}
+              >
+                <DrawerNav.Screen
+                  name={Routes.HOME}
+                  component={DashboardScreen}
+                />
+                <DrawerNav.Screen
+                  name={Routes.ANNOUNCEMENTS}
+                  component={AnnouncementsScreen}
+                />
+              </DrawerNav.Navigator>
+            )}
+          </Route.Screen>
           {playIntroduction && (
             <Route.Screen name={Routes.SPLASH} component={SplashScreen} />
           )}

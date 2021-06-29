@@ -5,7 +5,7 @@
  */
 
 import { MotiView } from "@motify/components";
-import { useNavigation } from "@react-navigation/core";
+import { DrawerActions, useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -16,7 +16,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { Header } from "../components/elements/header";
+import { Header, HeaderActions } from "../components/elements/header";
 import { INITIAL_ADD_HABIT_STATE } from "../components/modules/add-habit/add-habit-reducer";
 import { DashboardRoom } from "../components/modules/dashboard-room";
 import { TitlePanel } from "../components/modules/panels/title-panel";
@@ -59,7 +59,10 @@ export const DashboardScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header leftAction="announcement" />
+      <Header
+        leftAction="announcement"
+        toggleDrawer={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+      />
       <TitlePanel
         extraStyles={{ flex: 1 }}
         icon={({ style }) => <DashboardIcon style={style} />}

@@ -198,7 +198,7 @@ export const IdentityReinforcement = () => {
       setHabit(getHabit);
     } else if (isOnFocus) {
       navigation.dispatch(
-        StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
+        StackActions.push(habits.length ? Routes.HOME_ROUTE : Routes.SPLASH)
       );
     }
   }, [isOnFocus, habits, navigation, habitId]);

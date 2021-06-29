@@ -203,7 +203,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         // setState(ProgressState.STOPPED);
       } else {
         navigation.dispatch(
-          StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
+          StackActions.push(habits.length ? Routes.HOME_ROUTE : Routes.SPLASH)
         );
       }
     }
