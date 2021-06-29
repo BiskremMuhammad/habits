@@ -176,7 +176,7 @@ export const Graph = ({ labels, data }: GraphProps) => {
               styles.xAxisContainer,
               {
                 width:
-                  screenWidth - 2 * margin - (screenWidth - 2 * margin) / 5 / 4,
+                  screenWidth - 2 * margin - (screenWidth - 2 * margin) / 5 / 3,
                 marginLeft: margin,
               },
             ]}
