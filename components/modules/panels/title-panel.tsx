@@ -1,6 +1,13 @@
 import { MotiView } from "moti";
 import React from "react";
-import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+} from "react-native";
 import { CONSTANTS } from "../../../utils/constants";
 import { Plant, PlantState } from "../../elements/plant";
 import { AddIconSvg } from "../../svgs/add-icon";
@@ -38,6 +45,13 @@ interface TitlePanelProps {
    * @type {string}
    */
   title?: string;
+
+  /**
+   * extra styles for the title
+   *
+   * @type {StyleProp<TextStyle>}
+   */
+  titleStyles?: StyleProp<TextStyle>;
 }
 
 export const TitlePanel = (props: TitlePanelProps) => {
@@ -57,7 +71,9 @@ export const TitlePanel = (props: TitlePanelProps) => {
           {props.showPlant && (
             <Plant state={PlantState.GLOW} extraStyles={styles.plant} />
           )}
-          {!!props.title && <Text style={styles.title}>{props.title}</Text>}
+          {!!props.title && (
+            <Text style={[styles.title, props.titleStyles]}>{props.title}</Text>
+          )}
         </View>
       </MotiView>
     </View>
