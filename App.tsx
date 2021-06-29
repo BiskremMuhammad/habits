@@ -55,14 +55,9 @@ let fonts = {
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [playIntroduction, setPlayIntroduction] = useState<boolean>(false);
-  const [drawerOpened, toggleDrawer] = useState<boolean>(false);
 
   useEffect(() => {
     const loadFonts = async () => {
-      await AsyncStorage.setItem(
-        CONSTANTS.ASYNC_STORAGE_HABITS,
-        JSON.stringify([])
-      );
       await Font.loadAsync(fonts);
       const firstTimer = await AsyncStorage.getItem(
         CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY
@@ -73,6 +68,11 @@ export default function App() {
 
     loadFonts();
   }, []);
+
+  const completeIntro = () => {
+    setPlayIntroduction(false);
+    AsyncStorage.setItem(CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY, "true");
+  };
 
   return loading ? (
     <></>
@@ -125,10 +125,7 @@ export default function App() {
           {playIntroduction && (
             <Route.Screen name={Routes.SUCCESS}>
               {(props) => (
-                <SuccessScreen
-                  {...props}
-                  onCompleteIntro={() => setPlayIntroduction(false)}
-                />
+                <SuccessScreen {...props} onCompleteIntro={completeIntro} />
               )}
             </Route.Screen>
           )}

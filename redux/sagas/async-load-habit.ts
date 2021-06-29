@@ -5,6 +5,7 @@
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { acc } from "react-native-reanimated";
 import {
   CallEffect,
   PutEffect,
@@ -22,7 +23,16 @@ import {
 const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
   return await new Promise((res, _) => {
     AsyncStorage.getItem(CONSTANTS.ASYNC_STORAGE_HABITS).then((data) => {
-      res(JSON.parse(data ? data : "[]"));
+      const results: Array<any> = JSON.parse(data ? data : "[]");
+      const formattedResults: Habit[] = results.reduce<Habit[]>(
+        (acc: Habit[], v: Habit) =>
+          acc.concat({
+            ...v,
+            progress: v.progress.map((p) => ({ ...p, date: new Date(p.date) })),
+          }),
+        []
+      );
+      res(formattedResults);
     });
   });
 };
