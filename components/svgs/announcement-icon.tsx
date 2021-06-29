@@ -1,11 +1,19 @@
 import * as React from "react";
-import Svg, { SvgProps, G, Path } from "react-native-svg";
+import Svg, { SvgProps, G, Path, Defs } from "react-native-svg";
 
 export function AnnouncementIcon(props: SvgProps) {
   return (
-    <Svg width={28} height={28} viewBox="0 0 34 34" fill="none" {...props}>
-      <G opacity={0.66} fillRule="evenodd" clipRule="evenodd" fill="#C2C9D1">
-        <Path d="M4.25 12.75c0-.782.634-1.417 1.417-1.417h22.666a1.417 1.417 0 010 2.834H5.667A1.417 1.417 0 014.25 12.75zM4.25 21.25c0-.782.634-1.417 1.417-1.417h14.166a1.417 1.417 0 010 2.834H5.667A1.417 1.417 0 014.25 21.25z" />
+    <Svg width={152} height={214} viewBox="0 0 152 214" fill="none" {...props}>
+      <G
+        opacity={0.6}
+        stroke="#fff"
+        strokeOpacity={0.7}
+        strokeWidth={3}
+        strokeLinecap="round"
+      >
+        <Path d="M76 198.547l54.727-91.637H21.273L76 198.547z" />
+        <Path d="M76 165.456l54.727-91.637H21.273L76 165.456z" />
+        <Path d="M76 134.909l60.622-101.182H15.378L76 134.91z" />
       </G>
     </Svg>
   );
