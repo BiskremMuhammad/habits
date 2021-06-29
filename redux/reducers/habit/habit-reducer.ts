@@ -17,7 +17,6 @@ export const habitReducer = (
 
   switch (action.type) {
     case HabitActionTypes.LOAD_HABITS_FROM_STORAGE:
-      console.log("got saved habits: ", action.payload);
       return [...(action.payload as Habit[])];
 
     case HabitActionTypes.SAVE_DAY_PROGRESS:
