@@ -347,7 +347,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
         </Text>
         {streak > 0 && !isIntroduction && (
-          <Text style={CommonStyles.habitStreak}>{streak}</Text>
+          <Text style={CommonStyles.habitStreak}>{streak > 0 && streak}</Text>
         )}
       </View>
       <View style={TimeScreenStyles.peers}>

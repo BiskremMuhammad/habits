@@ -243,7 +243,9 @@ export const ViewHabitScreen = () => {
                   >
                     {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
                   </Text>
-                  <Text style={CommonStyles.habitStreak}>{streak}</Text>
+                  <Text style={CommonStyles.habitStreak}>
+                    {streak > 0 && streak}
+                  </Text>
                 </View>
               </View>
               {!!habit && (

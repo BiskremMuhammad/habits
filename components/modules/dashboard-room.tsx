@@ -144,7 +144,9 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
                   {HabitTypesIdentity[habit.type]}
                 </Text>
                 {streak > 0 && (
-                  <Text style={CommonStyles.habitStreak}>{streak}</Text>
+                  <Text style={CommonStyles.habitStreak}>
+                    {streak > 0 && streak}
+                  </Text>
                 )}
               </View>
               <View style={styles.habitFrequ}>
