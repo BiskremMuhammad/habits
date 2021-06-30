@@ -8,7 +8,7 @@ import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { View, Text, Dimensions, StyleSheet, Platform } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import Svg, { Line } from "react-native-svg";
+import Svg, { Line, TextProps } from "react-native-svg";
 import { CommonStyles } from "../../../styles/common";
 
 const { width: screenWidth } = Dimensions.get("screen");
@@ -41,74 +41,59 @@ export const Graph = ({ labels, data }: GraphProps) => {
   for (let i = yLabelMinValue + 30; i < yLabelMaxValue; i += 30) {
     yLabelsData.push(i);
   }
+
   const yAxisLabels: number[] = [
     yLabelMinValue,
     ...yLabelsData,
     yLabelMaxValue,
   ].reverse();
-  const graphHeight: number = 158;
+
+  const graphHeight: number = 197;
   const margin: number = 56;
+
   return (
-    <View style={styles.container}>
-      <View
-        style={[
-          CommonStyles.rowContainer,
-          {
-            paddingHorizontal: margin,
-          },
-        ]}
-      >
-        <View
-          style={[
-            styles.yAxisContainer,
-            {
-              height: 1.48 * graphHeight,
-              bottom: 0.22 * graphHeight,
-              left: margin,
-            },
-          ]}
-        >
-          {yAxisLabels.map((v, i) => (
-            <View key={i} style={styles.yAxisLabelContainer}>
-              <Text style={styles.yAxisLabel}>
-                {Number(v) >= 60
-                  ? Number(v) % 60 === 0
-                    ? `${Math.floor(Number(v) / 60)}h`
-                    : `${Math.floor(Number(v) / 60)}h ${Number(v) % 60}m`
-                  : `${Number(v) % 60}m`}
-              </Text>
-            </View>
-          ))}
-        </View>
-        <View style={{ flex: 1 }}>
-          <LineChart
-            data={{
-              labels,
-              datasets: [
-                {
-                  data: data,
-                },
-              ],
-            }}
-            width={screenWidth - 1.25 * margin}
-            withInnerLines={false}
-            withOuterLines={false}
-            withHorizontalLabels={false}
-            withVerticalLabels={false}
-            withShadow={false}
-            height={graphHeight}
-            fromZero={true}
-            segments={yLabelsData.length}
-            yAxisInterval={30}
-            transparent={true}
-            renderDotContent={({ x }) => (
+    <View
+      style={[
+        CommonStyles.rowContainer,
+        {
+          paddingHorizontal: margin,
+        },
+      ]}
+    >
+      <View style={{ flex: 1 }}>
+        <LineChart
+          data={{
+            labels,
+            datasets: [
+              {
+                data: [yLabelMaxValue], // <=== adding a max value
+                color: () => `rgba(0, 0, 0, 0)`, // <=== hide the point
+              },
+              {
+                data: data,
+              },
+            ],
+          }}
+          width={screenWidth - margin}
+          withInnerLines={false}
+          withOuterLines={false}
+          withShadow={false}
+          height={graphHeight}
+          fromZero={true}
+          transparent={true}
+          getDotColor={(d) =>
+            d !== 0 && d === Math.max(...data) ? "#fff" : "rgba(255,255,255,0)"
+          }
+          renderDotContent={({ x, indexData, index }) =>
+            indexData !== 0 &&
+            indexData === Math.max(...data) && (
               <View
                 key={x}
                 style={[
                   styles.heighPeakHeighlighter,
                   {
                     left: x - 17,
-                    height: graphHeight,
+                    height: graphHeight - 32,
                   },
                 ]}
               >
@@ -122,109 +107,85 @@ export const Graph = ({ labels, data }: GraphProps) => {
                 <View
                   style={{
                     position: "absolute",
-                    top: graphHeight / 2,
-                    left: -graphHeight / 2 + 16,
-                    zIndex: 1,
-                    transform: [{ rotate: "90deg" }],
+                    top: graphHeight - 13,
+                    width: "100%",
                   }}
                 >
-                  <Svg width={graphHeight} height={2}>
+                  <Text style={[styles.xAxisLabel, styles.xAxisLabelHeighest]}>
+                    {labels[index]}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    position: "absolute",
+                    top: (graphHeight - 34) / 2,
+                    left: -((graphHeight - 32) / 2) + 18,
+                    zIndex: 1,
+                    transform: [{ rotate: "-90deg" }],
+                  }}
+                >
+                  <Svg width={graphHeight - 32} height={2}>
                     <Line
                       x1={0}
                       y1={0}
-                      x2={graphHeight}
+                      x2={graphHeight - 32}
                       y2={0}
-                      strokeWidth={1}
+                      strokeWidth={2}
                       stroke="#fff"
-                      strokeDasharray="8, 8"
+                      strokeDasharray="8, 11"
                     />
                   </Svg>
                 </View>
               </View>
-            )}
-            // formatYLabel={(v) => ""}
-            // formatXLabel={(v) => ""}
-            hidePointsAtIndex={data.map((d, i) =>
-              d === Math.max(...data) ? -1 : i
-            )}
-            chartConfig={{
-              backgroundGradientFrom: "#1E2923",
-              backgroundGradientFromOpacity: 0,
-              backgroundGradientTo: "#08130D",
-              backgroundGradientToOpacity: 0,
-              color: () => `rgba(255, 255, 255, 1)`,
-              decimalPlaces: 0,
-              strokeWidth: 4,
-              propsForDots: {
-                r: 10,
-              },
-              style: {
-                borderRadius: 16,
-                backgroundColor: "rgba(0,0,0,0)",
-              },
-            }}
-            bezier
-            style={{
-              borderRadius: 16,
-              paddingTop: (0.95 / yAxisLabels.length) * graphHeight,
-              paddingBottom: 20,
-              marginLeft: 0.15 * margin,
-            }}
-          />
-          <View
-            style={[
-              styles.xAxisContainer,
-              {
-                width:
-                  screenWidth - 2 * margin - (screenWidth - 2 * margin) / 5 / 3,
-                marginLeft: margin,
-              },
-            ]}
-          >
-            {labels.map((l, i) => (
-              <Text
-                style={[
-                  styles.xAxisLabel,
-                  i === data.findIndex((d) => d >= Math.max(...data)) &&
-                    styles.xAxisLabelHeighest,
-                ]}
-                key={i}
-              >
-                {l}
-              </Text>
-            ))}
-          </View>
-        </View>
+            )
+          }
+          formatYLabel={(v) =>
+            Number(v) >= 60
+              ? Number(v) % 60 === 0
+                ? `${Math.floor(Number(v) / 60)}h`
+                : `${Math.floor(Number(v) / 60)}h ${Number(v) % 60}m`
+              : `${Number(v) % 60}m`
+          }
+          chartConfig={{
+            backgroundGradientFrom: "#1E2923",
+            backgroundGradientFromOpacity: 0,
+            backgroundGradientTo: "#08130D",
+            backgroundGradientToOpacity: 0,
+            color: () => `rgba(255, 255, 255, 1)`,
+            decimalPlaces: 0,
+            strokeWidth: 4,
+            propsForDots: {
+              r: 10,
+            },
+            propsForLabels: {
+              fontFamily: "Rubik-Regular",
+              fontSize: 14,
+            },
+            propsForHorizontalLabels: {
+              textAnchor: "start",
+              x: 0,
+              opacity: 0.4,
+            },
+            propsForVerticalLabels: {
+              opacity: 0.4,
+              y: graphHeight,
+            },
+            style: {
+              backgroundColor: "rgba(0,0,0,0)",
+            },
+          }}
+          bezier={true}
+          style={{
+            borderRadius: 16,
+            padding: 0,
+          }}
+        />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  yAxisContainer: {
-    display: "flex",
-    flexDirection: "column",
-    position: "absolute",
-  },
-  yAxisLabelContainer: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "flex-start",
-  },
-  yAxisLabel: {
-    fontFamily: "Rubik-Regular",
-    fontSize: 14,
-    lineHeight: 18,
-    color: "#fff",
-    opacity: 0.4,
-  },
   heighPeakHeighlighter: {
     position: "relative",
     top: 0,
@@ -232,23 +193,16 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
-  xAxisContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    position: "absolute",
-    bottom: 0,
-  },
   xAxisLabel: {
-    flex: 1,
     fontFamily: "Rubik-Regular",
-    textAlign: "left",
     fontSize: 14,
-    lineHeight: 20,
     color: "#fff",
     opacity: 0.4,
   },
   xAxisLabelHeighest: {
     opacity: 1,
+    fontFamily: "Rubik-SemiBold",
+    letterSpacing: -0.5,
+    textAlign: "center",
   },
 });

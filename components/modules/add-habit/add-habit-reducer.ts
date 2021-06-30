@@ -12,20 +12,20 @@ const today = new Date(new Date().setHours(0, 0, 0, 0));
 const testProgress: HabitProgressData[] = [
   // today,
   { date: new Date(today.getTime() - 24 * 60 * 60 * 1000), duration: 30 },
-  { date: new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000), duration: 60 },
-  { date: new Date(today.getTime() - 3 * 24 * 60 * 60 * 1000), duration: 45 },
-  { date: new Date(today.getTime() - 4 * 24 * 60 * 60 * 1000), duration: 15 },
-  { date: new Date(today.getTime() - 5 * 24 * 60 * 60 * 1000), duration: 60 },
-  { date: new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000), duration: 15 },
-  { date: new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000), duration: 20 },
-  { date: new Date(today.getTime() - 8 * 24 * 60 * 60 * 1000), duration: 30 },
-  { date: new Date(today.getTime() - 9 * 24 * 60 * 60 * 1000), duration: 60 },
-  { date: new Date(today.getTime() - 12 * 24 * 60 * 60 * 1000), duration: 45 },
-  { date: new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000), duration: 25 },
-  { date: new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000), duration: 25 },
-  { date: new Date(today.getTime() - 15 * 24 * 60 * 60 * 1000), duration: 30 },
-  { date: new Date(today.getTime() - 16 * 24 * 60 * 60 * 1000), duration: 30 },
-  { date: new Date(today.getTime() - 17 * 24 * 60 * 60 * 1000), duration: 30 },
+  // { date: new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000), duration: 60 },
+  // { date: new Date(today.getTime() - 3 * 24 * 60 * 60 * 1000), duration: 45 },
+  // { date: new Date(today.getTime() - 4 * 24 * 60 * 60 * 1000), duration: 15 },
+  // { date: new Date(today.getTime() - 5 * 24 * 60 * 60 * 1000), duration: 60 },
+  // { date: new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000), duration: 15 },
+  // { date: new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000), duration: 20 },
+  // { date: new Date(today.getTime() - 8 * 24 * 60 * 60 * 1000), duration: 30 },
+  // { date: new Date(today.getTime() - 9 * 24 * 60 * 60 * 1000), duration: 60 },
+  // { date: new Date(today.getTime() - 12 * 24 * 60 * 60 * 1000), duration: 45 },
+  // { date: new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000), duration: 25 },
+  // { date: new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000), duration: 25 },
+  // { date: new Date(today.getTime() - 15 * 24 * 60 * 60 * 1000), duration: 30 },
+  // { date: new Date(today.getTime() - 16 * 24 * 60 * 60 * 1000), duration: 30 },
+  // { date: new Date(today.getTime() - 17 * 24 * 60 * 60 * 1000), duration: 30 },
 ];
 
 export const INITIAL_ADD_HABIT_STATE: Habit = {
@@ -34,7 +34,7 @@ export const INITIAL_ADD_HABIT_STATE: Habit = {
   isEveryDay: true,
   days: Object.keys(WeekDays).map<WeekDays>((k) => k as WeekDays),
   duration: 1,
-  progress: [],
+  progress: [...testProgress],
 };
 
 /**
