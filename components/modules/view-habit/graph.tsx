@@ -35,12 +35,13 @@ interface GraphProps {
 }
 
 export const Graph = ({ labels, data }: GraphProps) => {
-  const yLabelMaxValue: number = Math.ceil(Math.max(...data) / 29.99999) * 30;
+  let yLabelMaxValue: number = Math.ceil(Math.max(...data) / 29.99999) * 30;
+  yLabelMaxValue = yLabelMaxValue > 0 ? yLabelMaxValue : 30;
 
   const graphHeight: number = 197;
   const margin: number = 56;
 
-  return !data.filter((d) => d !== 0).length ? (
+  return !data.length ? (
     <View
       style={[
         CommonStyles.rowContainer,

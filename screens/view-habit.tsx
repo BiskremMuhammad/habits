@@ -375,10 +375,14 @@ export const ViewHabitScreen = () => {
                 (a, v) => a.concat(v.day),
                 []
               )}
-              data={recentDays.reduce<number[]>(
-                (a, v) => a.concat(v.duration),
-                []
-              )}
+              data={
+                habit.progress.length
+                  ? recentDays.reduce<number[]>(
+                      (a, v) => a.concat(v.duration),
+                      []
+                    )
+                  : []
+              }
             />
           )}
         </View>
