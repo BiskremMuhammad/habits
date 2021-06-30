@@ -4,7 +4,6 @@
  * @description implement the announcements screen
  */
 
-import { DrawerActions, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -14,8 +13,6 @@ import { AnnouncementIcon } from "../components/svgs/announcement-icon";
 import { CONSTANTS } from "../utils/constants";
 
 export const AnnouncementsScreen = () => {
-  const navigation = useNavigation();
-
   return (
     <ScrollView style={styles.container}>
       <Header leftAction="announcement" />
