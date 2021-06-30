@@ -20,6 +20,10 @@ export const CommonStyles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
   },
+  centerContent: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
   infoTxt: {
     fontFamily: "Rubik-Light",
     fontSize: 16,

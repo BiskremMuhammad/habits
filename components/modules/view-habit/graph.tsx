@@ -35,23 +35,26 @@ interface GraphProps {
 }
 
 export const Graph = ({ labels, data }: GraphProps) => {
-  const yLabelMinValue: number = Math.floor(Math.min(...data) / 30.00001) * 30;
   const yLabelMaxValue: number = Math.ceil(Math.max(...data) / 29.99999) * 30;
-  const yLabelsData: number[] = [];
-  for (let i = yLabelMinValue + 30; i < yLabelMaxValue; i += 30) {
-    yLabelsData.push(i);
-  }
-
-  const yAxisLabels: number[] = [
-    yLabelMinValue,
-    ...yLabelsData,
-    yLabelMaxValue,
-  ].reverse();
 
   const graphHeight: number = 197;
   const margin: number = 56;
 
-  return (
+  return !data.filter((d) => d !== 0).length ? (
+    <View
+      style={[
+        CommonStyles.rowContainer,
+        CommonStyles.centerContent,
+        {
+          marginHorizontal: margin,
+          width: screenWidth - 2 * margin,
+          height: graphHeight,
+        },
+      ]}
+    >
+      <Text style={CommonStyles.infoTxt}>No progress data tracked</Text>
+    </View>
+  ) : (
     <View
       style={[
         CommonStyles.rowContainer,
