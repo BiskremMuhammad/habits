@@ -54,7 +54,8 @@ export const MonthDay = (props: MonthDayProps) => {
       {dayState !== DayState.NORMAL &&
         dayState !== DayState.REST &&
         dayState !== DayState.LOGGED_DAY &&
-        dayState !== DayState.TODAY_LOGGED && (
+        dayState !== DayState.TODAY_LOGGED &&
+        dayState !== DayState.TODAY_REST && (
           <View style={styles.streakDayIndicatorContainer}>
             {dayState !== DayState.INACTIVE_STREAK_START &&
               dayState !== DayState.TODAY &&
@@ -82,7 +83,7 @@ export const MonthDay = (props: MonthDayProps) => {
             {dayState !== DayState.INACTIVE_STREAK_END &&
               dayState !== DayState.TODAY_STREAK &&
               dayState !== DayState.TODAY &&
-              dayState !== DayState.TODAY_REST && (
+              dayState !== DayState.TODAY_REST_STREAK && (
                 <View
                   style={[
                     styles.streakDayIndicator,

@@ -26,6 +26,7 @@ export enum DayState {
   LOGGED_DAY,
   TODAY,
   TODAY_REST,
+  TODAY_REST_STREAK,
   TODAY_LOGGED,
   TODAY_STREAK,
   NORMAL,
@@ -81,6 +82,9 @@ export function stateOfTheDay(
   // if date is today >> there is gonna be one of 4 cases TODAY, TODAY_REST, TODAY_LOGGED, TODAY_STREAK
   if (day.getTime() === today.getTime()) {
     if (!habitFrequency.includes(getTheWeekDay(day))) {
+      if (streak > 0) {
+        return DayState.TODAY_REST_STREAK;
+      }
       return DayState.TODAY_REST;
     }
     if (
