@@ -34,7 +34,7 @@ export const INITIAL_ADD_HABIT_STATE: Habit = {
   isEveryDay: true,
   days: Object.keys(WeekDays).map<WeekDays>((k) => k as WeekDays),
   duration: 1,
-  progress: [...testProgress],
+  progress: [],
 };
 
 /**
