@@ -19,6 +19,7 @@ import { NotificationIcon } from "../svgs/notification-icon";
 import { Routes } from "../../types/route-names";
 import { DrawerIcon } from "../svgs/drawer-icon";
 import { DrawerActions, StackActions } from "@react-navigation/native";
+import { CONSTANTS } from "../../utils/constants";
 
 /**
  * interface that defines the props of the component
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 21,
+    paddingHorizontal: CONSTANTS.HEADER_HORIZONTAL_MARGIN,
     marginBottom: 26,
   },
   notificationContainer: {
