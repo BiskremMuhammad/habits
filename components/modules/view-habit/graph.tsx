@@ -53,7 +53,7 @@ export const Graph = ({ labels, data }: GraphProps) => {
         },
       ]}
     >
-      <Text style={CommonStyles.infoTxt}>No progress data tracked</Text>
+      <Text style={CommonStyles.infoTxt}>No progress tracked</Text>
     </View>
   ) : (
     <View
