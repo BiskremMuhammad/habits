@@ -17,6 +17,13 @@ import { Button } from "../../elements/button";
  */
 interface ExitSessionModalProps {
   /**
+   * custom message for the modal
+   *
+   * @type {string}
+   */
+  message?: string;
+
+  /**
    * handler callback when cancel button "Keep Going" is clicked
    *
    * @type {() => void}
@@ -29,11 +36,28 @@ interface ExitSessionModalProps {
    * @type {() => void}
    */
   onExit: () => void;
+
+  /**
+   * custom text for the submit button
+   *
+   * @type {string}
+   */
+  submitText?: string;
+
+  /**
+   * custom title for the modal
+   *
+   * @type {string}
+   */
+  title?: string;
 }
 
 export const ExitSessionModal = ({
+  message,
   onCancel,
   onExit,
+  submitText,
+  title,
 }: ExitSessionModalProps) => {
   return (
     <MotiView
@@ -50,14 +74,16 @@ export const ExitSessionModal = ({
       exitTransition={{ type: "timing", duration: 100 }}
       style={styles.container}
     >
-      <Text style={styles.headerTitle}>Exit Session?</Text>
+      <Text style={styles.headerTitle}>{title ? title : "Exit Session?"}</Text>
       <Text
         style={[
           CommonStyles.infoTxtSmaller,
           { marginTop: 16, marginBottom: 36 },
         ]}
       >
-        Are you sure you want to end this session, you will lose your progress?
+        {message
+          ? message
+          : "Are you sure you want to end this session, you will lose your progress?"}
       </Text>
       <View style={styles.buttons}>
         <Button
@@ -71,7 +97,7 @@ export const ExitSessionModal = ({
           shape="oval"
           hasBackground={true}
           noBorder={true}
-          text="Exit"
+          text={submitText ? submitText : "Exit"}
           onPress={onExit}
         />
       </View>

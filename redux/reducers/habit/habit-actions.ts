@@ -25,6 +25,28 @@ export enum HabitActionTypes {
 }
 
 /**
+ * interface that defines the payload type of Submittin time Progress action
+ * 
+ * @interface
+ * @exports
+ */
+export interface ProgressPayload {
+  /**
+   * the id of the habit
+   * 
+   * @type {string}
+   */
+  habitId: string;
+
+  /**
+   * the time tracked
+   * 
+   * @type {number}
+   */
+  time: number;
+}
+
+/**
  * interface that definse the Action structure
  *
  * @interface
@@ -47,5 +69,5 @@ export interface HabitActions {
    * @type {Habit | string}
    * @memberof HabitActions
    */
-  payload?: Habit[] | Habit | string;
+  payload?: Habit[] | Habit | string | ProgressPayload;
 }

@@ -42,6 +42,7 @@ import InfoIcon from "../components/svgs/info-icon";
 import {
   HabitActions,
   HabitActionTypes,
+  ProgressPayload,
 } from "../redux/reducers/habit/habit-actions";
 import { useDerivedValue } from "react-native-reanimated";
 import { Plant, PlantState } from "../components/elements/plant";
@@ -112,11 +113,16 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   const [state, setState] = useState<ProgressState>(ProgressState.STOPPED);
   const [timer, setTimer] = useState<number>((habit?.duration || 1) * 60);
+  const [submittedTimer, setSubmittedTimer] = useState<number>(0);
   const [eta, setEta] = useState<Date>(new Date());
   let timerCounter = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ......for exit session modal
   const [exitSessionModalOpened, setExitSessionModalOpenState] =
+    useState<boolean>(false);
+
+  // ......for submitting partial time
+  const [partialTimeWarningModalOpened, togglePartialTimeWarningModal] =
     useState<boolean>(false);
 
   /**
@@ -267,10 +273,16 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   const onSubmit = () => {
     setState(ProgressState.SUBMITTED);
+    togglePartialTimeWarningModal(false);
+    const timeToSubmit: number = (habit?.duration || 1) * 60 - timer;
+    setSubmittedTimer(timeToSubmit);
 
     dispatch({
       type: HabitActionTypes.SAVE_DAY_PROGRESS,
-      payload: habitId,
+      payload: {
+        habitId,
+        time: timeToSubmit,
+      } as ProgressPayload,
     });
   };
 
@@ -415,12 +427,14 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             >
               {state === ProgressState.SUBMITTED
                 ? `${
-                    habit?.duration
-                      ? habit.duration < 10
-                        ? `0${habit.duration}`
-                        : habit.duration
-                      : "01"
-                  }:00`
+                    submittedTimer / 60 < 10
+                      ? `0${Math.floor(submittedTimer / 60)}`
+                      : Math.floor(submittedTimer / 60)
+                  }:${
+                    submittedTimer % 60 < 10
+                      ? `0${submittedTimer % 60}`
+                      : submittedTimer % 60
+                  }`
                 : `${
                     timer / 60 < 10
                       ? `0${Math.floor(timer / 60)}`
@@ -457,14 +471,18 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               />
             )}
         </View>
-        {state === ProgressState.ENDED && (
+        {(state === ProgressState.ENDED || state === ProgressState.PAUSED) && (
           <View style={TimeScreenStyles.footer}>
             <Button
               shape="oval"
               text="submit"
               noBorder={true}
               isAccentButton={true}
-              onPress={onSubmit}
+              onPress={() =>
+                state === ProgressState.PAUSED
+                  ? togglePartialTimeWarningModal(true)
+                  : onSubmit()
+              }
             />
             <View style={TimeScreenStyles.footerInfoSection}>
               <InfoIcon
@@ -484,6 +502,17 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             <ExitSessionModal
               onCancel={() => onCancelSessionHandler(false)}
               onExit={goToViewHabit}
+            />
+          </Modal>
+        )}
+        {partialTimeWarningModalOpened && !isIntroduction && (
+          <Modal>
+            <ExitSessionModal
+              title="Submit a Partial Session?"
+              message="Are you sure you want to submit? It won’t count as a completed session. You can always pause and resume the session later."
+              submitText="submit"
+              onCancel={() => togglePartialTimeWarningModal(false)}
+              onExit={onSubmit}
             />
           </Modal>
         )}
