@@ -57,7 +57,6 @@ import {
   HabitActionTypes,
 } from "../redux/reducers/habit/habit-actions";
 import { HabitIcon } from "../components/elements/habit-icon";
-import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
 import { CONSTANTS } from "../utils/constants";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
@@ -106,21 +105,6 @@ export const ViewHabitScreen = () => {
     });
   };
 
-  /**
-   * Disable user from going back
-   */
-  useEffect(
-    () =>
-      navigation.addListener("beforeRemove", (e) => {
-        // Prevent default behavior of leaving the screen
-        e.preventDefault();
-        onSaveChanges();
-        navigation.dispatch(StackActions.push(Routes.HOME_ROUTE));
-        return;
-      }),
-    [navigation]
-  );
-
   useLayoutEffect(() => {
     const getHabit = habits.find((h) => h.id === habitId);
     if (getHabit) {
@@ -135,6 +119,21 @@ export const ViewHabitScreen = () => {
       );
     }
   }, [isOnFocus, habits, navigation, habitId]);
+
+  /**
+   * Disable user from going back
+   */
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+        onSaveChanges();
+        navigation.dispatch(StackActions.push(Routes.HOME_ROUTE));
+        return;
+      }),
+    [navigation, state]
+  );
 
   const onChangeDuration = (val: string) => {
     dispatch({
@@ -206,7 +205,7 @@ export const ViewHabitScreen = () => {
       />
       <ScrollView>
         <View style={{ paddingVertical: CONSTANTS.HEADER_TOP_MARGIN }}>
-          <Header leftAction="back" />
+          <Header leftAction="back" normalGoBack={true} />
           <View
             style={[
               styles.habitDetailsContainer,
