@@ -112,7 +112,7 @@ export const Graph = ({ labels, data }: GraphProps) => {
                   style={{
                     position: "absolute",
                     top: graphHeight - 13,
-                    width: "100%",
+                    width: "200%",
                   }}
                 >
                   <Text style={[styles.xAxisLabel, styles.xAxisLabelHeighest]}>
