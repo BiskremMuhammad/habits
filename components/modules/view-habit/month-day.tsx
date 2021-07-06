@@ -55,10 +55,11 @@ export const MonthDay = (props: MonthDayProps) => {
         dayState !== DayState.REST &&
         dayState !== DayState.LOGGED_DAY &&
         dayState !== DayState.TODAY_LOGGED &&
+        dayState !== DayState.TODAY &&
         dayState !== DayState.TODAY_REST && (
           <View style={styles.streakDayIndicatorContainer}>
             {dayState !== DayState.INACTIVE_STREAK_START &&
-              dayState !== DayState.TODAY &&
+              dayState !== DayState.TODAY_IN_STREAK &&
               dayState !== DayState.STREAK_START && (
                 <View
                   style={[
@@ -72,7 +73,7 @@ export const MonthDay = (props: MonthDayProps) => {
                   ]}
                 ></View>
               )}
-            {dayState === DayState.TODAY && (
+            {dayState === DayState.TODAY_IN_STREAK && (
               <View
                 style={[
                   styles.todayWaitingForStreakIndicator,
@@ -82,7 +83,7 @@ export const MonthDay = (props: MonthDayProps) => {
             )}
             {dayState !== DayState.INACTIVE_STREAK_END &&
               dayState !== DayState.TODAY_STREAK &&
-              dayState !== DayState.TODAY &&
+              dayState !== DayState.TODAY_IN_STREAK &&
               dayState !== DayState.TODAY_REST_STREAK && (
                 <View
                   style={[
@@ -111,7 +112,8 @@ export const MonthDay = (props: MonthDayProps) => {
               dayState === DayState.INACTIVE_STREAK_START ||
               dayState === DayState.LOGGED_DAY
             ? styles.inactiveStreakDay
-            : dayState === DayState.TODAY
+            : dayState === DayState.TODAY ||
+              dayState === DayState.TODAY_IN_STREAK
             ? styles.today
             : dayState === DayState.TODAY_REST
             ? { ...styles.today, backgroundColor: "#120e3a" }
@@ -119,13 +121,15 @@ export const MonthDay = (props: MonthDayProps) => {
         ]}
       >
         {dayState === DayState.TODAY ||
+        dayState === DayState.TODAY_IN_STREAK ||
         dayState === DayState.TODAY_LOGGED ||
         dayState === DayState.TODAY_REST ||
         dayState === DayState.TODAY_STREAK ? (
           <View
             style={[
               styles.todayCircle,
-              dayState === DayState.TODAY_STREAK
+              dayState === DayState.TODAY_STREAK ||
+              dayState === DayState.TODAY_LOGGED
                 ? styles.todayStreakCircle
                 : {},
             ]}

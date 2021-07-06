@@ -25,6 +25,7 @@ export enum DayState {
   STREAK,
   LOGGED_DAY,
   TODAY,
+  TODAY_IN_STREAK,
   TODAY_REST,
   TODAY_REST_STREAK,
   TODAY_LOGGED,
@@ -88,7 +89,7 @@ export function stateOfTheDay(
       return DayState.TODAY_REST;
     }
     if (
-      streak > 0 &&
+      streak > 1 &&
       habitProgress.find(
         (d: HabitProgressData, _) => d.date.getTime() === day.getTime()
       )
@@ -100,6 +101,8 @@ export function stateOfTheDay(
       )
     ) {
       return DayState.TODAY_LOGGED;
+    } else if (streak > 0) {
+      return DayState.TODAY_IN_STREAK;
     } else {
       return DayState.TODAY;
     }
