@@ -39,7 +39,7 @@ export const HabitIcon = (props: HabitIconProps) => {
       Icon = <CandleIcon {...props} />;
       break;
     case HabitTypes.FASTING:
-      Icon = <FastIcon {...props} />;
+      Icon = <FastIcon {...props} width={32} height={32} />;
       break;
     default:
       Icon = <BookIcon {...props} />;

@@ -234,8 +234,8 @@ export const IdentityReinforcement = () => {
           <View style={CommonStyles.textWithIcon}>
             <HabitIcon
               type={habit?.type}
-              width={18}
-              height={23}
+              width={24}
+              height={24}
               style={[
                 CommonStyles.withIcon,
                 Platform.OS === "ios" && { marginTop: -8 },
