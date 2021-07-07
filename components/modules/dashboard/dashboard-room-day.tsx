@@ -97,7 +97,9 @@ export const DashboardRoomDay = (props: DashboardRoomDayProps) => {
             props.dayState === DayState.LOGGED_DAY
           ? styles.recentDayInactiveStreak
           : props.dayState === DayState.TODAY ||
+            props.dayState === DayState.TODAY_IN_STREAK ||
             props.dayState === DayState.TODAY_REST ||
+            props.dayState === DayState.TODAY_REST_STREAK ||
             props.dayState === DayState.REST ||
             props.dayState === DayState.REST_BETWEEN_STREAK ||
             props.dayState === DayState.REST_BETWEEN_INACTIVE_STREAK ||
@@ -112,7 +114,7 @@ export const DashboardRoomDay = (props: DashboardRoomDayProps) => {
       ]}
     >
       {!props.isCombo &&
-        styles.mostRecentDay &&
+        props.mostRecentDays &&
         props.dayState !== DayState.NORMAL &&
         props.dayState !== DayState.REST &&
         props.dayState !== DayState.LOGGED_DAY &&
@@ -132,6 +134,8 @@ export const DashboardRoomDay = (props: DashboardRoomDayProps) => {
               props.dayState !== DayState.REST_BETWEEN_STREAK &&
               props.dayState !== DayState.TODAY &&
               props.dayState !== DayState.TODAY_REST &&
+              props.dayState !== DayState.TODAY_IN_STREAK &&
+              props.dayState !== DayState.TODAY_REST_STREAK &&
               styles.loggedDayText,
           ]}
         >

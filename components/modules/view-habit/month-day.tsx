@@ -154,7 +154,9 @@ export const MonthDay = (props: MonthDayProps) => {
                 dayState !== DayState.REST_BETWEEN_INACTIVE_STREAK &&
                 dayState !== DayState.REST_BETWEEN_STREAK &&
                 dayState !== DayState.TODAY &&
+                dayState !== DayState.TODAY_IN_STREAK &&
                 dayState !== DayState.TODAY_REST &&
+                dayState !== DayState.TODAY_REST_STREAK &&
                 styles.streakDayText,
             ]}
           >
