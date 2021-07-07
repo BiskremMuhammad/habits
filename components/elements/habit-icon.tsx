@@ -9,6 +9,7 @@ import { SvgProps } from "react-native-svg";
 import { HabitTypes } from "../../types/habit";
 import BookIcon from "../svgs/book";
 import { CandleIcon } from "../svgs/candel-icon";
+import { FastIcon } from "../svgs/fast-icon";
 import { PencilIcon } from "../svgs/pencil";
 
 /**
@@ -36,6 +37,9 @@ export const HabitIcon = (props: HabitIconProps) => {
       break;
     case HabitTypes.MEDITATING:
       Icon = <CandleIcon {...props} />;
+      break;
+    case HabitTypes.FASTING:
+      Icon = <FastIcon {...props} />;
       break;
     default:
       Icon = <BookIcon {...props} />;

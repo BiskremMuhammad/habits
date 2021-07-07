@@ -15,8 +15,8 @@ import { WeekDays } from "./week-days";
 export enum HabitTypes {
   READING = "READING",
   JOURNALING = "JOURNALING",
-  SKETCHING = "SKETCHING",
   MEDITATING = "MEDITATING",
+  FASTING = "FASTING",
 }
 
 /**
@@ -28,8 +28,8 @@ export enum HabitTypes {
 export enum HabitTypesVerbale {
   READING = "Read",
   JOURNALING = "Write",
-  SKETCHING = "Sketch",
   MEDITATING = "Meditate",
+  FASTING = "Fast",
 }
 
 /**
@@ -41,8 +41,8 @@ export enum HabitTypesVerbale {
 export enum HabitTypesIdentity {
   READING = "Reader",
   JOURNALING = "Writer",
-  SKETCHING = "Sketcher",
   MEDITATING = "Meditation",
+  FASTING = "Fasting",
 }
 
 /**

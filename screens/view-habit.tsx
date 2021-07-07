@@ -218,7 +218,9 @@ export const ViewHabitScreen = () => {
                 Platform.OS === "ios" && { zIndex: 4 },
               ]}
             >
-              <Text style={styles.habitDetailsText}>I am a</Text>
+              <Text style={styles.habitDetailsText}>{`I am${
+                habit?.type !== HabitTypes.FASTING ? " a" : ""
+              }`}</Text>
               <View
                 style={{
                   paddingHorizontal: habitDetailsPadding,
