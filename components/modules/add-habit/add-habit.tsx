@@ -214,6 +214,7 @@ export const AddHabit = (props: AddHabitProps) => {
           Platform.OS === "ios" && { zIndex: 3 },
         ]}
         initialDuration={duration}
+        useFastingDurations={type === HabitTypes.FASTING}
         onChangeDuration={onChangeDuration}
       />
       <View style={addHabitStyles.buttonContainer}>

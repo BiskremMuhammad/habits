@@ -46,6 +46,36 @@ export enum HabitTypesIdentity {
 }
 
 /**
+ * define constant habit durations
+ *
+ * @type {string[]}
+ */
+export const HABIT_DURATIONS: string[] = [
+  "1 min",
+  "5 min",
+  "10 min",
+  "15 min",
+  "30 min",
+  "1 hr",
+  "2 hr",
+];
+
+/**
+ * define constant habit durations for fasting habit type
+ *
+ * @type {string[]}
+ */
+export const FASTING_HABIT_DURATIONS: string[] = [
+  "3 hr",
+  "9 hr",
+  "11 hr",
+  "12 hr",
+  "14 hr",
+  "18 hr",
+  "24 hr",
+];
+
+/**
  * interface that defines the Progress data object
  *
  * @interface

@@ -77,7 +77,11 @@ export const addHabitReducer = (
 ): Habit => {
   switch (action.type) {
     case AddHabitActionTypes.CHANGE_HABIT_TYPE:
-      return { ...state, type: action.payload };
+      return {
+        ...state,
+        type: action.payload,
+        duration: action.payload === HabitTypes.FASTING ? 3 * 60 : 1,
+      };
 
     case AddHabitActionTypes.CHANGE_HABIT_EVERYDAY_STATE:
       return {
@@ -103,7 +107,7 @@ export const addHabitReducer = (
         ...state,
         duration:
           Number(action.payload.match(/\d+/g)[0]) *
-          (action.payload.includes("h") ? 60 : 1),
+          (action.payload.includes("hr") ? 60 : 1),
       };
 
     case AddHabitActionTypes.UPDATE_HABIT:

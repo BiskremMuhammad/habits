@@ -7,8 +7,12 @@
 import React from "react";
 import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { CommonStyles } from "../../../styles/common";
+import { FastingStages } from "../../../types/fasting-stages";
+import { FASTING_HABIT_DURATIONS, HABIT_DURATIONS } from "../../../types/habit";
+import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 import { Input } from "../../elements/input";
 import TimerIcon from "../../svgs/timer-icon";
+import { FastingStageDuration } from "./fasting-stage-duration";
 
 /**
  * interface that defines the props of the component
@@ -78,9 +82,23 @@ interface HabitDurationInputProps {
    * @type {(state: boolean) => void}
    */
   toggleCallback?: (state: boolean) => void;
+
+  /**
+   * flag to tell the component to use the fasting habit durations
+   *
+   * @type {boolean}
+   */
+  useFastingDurations?: boolean;
 }
 
 export const HabitDurationInput = (props: HabitDurationInputProps) => {
+  const selectedDuration: string = `${
+    props.initialDuration >= 60
+      ? props.initialDuration / 60
+      : props.initialDuration
+  } ${props.initialDuration >= 60 ? "hr" : "min"}`;
+  console.log("selected duration: ", selectedDuration);
+
   return (
     <View style={props.extraStyles}>
       <Text style={[styles.label, props.grayedLabel && { opacity: 0.5 }]}>
@@ -89,13 +107,11 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
       <Input
         forceState={props.forceState}
         toggleCallback={props.toggleCallback}
-        text={`${
-          props.initialDuration >= 60
-            ? props.initialDuration / 60
-            : props.initialDuration
-        } ${props.initialDuration >= 60 ? "hr" : "min"}`}
+        text={selectedDuration}
         width={
-          props.customWidth
+          props.useFastingDurations
+            ? "full"
+            : props.customWidth
             ? props.customWidth
             : props.enableDurationSelect
             ? "short"
@@ -106,15 +122,24 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
         }
         onChange={props.onChangeDuration}
         isDropdown={props.enableDurationSelect}
-        dropdownOptions={[
-          "1 min",
-          "5 min",
-          "10 min",
-          "15 min",
-          "30 min",
-          "1 hr",
-          "2 hr",
-        ]}
+        isCustomDropDown={props.useFastingDurations}
+        dropdownOptions={
+          !props.useFastingDurations
+            ? HABIT_DURATIONS
+            : Object.keys(FastingStages).map((s: string, i: number) => (
+                <FastingStageDuration
+                  stage={
+                    getEnumKeyByEnumValue(FastingStages, s) as FastingStages
+                  }
+                  index={i}
+                  selected={selectedDuration === FASTING_HABIT_DURATIONS[i]}
+                  onSelect={(v: string) => {
+                    props.onChangeDuration(v);
+                    if (props.toggleCallback) props.toggleCallback(false);
+                  }}
+                />
+              ))
+        }
         hasBorder={props.enableDurationSelect && !props.disableBorder}
         customTextStyle={{ textTransform: "none" }}
       />

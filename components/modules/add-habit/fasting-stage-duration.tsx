@@ -1,0 +1,160 @@
+/**
+ * @author Muhammad Omran
+ * @date 07-07-2021
+ * @description implement the duration option with stage specifically for the fasting habit
+ */
+
+import React from "react";
+import { Pressable, Text, StyleSheet, View } from "react-native";
+import { CommonStyles } from "../../../styles/common";
+import {
+  FastingStages,
+  FastingStagesLabels,
+} from "../../../types/fasting-stages";
+import { FASTING_HABIT_DURATIONS } from "../../../types/habit";
+import { AutophagyIcon } from "../../svgs/fasting/autophagy-icon";
+import { BurnIcon } from "../../svgs/fasting/burn-icon";
+import { FullDayIcon } from "../../svgs/fasting/full-day-icon";
+import { KetosisIcon } from "../../svgs/fasting/ketosis-icon";
+import { LoweringIcon } from "../../svgs/fasting/lowering-icon";
+import { StabilizingIcon } from "../../svgs/fasting/stabilizing-icon";
+
+/**
+ * interface that defines the props of the component
+ *
+ * @interface
+ */
+interface FastingStageDurationProps {
+  /**
+   * current index of durations itteration
+   *
+   * @type {number}
+   */
+  index: number;
+
+  /**
+   * on select duration option callback
+   *
+   * @type {(val: string) => void}
+   */
+  onSelect: (val: string) => void;
+
+  /**
+   * selection state of the duration option
+   *
+   * @type {boolean}
+   */
+  selected?: boolean;
+
+  /**
+   * the stage of the current duration option
+   *
+   * @type {FastingStages}
+   */
+  stage: FastingStages;
+}
+
+export const FastingStageDuration = ({
+  index,
+  onSelect,
+  selected,
+  stage,
+}: FastingStageDurationProps) => {
+  let Icon: JSX.Element = <LoweringIcon />;
+  switch (stage) {
+    case FastingStages.LOWERING:
+      Icon = <LoweringIcon />;
+      break;
+    case FastingStages.STABILIZING:
+      Icon = <StabilizingIcon />;
+      break;
+    case FastingStages.BURN:
+      Icon = <BurnIcon width={18} height={18} />;
+      break;
+    case FastingStages.KETOSOS:
+      Icon = <KetosisIcon width={22} height={22} />;
+      break;
+    case FastingStages.AUTOPHAGY:
+    case FastingStages.AUTOPHAGY_TWO:
+      Icon = <AutophagyIcon />;
+      break;
+    case FastingStages.FULL_DAY:
+      Icon = <FullDayIcon width={22} height={22} />;
+      break;
+    default:
+      Icon = <LoweringIcon />;
+  }
+  return (
+    <Pressable
+      key={index}
+      style={[
+        styles.container,
+        index === FASTING_HABIT_DURATIONS.length - 1 && { marginBottom: 0 },
+      ]}
+      onPress={() => onSelect(FASTING_HABIT_DURATIONS[index])}
+    >
+      <View style={[styles.stage, CommonStyles.textWithIcon]}>
+        <View style={styles.stageIconContainer}>{Icon}</View>
+        <Text style={[styles.stageText, selected && styles.stageTextSelected]}>
+          {FastingStagesLabels[stage]}
+        </Text>
+      </View>
+      <View style={styles.duration}>
+        <Text
+          style={[styles.durationText, selected && styles.selectedDuration]}
+        >
+          {FASTING_HABIT_DURATIONS[index]}
+        </Text>
+      </View>
+    </Pressable>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    marginBottom: 14,
+  },
+  stage: {
+    flex: 2.5,
+    width: "70%",
+  },
+  stageIconContainer: {
+    width: 20,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  stageText: {
+    fontFamily: "JosefinSans-Medium",
+    fontSize: 18,
+    lineHeight: 28,
+    color: "#fff",
+    opacity: 0.5,
+    marginLeft: 11,
+    marginTop: -2,
+  },
+  stageTextSelected: {
+    fontFamily: "JosefinSans-Bold",
+    opacity: 1,
+    fontSize: 20,
+    lineHeight: 32,
+  },
+  duration: {
+    flex: 1,
+    paddingTop: 2,
+  },
+  durationText: {
+    fontFamily: "Rubik-Light",
+    fontSize: 16,
+    lineHeight: 28,
+    color: "#fff",
+    opacity: 0.5,
+  },
+  selectedDuration: {
+    opacity: 1,
+  },
+});

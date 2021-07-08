@@ -6,6 +6,7 @@
 
 import { MotiView } from "moti";
 import React, { useEffect, useState } from "react";
+import { PropsWithChildren } from "react";
 import {
   View,
   Text,
@@ -34,9 +35,9 @@ interface InputProps {
   /**
    * if input is dropdown this is the list of options
    *
-   * @type {string[]}
+   * @type {string[] | JSX.Element[]}
    */
-  dropdownOptions?: string[];
+  dropdownOptions?: string[] | JSX.Element[];
 
   /**
    * to force open the dropdown state from parent
@@ -60,11 +61,25 @@ interface InputProps {
   hasCircleBorder?: boolean;
 
   /**
+   * flag to hide the icon of the input
+   *
+   * @type {boolean}
+   */
+  hideIcon?: boolean;
+
+  /**
    * an icon to display with the text
    *
    * @type {JSX.Element}
    */
   icon?: JSX.Element;
+
+  /**
+   * if the dropdown options are custom jsx elements
+   *
+   * @type {boolean}
+   */
+  isCustomDropDown?: boolean;
 
   /**
    * flag if the input is a dropdown to display a chevron down
@@ -99,7 +114,7 @@ interface InputProps {
    *
    * @type {"long" | "short"}
    */
-  width?: "long" | "short" | "minimal";
+  width?: "full" | "long" | "short" | "minimal";
 }
 
 export const Input = (props: InputProps) => {
@@ -126,7 +141,12 @@ export const Input = (props: InputProps) => {
   };
 
   return (
-    <View style={InputStyles.input}>
+    <View
+      style={[
+        InputStyles.input,
+        props.width === "full" && { flex: 1, justifyContent: "flex-start" },
+      ]}
+    >
       {props.hasBorder && (
         <View style={InputStyles.inputBorderContainer}>
           {props.hasCircleBorder && (
@@ -149,7 +169,7 @@ export const Input = (props: InputProps) => {
           props.width !== "minimal" && { marginLeft: 12 },
         ]}
       >
-        {props.icon}
+        {!props.hideIcon && props.icon}
         <Text
           style={[
             InputStyles.text,
@@ -163,7 +183,11 @@ export const Input = (props: InputProps) => {
       </Pressable>
       {props.isDropdown && (
         <View
-          style={[InputStyles.inputChevron, dropdownOpen && { zIndex: 20 }]}
+          style={[
+            InputStyles.inputChevron,
+            dropdownOpen && { zIndex: 20 },
+            dropdownOpen && props.width === "full" && { right: -30 },
+          ]}
         >
           <MotiView
             animate={{ rotate: dropdownOpen ? "180deg" : "0deg" }}
@@ -173,32 +197,63 @@ export const Input = (props: InputProps) => {
           </MotiView>
         </View>
       )}
-      {dropdownOpen && props.dropdownOptions && (
+      {dropdownOpen && !!props.dropdownOptions && (
         <MotiView
           from={{ opacity: 0, translateY: 10, height: 0 }}
           animate={{ opacity: 1, translateY: 0, height: "100%" }}
-          style={InputStyles.dropdownContainer}
+          style={[
+            InputStyles.dropdownContainer,
+            props.width === "full" && { width: "125%" },
+          ]}
         >
           <View style={InputStyles.dropdownBorderContainer}>
             <View style={InputStyles.dropdownBorder}></View>
           </View>
-          <ScrollView style={InputStyles.dropdownList}>
-            {props.dropdownOptions.map((o: string, i: number) => (
-              <Pressable key={i} onPress={() => onChange(o)}>
-                <Text
-                  style={[
-                    InputStyles.dropdownListText,
-                    props.customTextStyle,
-                    i === props.dropdownOptions!.length - 1 && {
-                      marginBottom: 0,
-                    },
-                    o === props.text && InputStyles.dropdownOptionSelected,
-                  ]}
-                >
-                  {o}
-                </Text>
-              </Pressable>
-            ))}
+          <ScrollView>
+            <View
+              style={[
+                InputStyles.dropdownList,
+                props.width === "full" && {
+                  paddingTop: 12,
+                  paddingLeft: 16.5,
+                },
+              ]}
+            >
+              {props.isCustomDropDown &&
+                (props.dropdownOptions as JSX.Element[]).map(
+                  (i: JSX.Element, index: number) => (
+                    <View
+                      key={index}
+                      style={[
+                        CommonStyles.rowContainer,
+                        { alignItems: "center" },
+                      ]}
+                    >
+                      {i}
+                    </View>
+                  )
+                )}
+              {!props.isCustomDropDown &&
+                (props.dropdownOptions as string[]).map(
+                  (o: string, i: number) => (
+                    <Pressable key={i} onPress={() => onChange(o)}>
+                      <Text
+                        style={[
+                          InputStyles.dropdownListText,
+                          props.customTextStyle,
+                          i === props.dropdownOptions!.length - 1 && {
+                            marginBottom: 0,
+                          },
+                          o === props.text &&
+                            InputStyles.dropdownOptionSelected,
+                        ]}
+                      >
+                        {o}
+                      </Text>
+                    </Pressable>
+                  )
+                )}
+            </View>
           </ScrollView>
         </MotiView>
       )}
