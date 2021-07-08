@@ -6,7 +6,6 @@
 
 import { MotiView } from "moti";
 import React, { useEffect, useState } from "react";
-import { PropsWithChildren } from "react";
 import {
   View,
   Text,
@@ -115,6 +114,13 @@ interface InputProps {
    * @type {"long" | "short"}
    */
   width?: "full" | "long" | "short" | "minimal";
+
+  /**
+   * allow the dropdown menu to expand more when parent doesn't have much space
+   *
+   * @type {boolean}
+   */
+  useExtraWidth?: boolean;
 }
 
 export const Input = (props: InputProps) => {
@@ -187,6 +193,9 @@ export const Input = (props: InputProps) => {
             InputStyles.inputChevron,
             dropdownOpen && { zIndex: 20 },
             dropdownOpen && props.width === "full" && { right: -30 },
+            dropdownOpen &&
+              props.width === "full" &&
+              props.useExtraWidth && { right: "-85%" },
           ]}
         >
           <MotiView
@@ -204,6 +213,7 @@ export const Input = (props: InputProps) => {
           style={[
             InputStyles.dropdownContainer,
             props.width === "full" && { width: "125%" },
+            props.width === "full" && props.useExtraWidth && { width: "200%" },
           ]}
         >
           <View style={InputStyles.dropdownBorderContainer}>

@@ -84,6 +84,13 @@ interface HabitDurationInputProps {
   toggleCallback?: (state: boolean) => void;
 
   /**
+   * allow the dropdown menu to expand more when parent doesn't have much space
+   *
+   * @type {boolean}
+   */
+  useExtraWidth?: boolean;
+
+  /**
    * flag to tell the component to use the fasting habit durations
    *
    * @type {boolean}
@@ -140,6 +147,7 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
                 />
               ))
         }
+        useExtraWidth={props.useExtraWidth}
         hasBorder={props.enableDurationSelect && !props.disableBorder}
         customTextStyle={{ textTransform: "none" }}
       />

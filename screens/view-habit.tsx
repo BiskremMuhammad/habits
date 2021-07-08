@@ -286,6 +286,8 @@ export const ViewHabitScreen = () => {
                   grayedLabel={true}
                   disableBorder={true}
                   customWidth="minimal"
+                  useFastingDurations={habit.type === HabitTypes.FASTING}
+                  useExtraWidth={habit.type === HabitTypes.FASTING}
                   enableDurationSelect={true}
                   initialDuration={duration}
                   onChangeDuration={onChangeDuration}
