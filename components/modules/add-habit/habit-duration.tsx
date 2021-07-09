@@ -133,19 +133,21 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
         dropdownOptions={
           !props.useFastingDurations
             ? HABIT_DURATIONS
-            : Object.keys(FastingStages).map((s: string, i: number) => (
-                <FastingStageDuration
-                  stage={
-                    getEnumKeyByEnumValue(FastingStages, s) as FastingStages
-                  }
-                  index={i}
-                  selected={selectedDuration === FASTING_HABIT_DURATIONS[i]}
-                  onSelect={(v: string) => {
-                    props.onChangeDuration(v);
-                    if (props.toggleCallback) props.toggleCallback(false);
-                  }}
-                />
-              ))
+            : Object.keys(FastingStages)
+                .filter((_, i: number) => i > 0)
+                .map((s: string, i: number) => (
+                  <FastingStageDuration
+                    stage={
+                      getEnumKeyByEnumValue(FastingStages, s) as FastingStages
+                    }
+                    index={i}
+                    selected={selectedDuration === FASTING_HABIT_DURATIONS[i]}
+                    onSelect={(v: string) => {
+                      props.onChangeDuration(v);
+                      if (props.toggleCallback) props.toggleCallback(false);
+                    }}
+                  />
+                ))
         }
         useExtraWidth={props.useExtraWidth}
         hasBorder={props.enableDurationSelect && !props.disableBorder}
