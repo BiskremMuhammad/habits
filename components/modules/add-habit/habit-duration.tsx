@@ -104,7 +104,6 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
       ? props.initialDuration / 60
       : props.initialDuration
   } ${props.initialDuration >= 60 ? "hr" : "min"}`;
-  console.log("selected duration: ", selectedDuration);
 
   return (
     <View style={props.extraStyles}>
