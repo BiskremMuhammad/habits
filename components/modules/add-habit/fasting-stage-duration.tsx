@@ -5,7 +5,14 @@
  */
 
 import React from "react";
-import { Pressable, Text, StyleSheet, View } from "react-native";
+import {
+  Pressable,
+  Text,
+  StyleSheet,
+  View,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import { CommonStyles } from "../../../styles/common";
 import {
   FastingStages,
@@ -25,6 +32,13 @@ import { StabilizingIcon } from "../../svgs/fasting/stabilizing-icon";
  * @interface
  */
 interface FastingStageDurationProps {
+  /**
+   * extra styles for the component
+   *
+   * @type {StyleProp<ViewStyle>}
+   */
+  extraStyles?: StyleProp<ViewStyle>;
+
   /**
    * current index of durations itteration
    *
@@ -55,6 +69,7 @@ interface FastingStageDurationProps {
 }
 
 export const FastingStageDuration = ({
+  extraStyles,
   index,
   onSelect,
   selected,
@@ -90,6 +105,7 @@ export const FastingStageDuration = ({
       style={[
         styles.container,
         index === FASTING_HABIT_DURATIONS.length - 1 && { marginBottom: 0 },
+        extraStyles,
       ]}
       onPress={() => onSelect(FASTING_HABIT_DURATIONS[index])}
     >
@@ -130,7 +146,7 @@ const styles = StyleSheet.create({
   },
   stageText: {
     fontFamily: "JosefinSans-Medium",
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 28,
     color: "#fff",
     opacity: 0.5,
@@ -140,8 +156,6 @@ const styles = StyleSheet.create({
   stageTextSelected: {
     fontFamily: "JosefinSans-Bold",
     opacity: 1,
-    fontSize: 20,
-    lineHeight: 32,
   },
   duration: {
     flex: 1,

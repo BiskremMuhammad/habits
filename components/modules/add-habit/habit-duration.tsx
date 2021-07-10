@@ -129,6 +129,7 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
         }
         onChange={props.onChangeDuration}
         isDropdown={props.enableDurationSelect}
+        hideIcon={props.useFastingDurations}
         isCustomDropDown={props.useFastingDurations}
         dropdownOptions={
           !props.useFastingDurations

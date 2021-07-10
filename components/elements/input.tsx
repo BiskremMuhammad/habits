@@ -16,6 +16,10 @@ import {
   ScrollView,
 } from "react-native";
 import { CommonStyles } from "../../styles/common";
+import { FastingStages } from "../../types/fasting-stages";
+import { FASTING_HABIT_DURATIONS } from "../../types/habit";
+import { getEnumKeyByEnumValue } from "../../utils/enum-type-utils";
+import { FastingStageDuration } from "../modules/add-habit/fasting-stage-duration";
 import CaretDown from "../svgs/caret-down";
 
 /**
@@ -176,16 +180,30 @@ export const Input = (props: InputProps) => {
         ]}
       >
         {!props.hideIcon && props.icon}
-        <Text
-          style={[
-            InputStyles.text,
-            props.customTextStyle,
-            props.width !== "long" && InputStyles.short,
-            props.width === "minimal" && { marginRight: 22 },
-          ]}
-        >
-          {props.text}
-        </Text>
+        {props.isCustomDropDown ? (
+          <FastingStageDuration
+            stage={
+              Object.keys(FastingStages)[
+                FASTING_HABIT_DURATIONS.findIndex((s) => s === props.text) + 1
+              ] as FastingStages
+            }
+            index={FASTING_HABIT_DURATIONS.findIndex((s) => s === props.text)}
+            extraStyles={{ marginBottom: 0 }}
+            selected={true}
+            onSelect={(v: string) => onInputPress()}
+          />
+        ) : (
+          <Text
+            style={[
+              InputStyles.text,
+              props.customTextStyle,
+              props.width !== "long" && InputStyles.short,
+              props.width === "minimal" && { marginRight: 22 },
+            ]}
+          >
+            {props.text}
+          </Text>
+        )}
       </Pressable>
       {props.isDropdown && (
         <View
