@@ -11,6 +11,7 @@
  * @exports
  */
 export enum FastingStages {
+  STARTING = "STARTING",
   LOWERING = "LOWERING",
   STABILIZING = "STABILIZING",
   BURN = "BURN",
@@ -27,6 +28,7 @@ export enum FastingStages {
  * @exports
  */
 export enum FastingStagesLabels {
+  STARTING = "Starting",
   LOWERING = "Lowering",
   STABILIZING = "Stabilizing",
   BURN = "Burn",

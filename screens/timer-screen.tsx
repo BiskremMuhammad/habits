@@ -35,7 +35,12 @@ import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 import { CommonStyles } from "../styles/common";
 import { Button } from "../components/elements/button";
-import { Habit, HabitTypes, HabitTypesIdentity } from "../types/habit";
+import {
+  FASTING_HABIT_DURATIONS,
+  Habit,
+  HabitTypes,
+  HabitTypesIdentity,
+} from "../types/habit";
 import { useDispatch, useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
 import InfoIcon from "../components/svgs/info-icon";
@@ -53,6 +58,8 @@ import { calculateStreak } from "../utils/calendar-utils";
 import { HabitIcon } from "../components/elements/habit-icon";
 import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
 import { CONSTANTS } from "../utils/constants";
+import { FastingStages } from "../types/fasting-stages";
+import { FastingProgressStage } from "../components/elements/fasting-progress-stage";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -327,6 +334,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     [habit]
   );
 
+  const progressCircleWidth: number =
+    screenWidth - 32 - 54 - (screenHeight < 800 ? 28 : 0);
+
   return (
     <View style={TimeScreenStyles.container}>
       <LinearGradient
@@ -370,18 +380,50 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       </View>
       <View style={TimeScreenStyles.timerContainer}>
         <View style={TimeScreenStyles.progressContainer}>
-          <AnimatedCircularProgress
-            size={screenWidth - 32 - 54 - (screenHeight < 800 ? 28 : 0)}
-            width={5}
-            fill={
-              timer === (habit?.duration || 1) * 60 - 1 ? 1 : curProgress.value
-            }
-            tintColor="#fff"
-            lineCap="round"
-            rotation={-145}
-            arcSweepAngle={290}
-            backgroundColor="rgba(255,255,255, 0.16)"
-          />
+          <View style={{ position: "relative" }}>
+            <AnimatedCircularProgress
+              size={progressCircleWidth}
+              width={5}
+              fill={
+                timer === (habit?.duration || 1) * 60 - 1
+                  ? 1
+                  : curProgress.value
+              }
+              tintColor="#fff"
+              lineCap="round"
+              rotation={-145}
+              arcSweepAngle={290}
+              backgroundColor="rgba(255,255,255, 0.16)"
+            />
+            <View
+              style={[
+                TimeScreenStyles.timerFastingStagesContainer,
+                {
+                  width: progressCircleWidth - 10,
+                  height: progressCircleWidth - 10,
+                },
+              ]}
+            >
+              {Object.keys(FastingStages).map((s: string, i: number) => {
+                const stageMappedDuration: string =
+                  i > 0 ? FASTING_HABIT_DURATIONS[i - 1] : "0";
+                const stageDuration: number =
+                  Number(stageMappedDuration.match(/\d+/g)![0]) * 60;
+                return (
+                  <FastingProgressStage
+                    key={i}
+                    active={timer >= stageDuration}
+                    arcRotation={120}
+                    circleRadius={progressCircleWidth / 2 - 2.5}
+                    selected={habit?.duration === stageDuration}
+                    stage={
+                      getEnumKeyByEnumValue(FastingStages, s) as FastingStages
+                    }
+                  />
+                );
+              })}
+            </View>
+          </View>
           <Plant
             state={
               state === ProgressState.SUBMITTED ? PlantState.GLOW : plant.value
@@ -620,6 +662,15 @@ const TimeScreenStyles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 2,
     color: "#fff",
+  },
+  timerFastingStagesContainer: {
+    position: "absolute",
+    top: 5,
+    left: 5,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   timerControls: {
     marginTop: screenHeight < 800 ? 0 : 33,
