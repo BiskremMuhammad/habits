@@ -42,7 +42,7 @@ export enum HabitTypesIdentity {
   READING = "Reader",
   JOURNALING = "Writer",
   MEDITATING = "Meditation",
-  FASTING = "Fasting",
+  FASTING = "Faster",
 }
 
 /**

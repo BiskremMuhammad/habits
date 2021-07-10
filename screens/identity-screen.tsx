@@ -227,9 +227,7 @@ export const IdentityReinforcement = () => {
         }}
       />
       <View style={styles.identityContainer}>
-        <Text style={styles.title}>{`I am${
-          habit?.type !== HabitTypes.FASTING ? " a" : ""
-        }`}</Text>
+        <Text style={styles.title}>I am a</Text>
         <View style={styles.identityTextContainer}>
           <View style={CommonStyles.textWithIcon}>
             <HabitIcon

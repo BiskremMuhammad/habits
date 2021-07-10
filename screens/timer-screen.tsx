@@ -351,9 +351,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         <Pressable onPress={() => onCancelSessionHandler(true)}>
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </Pressable>
-        <Text style={TimeScreenStyles.identity}>{`I am${
-          habit?.type !== HabitTypes.FASTING ? " a" : ""
-        }`}</Text>
+        <Text style={TimeScreenStyles.identity}>I am a</Text>
         <HabitIcon
           type={habit?.type}
           style={[
