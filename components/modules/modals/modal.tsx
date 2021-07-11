@@ -31,9 +31,12 @@ const ModalStyles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
+    bottom: 0,
+    zIndex: 10,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.7)",
   },
 });
