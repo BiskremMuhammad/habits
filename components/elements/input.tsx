@@ -155,6 +155,7 @@ export const Input = (props: InputProps) => {
       style={[
         InputStyles.input,
         props.width === "full" && { flex: 1, justifyContent: "flex-start" },
+        props.width === "full" && props.useExtraWidth && { paddingVertical: 0 },
       ]}
     >
       {props.hasBorder && (
@@ -177,6 +178,7 @@ export const Input = (props: InputProps) => {
         style={[
           CommonStyles.textWithIcon,
           props.width !== "minimal" && { marginLeft: 12 },
+          props.width === "full" && props.useExtraWidth && { marginLeft: 0 },
         ]}
       >
         {!props.hideIcon && props.icon}
@@ -211,9 +213,9 @@ export const Input = (props: InputProps) => {
             InputStyles.inputChevron,
             dropdownOpen && { zIndex: 20 },
             dropdownOpen && props.width === "full" && { right: -30 },
-            dropdownOpen &&
-              props.width === "full" &&
-              props.useExtraWidth && { right: "-85%" },
+            // dropdownOpen &&
+            //   props.width === "full" &&
+            //   props.useExtraWidth && { right: "-85%" },
           ]}
         >
           <MotiView
@@ -231,7 +233,7 @@ export const Input = (props: InputProps) => {
           style={[
             InputStyles.dropdownContainer,
             props.width === "full" && { width: "125%" },
-            props.width === "full" && props.useExtraWidth && { width: "200%" },
+            // props.width === "full" && props.useExtraWidth && { width: "200%" },
           ]}
         >
           <View style={InputStyles.dropdownBorderContainer}>

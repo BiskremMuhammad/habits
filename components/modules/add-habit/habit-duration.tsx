@@ -106,7 +106,16 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
   } ${props.initialDuration >= 60 ? "hr" : "min"}`;
 
   return (
-    <View style={props.extraStyles}>
+    <View
+      style={[
+        props.extraStyles,
+        props.useExtraWidth && {
+          flexDirection: "column",
+          alignItems: "flex-start",
+          marginTop: 12,
+        },
+      ]}
+    >
       <Text style={[styles.label, props.grayedLabel && { opacity: 0.5 }]}>
         for
       </Text>
