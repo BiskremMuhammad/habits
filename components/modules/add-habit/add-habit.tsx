@@ -16,18 +16,12 @@ import {
 import { GlobalStore } from "../../../redux/store";
 import { TimerScreenRouteParams } from "../../../screens/timer-screen";
 import { CommonStyles } from "../../../styles/common";
-import {
-  Habit,
-  HabitTypes,
-  HabitTypesIdentity,
-  HabitTypesVerbale,
-} from "../../../types/habit";
+import { Habit, HabitTypes, HabitTypesVerbale } from "../../../types/habit";
 import { Routes } from "../../../types/route-names";
 import { WeekDays } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
 import { Button } from "../../elements/button";
 import { Input } from "../../elements/input";
-import BookIcon from "../../svgs/book";
 import {
   AddHabitActionTypes,
   addHabitReducer,
@@ -37,6 +31,10 @@ import { HabitDurationInput } from "./habit-duration";
 import { HabitFrequencyInput } from "./habit-frequency";
 import { HabitIcon } from "../../elements/habit-icon";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
+import { FastingStageInfoModal } from "../modals/fasting-stage-info-modal";
+import { AnimatePresence } from "moti";
+import { FastingStages } from "../../../types/fasting-stages";
+import { Modal } from "../modals/modal";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -95,6 +93,8 @@ export const AddHabit = (props: AddHabitProps) => {
   const { type, isEveryDay, days, duration } = state;
   const navigation = useNavigation();
   const [currentOpenInput, setCurrentOpenInput] = useState(OpenedDropDown.NONE);
+  const [fastingStageInfoModal, toggleFastingStageInfoModal] =
+    useState<boolean>(false);
 
   const onChangeOpenedDropdown = (state: boolean, input: OpenedDropDown) => {
     setCurrentOpenInput(state ? input : OpenedDropDown.NONE);
@@ -154,6 +154,9 @@ export const AddHabit = (props: AddHabitProps) => {
       );
     }
   };
+  const selectedDuration: string = `${
+    duration >= 60 ? duration / 60 : duration
+  } ${duration >= 60 ? "hr" : "min"}`;
 
   return (
     <View style={addHabitStyles.container}>
@@ -215,6 +218,7 @@ export const AddHabit = (props: AddHabitProps) => {
         ]}
         initialDuration={duration}
         useFastingDurations={type === HabitTypes.FASTING}
+        onInfoIconClicked={() => toggleFastingStageInfoModal(true)}
         onChangeDuration={onChangeDuration}
       />
       <View style={addHabitStyles.buttonContainer}>
@@ -225,6 +229,21 @@ export const AddHabit = (props: AddHabitProps) => {
           hasCircleBorder={true}
         />
       </View>
+      <AnimatePresence>
+        {fastingStageInfoModal && (
+          <Modal>
+            <FastingStageInfoModal
+              stage={
+                getEnumKeyByEnumValue(
+                  FastingStages,
+                  selectedDuration
+                ) as FastingStages
+              }
+              onDismiss={() => toggleFastingStageInfoModal(false)}
+            />
+          </Modal>
+        )}
+      </AnimatePresence>
     </View>
   );
 };

@@ -5,12 +5,21 @@
  */
 
 import React from "react";
-import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  Platform,
+  Pressable,
+} from "react-native";
 import { CommonStyles } from "../../../styles/common";
 import { FastingStages } from "../../../types/fasting-stages";
 import { FASTING_HABIT_DURATIONS, HABIT_DURATIONS } from "../../../types/habit";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 import { Input } from "../../elements/input";
+import InfoIcon from "../../svgs/info-icon";
 import TimerIcon from "../../svgs/timer-icon";
 import { FastingStageDuration } from "./fasting-stage-duration";
 
@@ -63,6 +72,13 @@ interface HabitDurationInputProps {
   grayedLabel?: boolean;
 
   /**
+   * flag to hide the info icon when useFastingHabit flag is active
+   *
+   * @type {boolean}
+   */
+  hideInfoIcon?: boolean;
+
+  /**
    * the initial duration to be displayed when the component is loaded
    *
    * @type {number}
@@ -75,6 +91,13 @@ interface HabitDurationInputProps {
    * @type {(val: string) => void}
    */
   onChangeDuration: (val: string) => void;
+
+  /**
+   * callback when the info button icon clicked
+   *
+   * @type {() => void}
+   */
+  onInfoIconClicked?: () => void;
 
   /**
    * to send a callback to parent of state changing
@@ -162,6 +185,13 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
         hasBorder={props.enableDurationSelect && !props.disableBorder}
         customTextStyle={{ textTransform: "none" }}
       />
+      {props.useFastingDurations && !props.hideInfoIcon && (
+        <Pressable
+          onPress={() => !!props.onInfoIconClicked && props.onInfoIconClicked()}
+        >
+          <InfoIcon style={styles.infoIcon} fill="#fff" />
+        </Pressable>
+      )}
     </View>
   );
 };
@@ -172,5 +202,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#fff",
     marginRight: 8,
+  },
+  infoIcon: {
+    width: 15,
+    height: 15,
+    marginTop: 4,
+    marginLeft: 12,
+    opacity: 0.5,
   },
 });

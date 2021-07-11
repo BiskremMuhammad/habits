@@ -93,7 +93,6 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
     flex: 1,
     alignItems: "center",
     marginTop:

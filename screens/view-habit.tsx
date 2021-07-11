@@ -288,6 +288,7 @@ export const ViewHabitScreen = () => {
                   useExtraWidth={habit.type === HabitTypes.FASTING}
                   enableDurationSelect={true}
                   initialDuration={duration}
+                  hideInfoIcon={true}
                   onChangeDuration={onChangeDuration}
                 />
               )}
