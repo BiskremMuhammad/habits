@@ -58,15 +58,15 @@ export const FastingStageInfoModal = ({
 
   switch (stage) {
     case FastingStages.LOWERING:
-      icon = <LoweringIcon />;
+      icon = <LoweringIcon width={24} height={24} />;
       info = [""];
       break;
     case FastingStages.STABILIZING:
-      icon = <StabilizingIcon />;
+      icon = <StabilizingIcon width={24} height={24} />;
       info = [""];
       break;
     case FastingStages.BURN:
-      icon = <BurnIcon />;
+      icon = <BurnIcon width={24} height={24} />;
       info = [""];
       break;
     case FastingStages.KETOSOS:
@@ -77,19 +77,19 @@ export const FastingStageInfoModal = ({
       ];
       break;
     case FastingStages.AUTOPHAGY:
-      icon = <AutophagyIcon />;
+      icon = <AutophagyIcon width={24} height={24} />;
       info = [""];
       break;
     case FastingStages.AUTOPHAGY_TWO:
-      icon = <AutophagyIcon />;
+      icon = <AutophagyIcon width={24} height={24} />;
       info = [""];
       break;
     case FastingStages.FULL_DAY:
-      icon = <FullDayIcon />;
+      icon = <FullDayIcon width={24} height={24} />;
       info = [""];
       break;
     default:
-      icon = <StartFastingIcon />;
+      icon = <StartFastingIcon width={24} height={24} />;
       info = [""];
   }
 
