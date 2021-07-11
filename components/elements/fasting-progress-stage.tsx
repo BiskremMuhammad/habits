@@ -66,8 +66,6 @@ export const FastingProgressStage = ({
 }: FastingProgressStageProps) => {
   let angle: number = 0;
   const iconFill: string = active ? "#120E30" : "#fff";
-  const xOffset: number = 17.5;
-  const yOffset: number = 22.5;
   let icon: JSX.Element = <LoweringIcon />;
   switch (stage) {
     case FastingStages.STARTING:
