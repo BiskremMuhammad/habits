@@ -5,7 +5,7 @@
  */
 
 import { v4 as uuid } from "uuid";
-import React, { Dispatch, useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
 import { AnimatePresence, View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
@@ -13,19 +13,17 @@ import { AddIconSvg } from "../components/svgs/add-icon";
 import { useNavigation } from "@react-navigation/native";
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { Header } from "../components/elements/header";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
-import { Habit } from "../types/habit";
+import { FASTING_HABIT_DURATIONS, Habit } from "../types/habit";
 import { CONSTANTS } from "../utils/constants";
 import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
 import { FastingStages } from "../types/fasting-stages";
-import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
 import { Modal } from "../components/modules/modals/modal";
 import {
   addHabitReducer,
   INITIAL_ADD_HABIT_STATE,
 } from "../components/modules/add-habit/add-habit-reducer";
-import { HabitActions } from "../redux/reducers/habit/habit-actions";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -120,10 +118,11 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
           <Modal>
             <FastingStageInfoModal
               stage={
-                getEnumKeyByEnumValue(
-                  FastingStages,
-                  selectedDuration
-                ) as FastingStages
+                Object.keys(FastingStages)[
+                  FASTING_HABIT_DURATIONS.findIndex(
+                    (s) => s === selectedDuration
+                  ) + 1
+                ] as FastingStages
               }
               onDismiss={() => toggleFastingStageInfoModal(false)}
             />

@@ -19,8 +19,8 @@ import {
 } from "../components/modules/add-habit/add-habit-reducer";
 import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
 import { FastingStages } from "../types/fasting-stages";
-import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
 import { Modal } from "../components/modules/modals/modal";
+import { FASTING_HABIT_DURATIONS } from "../types/habit";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -77,10 +77,11 @@ export const SplashScreen = () => {
           <Modal>
             <FastingStageInfoModal
               stage={
-                getEnumKeyByEnumValue(
-                  FastingStages,
-                  selectedDuration
-                ) as FastingStages
+                Object.keys(FastingStages)[
+                  FASTING_HABIT_DURATIONS.findIndex(
+                    (s) => s === selectedDuration
+                  ) + 1
+                ] as FastingStages
               }
               onDismiss={() => toggleFastingStageInfoModal(false)}
             />
