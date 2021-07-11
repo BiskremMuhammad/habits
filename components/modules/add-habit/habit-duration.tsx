@@ -11,7 +11,6 @@ import {
   StyleSheet,
   StyleProp,
   ViewStyle,
-  Platform,
   Pressable,
 } from "react-native";
 import { CommonStyles } from "../../../styles/common";

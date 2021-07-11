@@ -18,7 +18,6 @@ import {
 import { CommonStyles } from "../../styles/common";
 import { FastingStages } from "../../types/fasting-stages";
 import { FASTING_HABIT_DURATIONS } from "../../types/habit";
-import { getEnumKeyByEnumValue } from "../../utils/enum-type-utils";
 import { FastingStageDuration } from "../modules/add-habit/fasting-stage-duration";
 import CaretDown from "../svgs/caret-down";
 

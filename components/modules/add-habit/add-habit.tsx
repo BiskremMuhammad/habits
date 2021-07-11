@@ -11,7 +11,6 @@ import {
   HabitActions,
   HabitActionTypes,
 } from "../../../redux/reducers/habit/habit-actions";
-import { GlobalStore } from "../../../redux/store";
 import { TimerScreenRouteParams } from "../../../screens/timer-screen";
 import { CommonStyles } from "../../../styles/common";
 import { Habit, HabitTypes, HabitTypesVerbale } from "../../../types/habit";
@@ -20,20 +19,11 @@ import { WeekDays } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
 import { Button } from "../../elements/button";
 import { Input } from "../../elements/input";
-import {
-  AddHabitAction,
-  AddHabitActionTypes,
-  addHabitReducer,
-  INITIAL_ADD_HABIT_STATE,
-} from "./add-habit-reducer";
+import { AddHabitAction, AddHabitActionTypes } from "./add-habit-reducer";
 import { HabitDurationInput } from "./habit-duration";
 import { HabitFrequencyInput } from "./habit-frequency";
 import { HabitIcon } from "../../elements/habit-icon";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
-import { FastingStageInfoModal } from "../modals/fasting-stage-info-modal";
-import { AnimatePresence } from "moti";
-import { FastingStages } from "../../../types/fasting-stages";
-import { Modal } from "../modals/modal";
 import { useDispatch } from "react-redux";
 
 const { height: screenHeight } = Dimensions.get("screen");

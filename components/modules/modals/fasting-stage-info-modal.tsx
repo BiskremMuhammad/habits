@@ -7,7 +7,6 @@
 import { MotiView } from "@motify/components";
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { CommonStyles } from "../../../styles/common";
 import {
   FastingStages,
   FastingStagesLabels,
