@@ -124,6 +124,9 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
                   ) + 1
                 ] as FastingStages
               }
+              index={FASTING_HABIT_DURATIONS.findIndex(
+                (s) => s === selectedDuration
+              )}
               onDismiss={() => toggleFastingStageInfoModal(false)}
             />
           </Modal>
