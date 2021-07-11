@@ -4,11 +4,9 @@
  * @description implement the add habit form
  */
 
-import { v4 as uuid } from "uuid";
 import { StackActions, useNavigation } from "@react-navigation/core";
-import React, { Dispatch, useReducer, useState } from "react";
+import React, { Dispatch, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Platform } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import {
   HabitActions,
   HabitActionTypes,
@@ -23,6 +21,7 @@ import { CONSTANTS } from "../../../utils/constants";
 import { Button } from "../../elements/button";
 import { Input } from "../../elements/input";
 import {
+  AddHabitAction,
   AddHabitActionTypes,
   addHabitReducer,
   INITIAL_ADD_HABIT_STATE,
@@ -35,6 +34,7 @@ import { FastingStageInfoModal } from "../modals/fasting-stage-info-modal";
 import { AnimatePresence } from "moti";
 import { FastingStages } from "../../../types/fasting-stages";
 import { Modal } from "../modals/modal";
+import { useDispatch } from "react-redux";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -51,6 +51,13 @@ export enum OpenedDropDown {
  * @interface
  */
 interface AddHabitProps {
+  /**
+   * dispatch the action for the add habit screen add habit reducer
+   *
+   * @type {React.Dispatch<AddHabitAction>}
+   */
+  dispatch: React.Dispatch<AddHabitAction>;
+
   /**
    * flag to enable change the habit type
    *
@@ -78,23 +85,28 @@ interface AddHabitProps {
    * @type {boolean}
    */
   isIntroduction?: boolean;
+
+  /**
+   * to open the selected fasting stage info modal
+   *
+   * @type {() => void}
+   */
+  showFastingStageInfo: () => void;
+
+  /**
+   * state of the habit to add
+   *
+   * @type {Habit}
+   */
+  state: Habit;
 }
 
 export const AddHabit = (props: AddHabitProps) => {
-  const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
-    (store: GlobalStore): Habit[] => store.habits
-  );
-  const storeDispatch = useDispatch<Dispatch<HabitActions>>();
-
-  const [state, dispatch] = useReducer(addHabitReducer, {
-    ...INITIAL_ADD_HABIT_STATE,
-    id: uuid(),
-  });
-  const { type, isEveryDay, days, duration } = state;
+  const { dispatch } = props;
+  const { type, isEveryDay, days, duration } = props.state;
   const navigation = useNavigation();
   const [currentOpenInput, setCurrentOpenInput] = useState(OpenedDropDown.NONE);
-  const [fastingStageInfoModal, toggleFastingStageInfoModal] =
-    useState<boolean>(false);
+  const storeDispatch = useDispatch<Dispatch<HabitActions>>();
 
   const onChangeOpenedDropdown = (state: boolean, input: OpenedDropDown) => {
     setCurrentOpenInput(state ? input : OpenedDropDown.NONE);
@@ -140,23 +152,20 @@ export const AddHabit = (props: AddHabitProps) => {
   const onCallToActionPress = () => {
     storeDispatch({
       type: HabitActionTypes.ADD_NEW_HABIT,
-      payload: state,
+      payload: props.state,
     });
     if (props.isIntroduction) {
       navigation.navigate(Routes.TIMER, {
-        habitId: state.id,
+        habitId: props.state.id,
       } as TimerScreenRouteParams);
     } else {
       navigation.dispatch(
         StackActions.push(Routes.IDENTITY_REINFORCEMENT, {
-          habitId: state.id,
+          habitId: props.state.id,
         } as TimerScreenRouteParams)
       );
     }
   };
-  const selectedDuration: string = `${
-    duration >= 60 ? duration / 60 : duration
-  } ${duration >= 60 ? "hr" : "min"}`;
 
   return (
     <View style={addHabitStyles.container}>
@@ -218,7 +227,7 @@ export const AddHabit = (props: AddHabitProps) => {
         ]}
         initialDuration={duration}
         useFastingDurations={type === HabitTypes.FASTING}
-        onInfoIconClicked={() => toggleFastingStageInfoModal(true)}
+        onInfoIconClicked={props.showFastingStageInfo}
         onChangeDuration={onChangeDuration}
       />
       <View style={addHabitStyles.buttonContainer}>
@@ -229,21 +238,6 @@ export const AddHabit = (props: AddHabitProps) => {
           hasCircleBorder={true}
         />
       </View>
-      <AnimatePresence>
-        {fastingStageInfoModal && (
-          <Modal>
-            <FastingStageInfoModal
-              stage={
-                getEnumKeyByEnumValue(
-                  FastingStages,
-                  selectedDuration
-                ) as FastingStages
-              }
-              onDismiss={() => toggleFastingStageInfoModal(false)}
-            />
-          </Modal>
-        )}
-      </AnimatePresence>
     </View>
   );
 };

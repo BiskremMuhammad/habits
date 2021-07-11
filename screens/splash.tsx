@@ -4,18 +4,40 @@
  * @description implement the splash screen
  */
 
-import React from "react";
+import { v4 as uuid } from "uuid";
+import React, { useReducer, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import { View as MotiView } from "moti";
+import { AnimatePresence, View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
 import { CONSTANTS } from "../utils/constants";
 import { TitlePanel } from "../components/modules/panels/title-panel";
+import {
+  addHabitReducer,
+  INITIAL_ADD_HABIT_STATE,
+} from "../components/modules/add-habit/add-habit-reducer";
+import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
+import { FastingStages } from "../types/fasting-stages";
+import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
+import { Modal } from "../components/modules/modals/modal";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
 export const SplashScreen = () => {
+  const [state, dispatch] = useReducer(addHabitReducer, {
+    ...INITIAL_ADD_HABIT_STATE,
+    id: uuid(),
+  });
+
+  const [fastingStageInfoModal, toggleFastingStageInfoModal] =
+    useState<boolean>(false);
+
+  const { duration } = state;
+  const selectedDuration: string = `${
+    duration >= 60 ? duration / 60 : duration
+  } ${duration >= 60 ? "hr" : "min"}`;
+
   return (
     <View style={{ flex: 1 }}>
       <View style={SplashScreenStyles.container}>
@@ -41,9 +63,30 @@ export const SplashScreen = () => {
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 1300, duration: 1000, type: "timing" }}
         >
-          <AddHabit isIntroduction={true} enableChangeHabit={true} />
+          <AddHabit
+            isIntroduction={true}
+            enableChangeHabit={true}
+            dispatch={dispatch}
+            state={state}
+            showFastingStageInfo={() => toggleFastingStageInfoModal(true)}
+          />
         </MotiView>
       </View>
+      <AnimatePresence>
+        {fastingStageInfoModal && (
+          <Modal>
+            <FastingStageInfoModal
+              stage={
+                getEnumKeyByEnumValue(
+                  FastingStages,
+                  selectedDuration
+                ) as FastingStages
+              }
+              onDismiss={() => toggleFastingStageInfoModal(false)}
+            />
+          </Modal>
+        )}
+      </AnimatePresence>
     </View>
   );
 };
