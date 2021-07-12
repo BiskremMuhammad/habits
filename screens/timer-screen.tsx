@@ -478,9 +478,17 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                       : submittedTimer % 60
                   }`
                 : `${
-                    timer / 60 < 10
-                      ? `0${Math.floor(timer / 60)}`
-                      : Math.floor(timer / 60)
+                    timer > 60 * 60
+                      ? `${
+                          timer / (60 * 60) < 10
+                            ? `0${Math.floor(timer / (60 * 60))}`
+                            : Math.floor(timer / (60 * 60))
+                        }:`
+                      : ""
+                  }${
+                    (timer / 60) % 60 < 10
+                      ? `0${Math.floor((timer / 60) % 60)}`
+                      : Math.floor((timer / 60) % 60)
                   }:${timer % 60 < 10 ? `0${timer % 60}` : timer % 60}`}
             </MotiText>
           </MotiView>
