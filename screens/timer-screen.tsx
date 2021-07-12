@@ -406,14 +406,14 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                 const stageMappedDuration: string =
                   i > 0 ? FASTING_HABIT_DURATIONS[i - 1] : "0";
                 const stageDuration: number =
-                  Number(stageMappedDuration.match(/\d+/g)![0]) * 60;
+                  Number(stageMappedDuration.match(/\d+/g)![0]) * 60 * 60;
                 return (
                   <FastingProgressStage
                     key={i}
                     active={timer >= stageDuration}
                     arcRotation={120}
                     circleRadius={progressCircleWidth / 2 - 2.5}
-                    selected={habit?.duration === stageDuration}
+                    selected={habit && habit.duration * 60 === stageDuration}
                     stage={
                       getEnumKeyByEnumValue(FastingStages, s) as FastingStages
                     }
