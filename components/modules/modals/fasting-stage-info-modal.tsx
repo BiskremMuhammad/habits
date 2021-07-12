@@ -111,7 +111,7 @@ export const FastingStageInfoModal = ({
       <View style={styles.header}>
         {icon}
         <Text style={styles.headerTitle}>{FastingStagesLabels[stage]}</Text>
-        <Text style={styles.duration}>- {FASTING_HABIT_DURATIONS[index]}</Text>
+        <Text style={styles.duration}>~ {FASTING_HABIT_DURATIONS[index]}</Text>
       </View>
       <View style={styles.body}>
         {info.map((paragraph: string, i: number) => (
