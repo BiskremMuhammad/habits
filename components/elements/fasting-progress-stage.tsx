@@ -86,7 +86,14 @@ export const FastingProgressStage = ({
       angle = arcRotation + ((11 * 360) / 24) * (300 / 360);
       break;
     case FastingStages.KETOSOS:
-      icon = <KetosisIcon fill={iconFill} width={20} height={20} />;
+      icon = (
+        <KetosisIcon
+          fill={iconFill}
+          width={20}
+          height={20}
+          style={{ marginTop: 1, marginLeft: 3 }}
+        />
+      );
       angle = arcRotation + ((12 * 360) / 24) * (300 / 360);
       break;
     case FastingStages.AUTOPHAGY:
