@@ -119,7 +119,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   const [habit, setHabit] = useState<Habit>();
 
   const [state, setState] = useState<ProgressState>(ProgressState.STOPPED);
-  const [timer, setTimer] = useState<number>((habit?.duration || 1) * 60);
+  const [timer, setTimer] = useState<number>(
+    habit && habit.type === HabitTypes.FASTING ? 0 : (habit?.duration || 1) * 60
+  );
   const [submittedTimer, setSubmittedTimer] = useState<number>(0);
   const [eta, setEta] = useState<Date>(new Date());
   let timerCounter = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -136,15 +138,21 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
    * update the progress value for the animations
    */
   const curProgress = useDerivedValue<number>(() => {
+    const totalDuration: number =
+      habit && habit.type === HabitTypes.FASTING
+        ? 24 * 60 * 60
+        : (habit?.duration || 1) * 60;
     return (
-      (((timer - (habit?.duration || 1) * 60) * -1) /
-        ((habit?.duration || 1) * 60)) *
+      (((habit && habit.type === HabitTypes.FASTING
+        ? -timer
+        : timer - totalDuration) *
+        -1) /
+        totalDuration) *
         100 +
       (state === ProgressState.STOPPED
         ? 0
         : 100 /
-          ((habit?.duration || 1) *
-            60)) /* add 1% because this will evaluate to 1% delay, which means the last re-render will be skipped */
+          totalDuration) /* add 1% because this will evaluate to 1% delay, which means the last re-render will be skipped */
     );
   }, [timer]);
 
@@ -212,7 +220,11 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       const getHabit = habits.find((h) => h.id === habitId);
       if (getHabit) {
         setHabit(getHabit);
-        setTimer((getHabit.duration || 1) * 60);
+        setTimer(
+          getHabit.type === HabitTypes.FASTING
+            ? 0
+            : (getHabit.duration || 1) * 60
+        );
         // setState(ProgressState.STOPPED);
       } else {
         navigation.dispatch(
@@ -239,7 +251,13 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       timer > 0 &&
       timer % 3 === 0
     ) {
-      setTimer(timer <= 8 ? 1 : timer - 8);
+      setTimer(
+        habit && habit.type === HabitTypes.FASTING
+          ? timer + 47
+          : timer <= 8
+          ? 1
+          : timer - 8
+      );
     }
   }, [isIntroduction, timer, state]);
 
@@ -260,10 +278,16 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     ) {
       if (!timerCounter.current) {
         timerCounter.current = setInterval(() => {
-          setTimer((t) => t - 1);
+          setTimer((t) =>
+            habit && habit.type === HabitTypes.FASTING ? t + 1 : t - 1
+          );
         }, 1000);
       }
-      setEta(new Date(Date.now() + timer * 1000));
+      const timeToComplete: number =
+        habit && habit.type === HabitTypes.FASTING
+          ? habit.duration * 60
+          : timer;
+      setEta(new Date(Date.now() + timeToComplete * 1000));
     } else {
       if (timerCounter.current) {
         clearInterval(timerCounter.current);
@@ -281,7 +305,10 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   const onSubmit = () => {
     setState(ProgressState.SUBMITTED);
     togglePartialTimeWarningModal(false);
-    const timeToSubmit: number = (habit?.duration || 1) * 60 - timer;
+    const timeToSubmit: number =
+      habit && habit.type === HabitTypes.FASTING
+        ? timer
+        : (habit?.duration || 1) * 60 - timer;
     setSubmittedTimer(timeToSubmit);
 
     dispatch({
@@ -383,7 +410,11 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               size={progressCircleWidth}
               width={5}
               fill={
-                timer === (habit?.duration || 1) * 60 - 1
+                (habit &&
+                  habit.type === HabitTypes.FASTING &&
+                  timer === 24 * 60 * 60 - 1) ||
+                (habit?.type !== HabitTypes.FASTING &&
+                  timer === (habit?.duration || 1) * 60 - 1)
                   ? 1
                   : curProgress.value
               }
