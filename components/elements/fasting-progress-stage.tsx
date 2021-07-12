@@ -4,6 +4,7 @@
  * @description define spreaded fasting stages icons on the timer screen
  */
 
+import { MotiView } from "moti";
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { FastingStages } from "../../types/fasting-stages";
@@ -109,18 +110,19 @@ export const FastingProgressStage = ({
   const x: number = circleRadius * Math.cos((angle * Math.PI) / 180);
   const y: number = circleRadius * Math.sin((angle * Math.PI) / 180);
   return (
-    <View
+    <MotiView
+      from={{ scale: 1 }}
+      animate={{ scale: active ? [1.2, 1] : 1, translateX: x, translateY: y }}
       style={[
         styles.stage,
         {
           backgroundColor: active ? "#fff" : "#4E4B6C",
-          transform: [{ translateX: x }, { translateY: y }],
         },
       ]}
     >
       {selected && <View style={styles.selectedStage}></View>}
       {icon}
-    </View>
+    </MotiView>
   );
 };
 
