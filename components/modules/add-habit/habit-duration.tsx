@@ -99,18 +99,18 @@ interface HabitDurationInputProps {
   onInfoIconClicked?: () => void;
 
   /**
+   * the source of the component which upon it's called
+   *
+   * @type {"VIEW" | "ADD"}
+   */
+  source: "VIEW" | "ADD";
+
+  /**
    * to send a callback to parent of state changing
    *
    * @type {(state: boolean) => void}
    */
   toggleCallback?: (state: boolean) => void;
-
-  /**
-   * allow the dropdown menu to expand more when parent doesn't have much space
-   *
-   * @type {boolean}
-   */
-  useExtraWidth?: boolean;
 
   /**
    * flag to tell the component to use the fasting habit durations
@@ -128,18 +128,11 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
   } ${props.initialDuration >= 60 ? "hr" : "min"}`;
 
   return (
-    <View
-      style={[
-        props.extraStyles,
-        props.useExtraWidth && {
-          flexDirection: "column",
-          alignItems: "flex-start",
-          marginTop: 12,
-        },
-      ]}
-    >
+    <View style={props.extraStyles}>
       <Text style={[styles.label, props.grayedLabel && { opacity: 0.5 }]}>
-        for
+        {props.source === "VIEW" && props.useFastingDurations
+          ? "my goal is"
+          : "for"}
       </Text>
       <Input
         forceState={props.forceState}
@@ -180,7 +173,7 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
                   />
                 ))
         }
-        useExtraWidth={props.useExtraWidth}
+        minimizedData={props.source === "VIEW" && props.useFastingDurations}
         hasBorder={props.enableDurationSelect && !props.disableBorder}
         customTextStyle={{ textTransform: "none" }}
       />

@@ -279,13 +279,18 @@ export const ViewHabitScreen = () => {
                   }
                   extraStyles={[
                     styles.habitDurationContainer,
+                    habit.type === HabitTypes.FASTING && {
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      marginTop: 12,
+                    },
                     Platform.OS === "ios" && { zIndex: 3 },
                   ]}
+                  source="VIEW"
                   grayedLabel={true}
                   disableBorder={true}
                   customWidth="minimal"
                   useFastingDurations={habit.type === HabitTypes.FASTING}
-                  useExtraWidth={habit.type === HabitTypes.FASTING}
                   enableDurationSelect={true}
                   initialDuration={duration}
                   hideInfoIcon={true}

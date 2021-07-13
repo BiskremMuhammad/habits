@@ -48,6 +48,13 @@ interface FastingStageDurationProps {
   hasSpacer?: boolean;
 
   /**
+   * flag to hide the duration text
+   *
+   * @type {boolean}
+   */
+  hideDuration?: boolean;
+
+  /**
    * current index of durations itteration
    *
    * @type {number}
@@ -86,6 +93,7 @@ interface FastingStageDurationProps {
 export const FastingStageDuration = ({
   extraStyles,
   hasSpacer,
+  hideDuration,
   index,
   onSelect,
   selected,
@@ -134,13 +142,15 @@ export const FastingStageDuration = ({
         {showInfoIcon && <InfoIcon style={CommonStyles.infoIcon} />}
       </View>
       {hasSpacer && <View style={{ flex: 1 }}></View>}
-      <View style={[styles.duration, !hasSpacer && { flex: 1 }]}>
-        <Text
-          style={[styles.durationText, selected && styles.selectedDuration]}
-        >
-          {FASTING_HABIT_DURATIONS[index]}
-        </Text>
-      </View>
+      {!hideDuration && (
+        <View style={[styles.duration, !hasSpacer && { flex: 1 }]}>
+          <Text
+            style={[styles.durationText, selected && styles.selectedDuration]}
+          >
+            {FASTING_HABIT_DURATIONS[index]}
+          </Text>
+        </View>
+      )}
     </Pressable>
   );
 };

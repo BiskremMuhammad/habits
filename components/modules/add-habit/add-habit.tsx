@@ -215,6 +215,7 @@ export const AddHabit = (props: AddHabitProps) => {
           addHabitStyles.addHabitSection,
           Platform.OS === "ios" && { zIndex: 3 },
         ]}
+        source="ADD"
         initialDuration={duration}
         useFastingDurations={type === HabitTypes.FASTING}
         onInfoIconClicked={props.showFastingStageInfo}

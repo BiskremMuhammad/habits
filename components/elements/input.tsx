@@ -91,6 +91,13 @@ interface InputProps {
   isDropdown?: boolean;
 
   /**
+   * to hide some data when selected to fit the container
+   *
+   * @type {boolean}
+   */
+  minimizedData?: boolean;
+
+  /**
    * fire an on change callback
    *
    * @type {(val: string) => void}
@@ -117,13 +124,6 @@ interface InputProps {
    * @type {"long" | "short"}
    */
   width?: "full" | "long" | "short" | "minimal";
-
-  /**
-   * allow the dropdown menu to expand more when parent doesn't have much space
-   *
-   * @type {boolean}
-   */
-  useExtraWidth?: boolean;
 }
 
 export const Input = (props: InputProps) => {
@@ -154,7 +154,6 @@ export const Input = (props: InputProps) => {
       style={[
         InputStyles.input,
         props.width === "full" && { flex: 1, justifyContent: "flex-start" },
-        props.width === "full" && props.useExtraWidth && { paddingVertical: 0 },
       ]}
     >
       {props.hasBorder && (
@@ -177,7 +176,7 @@ export const Input = (props: InputProps) => {
         style={[
           CommonStyles.textWithIcon,
           props.width !== "minimal" && { marginLeft: 12 },
-          props.width === "full" && props.useExtraWidth && { marginLeft: 0 },
+          props.width === "full" && { marginLeft: 0 },
         ]}
       >
         {!props.hideIcon && props.icon}
@@ -188,6 +187,7 @@ export const Input = (props: InputProps) => {
                 FASTING_HABIT_DURATIONS.findIndex((s) => s === props.text) + 1
               ] as FastingStages
             }
+            hideDuration={props.minimizedData}
             index={FASTING_HABIT_DURATIONS.findIndex((s) => s === props.text)}
             extraStyles={{ marginBottom: 0 }}
             selected={true}
@@ -212,9 +212,6 @@ export const Input = (props: InputProps) => {
             InputStyles.inputChevron,
             dropdownOpen && { zIndex: 20 },
             dropdownOpen && props.width === "full" && { right: -30 },
-            // dropdownOpen &&
-            //   props.width === "full" &&
-            //   props.useExtraWidth && { right: "-85%" },
           ]}
         >
           <MotiView
@@ -232,7 +229,6 @@ export const Input = (props: InputProps) => {
           style={[
             InputStyles.dropdownContainer,
             props.width === "full" && { width: "125%" },
-            // props.width === "full" && props.useExtraWidth && { width: "200%" },
           ]}
         >
           <View style={InputStyles.dropdownBorderContainer}>
