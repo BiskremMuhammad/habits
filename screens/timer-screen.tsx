@@ -468,7 +468,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           {habit && habit.type === HabitTypes.FASTING ? (
             <FastingHuman
               size={progressCircleWidth}
-              fill={timer / (24 * 60 * 60)}
+              fill={
+                timer >= habit.duration * 60 ? 1 : timer / (habit.duration * 60)
+              }
             />
           ) : (
             <Plant
