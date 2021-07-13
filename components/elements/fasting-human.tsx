@@ -28,35 +28,32 @@ interface FastingHumanProps {
   size: number;
 }
 
-export const FastingHuman = ({ fill, size }: FastingHumanProps) => {
-  console.log("fill human body: ", fill * size);
-  return (
-    <View style={[styles.container, { width: size, height: size }]}>
-      <View
-        style={[
-          styles.humanProgress,
-          {
-            width: size,
-            height: fill * size,
-          },
-        ]}
-      >
-        <Image
-          source={require("../../assets/human-filled.png")}
-          width={size}
-          height={size}
-          style={[styles.human]}
-        />
-      </View>
+export const FastingHuman = ({ fill, size }: FastingHumanProps) => (
+  <View style={[styles.container, { width: size, height: size }]}>
+    <View
+      style={[
+        styles.humanProgress,
+        {
+          width: size,
+          height: fill * size,
+        },
+      ]}
+    >
       <Image
-        source={require("../../assets/human.png")}
+        source={require("../../assets/human-filled.png")}
         width={size}
         height={size}
-        style={styles.human}
+        style={[styles.human]}
       />
     </View>
-  );
-};
+    <Image
+      source={require("../../assets/human.png")}
+      width={size}
+      height={size}
+      style={styles.human}
+    />
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
