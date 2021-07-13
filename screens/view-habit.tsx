@@ -32,7 +32,12 @@ import { useDispatch, useSelector } from "react-redux";
 import BookIcon from "../components/svgs/book";
 import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
-import { Habit, HabitTypes, HabitTypesIdentity } from "../types/habit";
+import {
+  FASTING_HABIT_DURATIONS,
+  Habit,
+  HabitTypes,
+  HabitTypesIdentity,
+} from "../types/habit";
 import { Routes } from "../types/route-names";
 import { TimerScreenRouteParams } from "./timer-screen";
 import { WeekDays, WeekDaysFullName } from "../types/week-days";
@@ -58,6 +63,11 @@ import {
 } from "../redux/reducers/habit/habit-actions";
 import { HabitIcon } from "../components/elements/habit-icon";
 import { CONSTANTS } from "../utils/constants";
+import { FastingStages, FastingStagesLabels } from "../types/fasting-stages";
+import InfoIcon from "../components/svgs/info-icon";
+import { AnimatePresence } from "moti";
+import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
+import { Modal } from "../components/modules/modals/modal";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -81,6 +91,9 @@ export const ViewHabitScreen = () => {
   const onChangeOpenedDropdown = (state: boolean, input: OpenedDropDown) => {
     setCurrentOpenInput(state ? input : OpenedDropDown.NONE);
   };
+
+  const [fastingStageInfoModal, toggleFastingStageInfoModal] =
+    useState<boolean>(false);
 
   const [state, dispatch] = useReducer(
     addHabitReducer,
@@ -196,6 +209,7 @@ export const ViewHabitScreen = () => {
       } as TimerScreenRouteParams)
     );
   };
+  const habitDurationText: string = `${duration / 60} hr`;
 
   return (
     <View style={styles.container}>
@@ -297,6 +311,23 @@ export const ViewHabitScreen = () => {
                   onChangeDuration={onChangeDuration}
                 />
               )}
+              {!!habit && habit.type === HabitTypes.FASTING && (
+                <Pressable
+                  onPress={() => toggleFastingStageInfoModal(true)}
+                  style={[CommonStyles.textWithIcon, styles.fastingStageInfo]}
+                >
+                  <Text style={styles.fastingStageInfoText}>{`What is ${
+                    FastingStagesLabels[
+                      Object.keys(FastingStages)[
+                        FASTING_HABIT_DURATIONS.findIndex(
+                          (s) => s === habitDurationText
+                        ) + 1
+                      ] as FastingStages
+                    ]
+                  }`}</Text>
+                  <InfoIcon style={CommonStyles.infoIcon} />
+                </Pressable>
+              )}
             </View>
             <View
               style={[
@@ -394,6 +425,25 @@ export const ViewHabitScreen = () => {
           )}
         </View>
       </ScrollView>
+      <AnimatePresence>
+        {fastingStageInfoModal && (
+          <Modal>
+            <FastingStageInfoModal
+              stage={
+                Object.keys(FastingStages)[
+                  FASTING_HABIT_DURATIONS.findIndex(
+                    (s) => s === habitDurationText
+                  ) + 1
+                ] as FastingStages
+              }
+              index={FASTING_HABIT_DURATIONS.findIndex(
+                (s) => s === habitDurationText
+              )}
+              onDismiss={() => toggleFastingStageInfoModal(false)}
+            />
+          </Modal>
+        )}
+      </AnimatePresence>
     </View>
   );
 };
@@ -441,6 +491,18 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: habitDetailsPadding,
     paddingLeft: habitDetailsMargin,
+  },
+  fastingStageInfo: {
+    paddingHorizontal: habitDetailsPadding,
+    paddingLeft: habitDetailsMargin,
+  },
+  fastingStageInfoText: {
+    fontFamily: "Rubik-Regular",
+    fontSize: 12,
+    lineHeight: 24,
+    color: "#fff",
+    opacity: 0.5,
+    marginRight: 7,
   },
   plantContainer: {
     flex: 1,
