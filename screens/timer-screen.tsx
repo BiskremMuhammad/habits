@@ -499,7 +499,12 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                 },
               }}
               onDidAnimate={onSubmitAnimationHasCompleted}
-              style={TimeScreenStyles.timerText}
+              style={[
+                TimeScreenStyles.timerText,
+                habit &&
+                  habit.duration >= 60 &&
+                  TimeScreenStyles.hourlyTimerText,
+              ]}
             >
               {state === ProgressState.SUBMITTED
                 ? `${
@@ -512,7 +517,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                       : submittedTimer % 60
                   }`
                 : `${
-                    habit && habit.duration > 60
+                    habit && habit.duration >= 60
                       ? `${
                           timer / (60 * 60) < 10
                             ? `0${Math.floor(timer / (60 * 60))}`
@@ -702,6 +707,9 @@ const TimeScreenStyles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 2,
     color: "#fff",
+  },
+  hourlyTimerText: {
+    fontSize: 51,
   },
   timerFastingStagesContainer: {
     position: "absolute",
