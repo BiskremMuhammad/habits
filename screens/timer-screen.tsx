@@ -262,7 +262,10 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   }, [isIntroduction, timer, state]);
 
   useEffect(() => {
-    if (timer <= 0) {
+    if (
+      (habit && habit.type === HabitTypes.FASTING && timer === 24 * 60 * 60) ||
+      (habit && habit.type !== HabitTypes.FASTING && timer <= 0)
+    ) {
       if (timerCounter.current) {
         clearInterval(timerCounter.current);
         timerCounter.current = null;
