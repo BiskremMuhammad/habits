@@ -16,6 +16,7 @@ import {
   ViewStyle,
   Platform,
 } from "react-native";
+import { CommonStyles } from "../../../styles/common";
 import { WeekDaysFullName, WeekDays } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
@@ -159,7 +160,7 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
           </Text>
           <InfoIcon
             style={[
-              styles.frequencyIcon,
+              CommonStyles.infoIcon,
               freqSelection === 3 && {
                 marginBottom: Platform.OS === "ios" ? 8 : 5,
               },
@@ -283,14 +284,6 @@ const styles = StyleSheet.create({
   },
   frequencyTextCustomScheduleTooLong: {
     fontSize: 16,
-  },
-  frequencyIcon: {
-    width: 15,
-    height: 15,
-    alignSelf: "flex-end",
-    marginLeft: 5,
-    marginBottom: Platform.OS === "ios" ? 6 : 3,
-    opacity: 0.5,
   },
   floatingPanelContainer: {
     position: "absolute",
