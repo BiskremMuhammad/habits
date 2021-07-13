@@ -25,6 +25,7 @@ import { FullDayIcon } from "../../svgs/fasting/full-day-icon";
 import { KetosisIcon } from "../../svgs/fasting/ketosis-icon";
 import { LoweringIcon } from "../../svgs/fasting/lowering-icon";
 import { StabilizingIcon } from "../../svgs/fasting/stabilizing-icon";
+import InfoIcon from "../../svgs/info-icon";
 
 /**
  * interface that defines the props of the component
@@ -38,6 +39,13 @@ interface FastingStageDurationProps {
    * @type {StyleProp<ViewStyle>}
    */
   extraStyles?: StyleProp<ViewStyle>;
+
+  /**
+   * to give a space all of the empty space instead of grid aignmenet
+   *
+   * @type {boolean}
+   */
+  hasSpacer?: boolean;
 
   /**
    * current index of durations itteration
@@ -61,6 +69,13 @@ interface FastingStageDurationProps {
   selected?: boolean;
 
   /**
+   * flag to display the info icon next to the stage title
+   *
+   * @type {boolean}
+   */
+  showInfoIcon?: boolean;
+
+  /**
    * the stage of the current duration option
    *
    * @type {FastingStages}
@@ -70,9 +85,11 @@ interface FastingStageDurationProps {
 
 export const FastingStageDuration = ({
   extraStyles,
+  hasSpacer,
   index,
   onSelect,
   selected,
+  showInfoIcon,
   stage,
 }: FastingStageDurationProps) => {
   let Icon: JSX.Element = <LoweringIcon />;
@@ -109,13 +126,15 @@ export const FastingStageDuration = ({
       ]}
       onPress={() => onSelect(FASTING_HABIT_DURATIONS[index])}
     >
-      <View style={[styles.stage, CommonStyles.textWithIcon]}>
+      <View style={[CommonStyles.textWithIcon, !hasSpacer && { flex: 2.5 }]}>
         <View style={styles.stageIconContainer}>{Icon}</View>
         <Text style={[styles.stageText, selected && styles.stageTextSelected]}>
           {FastingStagesLabels[stage]}
         </Text>
+        {showInfoIcon && <InfoIcon style={CommonStyles.infoIcon} />}
       </View>
-      <View style={styles.duration}>
+      {hasSpacer && <View style={{ flex: 1 }}></View>}
+      <View style={[styles.duration, !hasSpacer && { flex: 1 }]}>
         <Text
           style={[styles.durationText, selected && styles.selectedDuration]}
         >
@@ -136,7 +155,6 @@ const styles = StyleSheet.create({
   },
   stage: {
     flex: 2.5,
-    width: "70%",
   },
   stageIconContainer: {
     width: 20,
@@ -158,7 +176,6 @@ const styles = StyleSheet.create({
     opacity: 1,
   },
   duration: {
-    flex: 1,
     paddingTop: 2,
   },
   durationText: {

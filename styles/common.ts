@@ -24,6 +24,14 @@ export const CommonStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  infoIcon: {
+    width: 15,
+    height: 15,
+    alignSelf: "flex-end",
+    marginLeft: 5,
+    marginBottom: Platform.OS === "ios" ? 6 : 3,
+    opacity: 0.5,
+  },
   infoTxt: {
     fontFamily: "Rubik-Light",
     fontSize: 16,

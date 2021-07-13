@@ -61,6 +61,8 @@ import { CONSTANTS } from "../utils/constants";
 import { FastingStages } from "../types/fasting-stages";
 import { FastingProgressStage } from "../components/elements/fasting-progress-stage";
 import { FastingHuman } from "../components/elements/fasting-human";
+import { FastingStageDuration } from "../components/modules/add-habit/fasting-stage-duration";
+import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -133,6 +135,10 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   // ......for submitting partial time
   const [partialTimeWarningModalOpened, togglePartialTimeWarningModal] =
+    useState<boolean>(false);
+
+  // ......for show fasting stage info modal
+  const [fastingStageInfoModal, toggleFastingStageInfoModal] =
     useState<boolean>(false);
 
   /**
@@ -368,6 +374,8 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   const progressCircleWidth: number =
     screenWidth - 32 - 54 - (screenHeight < 800 ? 28 : 0);
 
+  const habitDurationText: string = `${(habit?.duration || 1) / 60} hr`;
+
   return (
     <View style={TimeScreenStyles.container}>
       <LinearGradient
@@ -594,6 +602,33 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             </View>
           </View>
         )}
+        {habit &&
+          habit.type === HabitTypes.FASTING &&
+          state !== ProgressState.ENDED &&
+          state !== ProgressState.PAUSED && (
+            <View style={TimeScreenStyles.fastingFooter}>
+              <FastingStageDuration
+                stage={
+                  Object.keys(FastingStages)[
+                    FASTING_HABIT_DURATIONS.findIndex(
+                      (s) => s === habitDurationText
+                    ) + 1
+                  ] as FastingStages
+                }
+                index={FASTING_HABIT_DURATIONS.findIndex(
+                  (s) => s === habitDurationText
+                )}
+                extraStyles={[
+                  TimeScreenStyles.fastingStageeInfo,
+                  { marginBottom: 0 },
+                ]}
+                selected={false}
+                hasSpacer={true}
+                showInfoIcon={true}
+                onSelect={(v: string) => toggleFastingStageInfoModal(true)}
+              />
+            </View>
+          )}
       </View>
       <AnimatePresence>
         {exitSessionModalOpened && !isIntroduction && (
@@ -612,6 +647,23 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               submitText="submit"
               onCancel={() => togglePartialTimeWarningModal(false)}
               onExit={onSubmit}
+            />
+          </Modal>
+        )}
+        {habit && habit.type === HabitTypes.FASTING && fastingStageInfoModal && (
+          <Modal>
+            <FastingStageInfoModal
+              stage={
+                Object.keys(FastingStages)[
+                  FASTING_HABIT_DURATIONS.findIndex(
+                    (s) => s === habitDurationText
+                  ) + 1
+                ] as FastingStages
+              }
+              index={FASTING_HABIT_DURATIONS.findIndex(
+                (s) => s === habitDurationText
+              )}
+              onDismiss={() => toggleFastingStageInfoModal(false)}
             />
           </Modal>
         )}
@@ -763,5 +815,34 @@ const TimeScreenStyles = StyleSheet.create({
     lineHeight: 24,
     color: "#fff",
     opacity: 0.66,
+  },
+  fastingFooter: {
+    flex: 1,
+    width: screenWidth * 0.61,
+    alignSelf: "center",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "center",
+  },
+  fastingStageeInfo: {
+    backgroundColor: "rgba(12, 8, 52, 0.8)",
+    borderRadius: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 2,
+  },
+  fastingStageInfoText: {
+    fontFamily: "JosefinSans-SemiBold",
+    fontSize: 18,
+    lineHeight: 32,
+    color: "#fff",
+    opacity: 0.5,
+  },
+  fastingStageInfoDuration: {
+    fontFamily: "Rubik-Regular",
+    fontSize: 16,
+    lineHeight: 28,
+    color: "#fff",
+    opacity: 0.5,
   },
 });
