@@ -60,6 +60,7 @@ import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
 import { CONSTANTS } from "../utils/constants";
 import { FastingStages } from "../types/fasting-stages";
 import { FastingProgressStage } from "../components/elements/fasting-progress-stage";
+import { FastingHuman } from "../components/elements/fasting-human";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -456,14 +457,23 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               })}
             </View>
           </View>
-          <Plant
-            state={
-              state === ProgressState.SUBMITTED ? PlantState.GLOW : plant.value
-            }
-            height={plantHeight}
-            positionX={plantPositionX}
-            positionBottom={plantPositionBottom}
-          />
+          {habit && habit.type === HabitTypes.FASTING ? (
+            <FastingHuman
+              size={progressCircleWidth}
+              fill={timer / (24 * 60 * 60)}
+            />
+          ) : (
+            <Plant
+              state={
+                state === ProgressState.SUBMITTED
+                  ? PlantState.GLOW
+                  : plant.value
+              }
+              height={plantHeight}
+              positionX={plantPositionX}
+              positionBottom={plantPositionBottom}
+            />
+          )}
           <MotiView
             from={{ opacity: 0 }}
             animate={{ opacity: state === ProgressState.ENDED ? 0 : 1 }}
