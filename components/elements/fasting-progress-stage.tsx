@@ -75,15 +75,18 @@ export const FastingProgressStage = ({
       break;
     case FastingStages.LOWERING:
       icon = <LoweringIcon fill={iconFill} />;
-      angle = arcRotation + ((3 * 360) / 24) * (300 / 360);
+      angle =
+        arcRotation + ((3 * 360) / 24) * ((300 + ((24 - 3) / 24) * 30) / 360);
       break;
     case FastingStages.STABILIZING:
       icon = <StabilizingIcon fill={iconFill} />;
-      angle = arcRotation + ((9 * 360) / 24) * (300 / 360);
+      angle =
+        arcRotation + ((9 * 360) / 24) * ((300 + ((24 - 9) / 24) * 30) / 360);
       break;
     case FastingStages.BURN:
       icon = <BurnIcon fill={iconFill} />;
-      angle = arcRotation + ((11 * 360) / 24) * (300 / 360);
+      angle =
+        arcRotation + ((11 * 360) / 24) * ((300 + ((24 - 11) / 24) * 30) / 360);
       break;
     case FastingStages.KETOSOS:
       icon = (
@@ -94,15 +97,18 @@ export const FastingProgressStage = ({
           style={{ marginTop: 1, marginLeft: 3 }}
         />
       );
-      angle = arcRotation + ((12 * 360) / 24) * (300 / 360);
+      angle =
+        arcRotation + ((12 * 360) / 24) * ((300 + ((24 - 12) / 24) * 30) / 360);
       break;
     case FastingStages.AUTOPHAGY:
       icon = <AutophagyIcon fill={iconFill} />;
-      angle = arcRotation + ((14 * 360) / 24) * (300 / 360);
+      angle =
+        arcRotation + ((14 * 360) / 24) * ((300 + ((24 - 14) / 24) * 30) / 360);
       break;
     case FastingStages.AUTOPHAGY_TWO:
       icon = <AutophagyIcon fill={iconFill} />;
-      angle = arcRotation + ((18 * 360) / 24) * (300 / 360);
+      angle =
+        arcRotation + ((18 * 360) / 24) * ((300 + ((24 - 18) / 24) * 30) / 360);
       break;
     case FastingStages.FULL_DAY:
       icon = <FullDayIcon fill={iconFill} />;
