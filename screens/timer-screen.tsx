@@ -436,34 +436,36 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               arcSweepAngle={290}
               backgroundColor="rgba(255,255,255, 0.16)"
             />
-            <View
-              style={[
-                TimeScreenStyles.timerFastingStagesContainer,
-                {
-                  width: progressCircleWidth - 10,
-                  height: progressCircleWidth - 10,
-                },
-              ]}
-            >
-              {Object.keys(FastingStages).map((s: string, i: number) => {
-                const stageMappedDuration: string =
-                  i > 0 ? FASTING_HABIT_DURATIONS[i - 1] : "0";
-                const stageDuration: number =
-                  Number(stageMappedDuration.match(/\d+/g)![0]) * 60 * 60;
-                return (
-                  <FastingProgressStage
-                    key={i}
-                    active={timer >= stageDuration}
-                    arcRotation={120}
-                    circleRadius={progressCircleWidth / 2 - 2.5}
-                    selected={habit && habit.duration * 60 === stageDuration}
-                    stage={
-                      getEnumKeyByEnumValue(FastingStages, s) as FastingStages
-                    }
-                  />
-                );
-              })}
-            </View>
+            {habit && habit.type === HabitTypes.FASTING && (
+              <View
+                style={[
+                  TimeScreenStyles.timerFastingStagesContainer,
+                  {
+                    width: progressCircleWidth - 10,
+                    height: progressCircleWidth - 10,
+                  },
+                ]}
+              >
+                {Object.keys(FastingStages).map((s: string, i: number) => {
+                  const stageMappedDuration: string =
+                    i > 0 ? FASTING_HABIT_DURATIONS[i - 1] : "0";
+                  const stageDuration: number =
+                    Number(stageMappedDuration.match(/\d+/g)![0]) * 60 * 60;
+                  return (
+                    <FastingProgressStage
+                      key={i}
+                      active={timer >= stageDuration}
+                      arcRotation={120}
+                      circleRadius={progressCircleWidth / 2 - 2.5}
+                      selected={habit && habit.duration * 60 === stageDuration}
+                      stage={
+                        getEnumKeyByEnumValue(FastingStages, s) as FastingStages
+                      }
+                    />
+                  );
+                })}
+              </View>
+            )}
           </View>
           {habit && habit.type === HabitTypes.FASTING ? (
             <FastingHuman
