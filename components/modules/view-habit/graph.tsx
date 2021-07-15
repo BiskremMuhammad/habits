@@ -94,12 +94,19 @@ export const Graph = ({ data }: GraphProps) => {
           day:
             i === 0 ||
             i === timespanDays.length - 1 ||
+            timespan === Timespans.FIVE_DAYS ||
             (timespan === Timespans.TWO_WEEKS && i === 6) ||
             ((timespan === Timespans.ONE_MONTH ||
               timespan === Timespans.THREE_MONTHS) &&
               (i === Math.floor(timespanDays.length * 0.3333) ||
                 i === Math.floor(timespanDays.length * 0.666667)))
-              ? `${day.getMonth() + 1}/${day.getDate()}`
+              ? `${day.getMonth() + 1}/${day.getDate()}${
+                  timespan === Timespans.ONE_MONTH && i === 0 ? "     " : ""
+                }${
+                  timespan === Timespans.THREE_MONTHS && i === 0
+                    ? "        "
+                    : ""
+                }`
               : "",
           duration: dayProgress,
         };
@@ -210,21 +217,31 @@ export const Graph = ({ data }: GraphProps) => {
                 },
               ],
             }}
-            width={screenWidth - margin}
+            width={
+              screenWidth -
+              margin -
+              (timespan === Timespans.TWO_WEEKS
+                ? 0.7 * margin
+                : timespan === Timespans.ONE_MONTH
+                ? 1.1 * margin
+                : timespan === Timespans.THREE_MONTHS
+                ? 1.25 * margin
+                : 0)
+            }
             withInnerLines={false}
             withOuterLines={false}
             withShadow={false}
             height={graphHeight}
             fromZero={true}
             transparent={true}
-            getDotColor={(d) =>
-              d !== 0 && d === Math.max(...graphData)
+            getDotColor={(d, i) =>
+              d !== 0 && i === graphData.lastIndexOf(Math.max(...graphData))
                 ? "#fff"
                 : "rgba(255,255,255,0)"
             }
             renderDotContent={({ x, indexData, index }) =>
               indexData !== 0 &&
-              indexData === Math.max(...graphData) && (
+              index === graphData.lastIndexOf(Math.max(...graphData)) && (
                 <View
                   key={x}
                   style={[
