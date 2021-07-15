@@ -176,31 +176,6 @@ export const ViewHabitScreen = () => {
     });
   };
 
-  const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
-  const recentDays: { day: string; duration: number }[] = [];
-  if (habit) {
-    Array(5)
-      .fill(0)
-      .forEach((_, i: number) => {
-        const day: Date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
-        let dayProgress: number = 0;
-        if (
-          habit.progress.find(
-            (data, _) => data.date.getTime() === day.getTime()
-          )
-        ) {
-          dayProgress = habit.progress.find(
-            (data, _) => data.date.getTime() === day.getTime()
-          )!.duration;
-        }
-        recentDays.push({
-          day: `${day.getMonth() + 1}/${day.getDate()}`,
-          duration: dayProgress,
-        });
-      });
-    recentDays.reverse();
-  }
-
   const onStartPracticing = () => {
     onSaveChanges();
     navigation.dispatch(
@@ -209,6 +184,8 @@ export const ViewHabitScreen = () => {
       } as TimerScreenRouteParams)
     );
   };
+
+  const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
   const habitDurationText: string = `${duration / 60} hr`;
 
   return (
@@ -408,20 +385,7 @@ export const ViewHabitScreen = () => {
           </View>
           {tab === "CALENDAR" && !!habit && <MonthView habit={habit} />}
           {tab === "GRAPH" && !!habit && (
-            <Graph
-              labels={recentDays.reduce<string[]>(
-                (a, v) => a.concat(v.day),
-                []
-              )}
-              data={
-                habit.progress.length
-                  ? recentDays.reduce<number[]>(
-                      (a, v) => a.concat(v.duration),
-                      []
-                    )
-                  : []
-              }
-            />
+            <Graph data={habit.progress.length ? habit.progress : []} />
           )}
         </View>
       </ScrollView>

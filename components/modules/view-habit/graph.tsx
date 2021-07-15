@@ -6,20 +6,14 @@
 
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  View,
-  Text,
-  Dimensions,
-  StyleSheet,
-  Platform,
-  Pressable,
-} from "react-native";
+import { View, Text, Dimensions, StyleSheet, Pressable } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import Svg, { Line, TextProps } from "react-native-svg";
+import Svg, { Line } from "react-native-svg";
 import { CommonStyles } from "../../../styles/common";
 import { useState } from "react";
 import { MotiView } from "moti";
-import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
+import { HabitProgressData } from "../../../types/habit";
+import { useMemo } from "react";
 
 const { width: screenWidth } = Dimensions.get("screen");
 
@@ -30,18 +24,11 @@ const { width: screenWidth } = Dimensions.get("screen");
  */
 interface GraphProps {
   /**
-   * x axis labels
-   *
-   * @type {string[]}
-   */
-  labels: string[];
-
-  /**
    * data points
    *
-   * @type {number[]}
+   * @type {HabitProgressData[]}
    */
-  data: number[];
+  data: HabitProgressData[];
 }
 
 /**
@@ -56,11 +43,69 @@ enum Timespans {
   THREE_MONTHS = "3M",
 }
 
-export const Graph = ({ labels, data }: GraphProps) => {
+export const Graph = ({ data }: GraphProps) => {
   const [timespan, setTimespan] = useState<Timespans>(Timespans.FIVE_DAYS);
 
-  let yLabelMaxValue: number = Math.ceil(Math.max(...data) / 29.99999) * 30;
-  yLabelMaxValue = yLabelMaxValue > 0 ? yLabelMaxValue : 30;
+  const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
+  const recentDays = useMemo((): { day: string; duration: number }[] => {
+    if (!data.length) return [];
+
+    let timespanDays: number[] = [];
+    switch (timespan) {
+      case Timespans.FIVE_DAYS:
+        timespanDays = Array(5).fill(0);
+        break;
+      case Timespans.TWO_WEEKS:
+        Array(14).fill(0);
+        break;
+      case Timespans.ONE_MONTH:
+        break;
+      case Timespans.THREE_MONTHS:
+        break;
+      default:
+        Array(5).fill(0);
+    }
+
+    return timespanDays
+      .map((_, i: number) => {
+        const day: Date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+        let dayProgress: number = 0;
+        if (data.find((d, _) => d.date.getTime() === day.getTime())) {
+          dayProgress = data.find(
+            (d, _) => d.date.getTime() === day.getTime()
+          )!.duration;
+        }
+        return {
+          day: `${day.getMonth() + 1}/${day.getDate()}`,
+          duration: dayProgress,
+        };
+      })
+      .reverse();
+  }, [data, timespan]);
+
+  /**
+   * populate the labels of xAxis
+   *
+   * @type {string[]}
+   */
+  const xAxisLabels: string[] = recentDays.reduce<string[]>(
+    (a, v) => a.concat(v.day),
+    []
+  );
+
+  /**
+   * populate the graph points dataset
+   *
+   * @type {number[]}
+   */
+  let graphData: number[] = recentDays.reduce<number[]>(
+    (a, v) => a.concat(v.duration),
+    []
+  );
+
+  let yLabelMaxValue: number =
+    Math.ceil(Math.max(...graphData) / (29.99999 * 60)) * 30 * 60;
+  yLabelMaxValue = yLabelMaxValue > 0 ? yLabelMaxValue : 30 * 60;
 
   const graphHeight: number = 197;
   const margin: number = 56;
@@ -130,14 +175,14 @@ export const Graph = ({ labels, data }: GraphProps) => {
         <View style={{ flex: 1 }}>
           <LineChart
             data={{
-              labels,
+              labels: xAxisLabels,
               datasets: [
                 {
                   data: [yLabelMaxValue], // <=== adding a max value
                   color: () => `rgba(0, 0, 0, 0)`, // <=== hide the point
                 },
                 {
-                  data: data,
+                  data: graphData,
                 },
               ],
             }}
@@ -149,13 +194,13 @@ export const Graph = ({ labels, data }: GraphProps) => {
             fromZero={true}
             transparent={true}
             getDotColor={(d) =>
-              d !== 0 && d === Math.max(...data)
+              d !== 0 && d === Math.max(...graphData)
                 ? "#fff"
                 : "rgba(255,255,255,0)"
             }
             renderDotContent={({ x, indexData, index }) =>
               indexData !== 0 &&
-              indexData === Math.max(...data) && (
+              indexData === Math.max(...graphData) && (
                 <View
                   key={x}
                   style={[
@@ -183,7 +228,7 @@ export const Graph = ({ labels, data }: GraphProps) => {
                     <Text
                       style={[styles.xAxisLabel, styles.xAxisLabelHeighest]}
                     >
-                      {labels[index]}
+                      {xAxisLabels[index]}
                     </Text>
                   </View>
                   <View
@@ -211,11 +256,13 @@ export const Graph = ({ labels, data }: GraphProps) => {
               )
             }
             formatYLabel={(v) =>
-              Number(v) >= 60
-                ? Number(v) % 60 === 0
-                  ? `${Math.floor(Number(v) / 60)}h`
-                  : `${Math.floor(Number(v) / 60)}h ${Number(v) % 60}m`
-                : `${Number(v) % 60}m`
+              Number(v) >= 60 * 60
+                ? Number(v) % (60 * 60) === 0
+                  ? `${Math.floor(Number(v) / (60 * 60))}h`
+                  : `${Math.floor(Number(v) / (60 * 60))}h ${Math.floor(
+                      (Number(v) / 60) % 60
+                    )}m`
+                : `${Math.floor((Number(v) / 60) % 60)}m`
             }
             chartConfig={{
               backgroundGradientFrom: "#1E2923",
