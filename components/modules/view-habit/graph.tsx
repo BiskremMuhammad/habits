@@ -56,14 +56,29 @@ export const Graph = ({ data }: GraphProps) => {
         timespanDays = Array(5).fill(0);
         break;
       case Timespans.TWO_WEEKS:
-        Array(14).fill(0);
+        timespanDays = Array(14).fill(0);
         break;
       case Timespans.ONE_MONTH:
+        timespanDays = Array(
+          new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
+        ).fill(0);
         break;
       case Timespans.THREE_MONTHS:
+        timespanDays = Array(
+          Array(3)
+            .fill(0)
+            .map((_, i) =>
+              new Date(
+                today.getFullYear(),
+                today.getMonth() + 1 - i,
+                0
+              ).getDate()
+            )
+            .reduce((a, b) => a + b)
+        ).fill(0);
         break;
       default:
-        Array(5).fill(0);
+        timespanDays = Array(5).fill(0);
     }
 
     return timespanDays
@@ -76,7 +91,16 @@ export const Graph = ({ data }: GraphProps) => {
           )!.duration;
         }
         return {
-          day: `${day.getMonth() + 1}/${day.getDate()}`,
+          day:
+            i === 0 ||
+            i === timespanDays.length - 1 ||
+            (timespan === Timespans.TWO_WEEKS && i === 6) ||
+            ((timespan === Timespans.ONE_MONTH ||
+              timespan === Timespans.THREE_MONTHS) &&
+              (i === Math.floor(timespanDays.length * 0.3333) ||
+                i === Math.floor(timespanDays.length * 0.666667)))
+              ? `${day.getMonth() + 1}/${day.getDate()}`
+              : "",
           duration: dayProgress,
         };
       })
