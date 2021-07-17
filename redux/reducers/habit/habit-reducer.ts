@@ -7,7 +7,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Habit } from "../../../types/habit";
 import { CONSTANTS } from "../../../utils/constants";
-import { HabitActions, HabitActionTypes, ProgressPayload } from "./habit-actions";
+import {
+  HabitActions,
+  HabitActionTypes,
+  ProgressPayload,
+} from "./habit-actions";
 
 export const habitReducer = (
   state: Habit[] = [],
@@ -22,6 +26,8 @@ export const habitReducer = (
     case HabitActionTypes.SAVE_DAY_PROGRESS:
       const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
       const { habitId, time } = action.payload as ProgressPayload;
+      const timeRounded: number =
+        time % 60 !== 0 ? Math.ceil(time / 60) * 60 : time;
       newState = state.map((h: Habit, i: number) => {
         if (
           h.id === habitId &&
@@ -31,7 +37,7 @@ export const habitReducer = (
             ...h,
             progress: h.progress.concat({
               date: today,
-              duration: time,
+              duration: timeRounded,
             }),
           };
         } else if (h.id === habitId) {
@@ -41,7 +47,7 @@ export const habitReducer = (
               date: data.date,
               duration:
                 data.date.getTime() === today.getTime()
-                  ? data.duration + time
+                  ? data.duration + timeRounded
                   : data.duration,
             })),
           };
