@@ -8,7 +8,6 @@ import React, {
   Dispatch,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -18,7 +17,6 @@ import {
   Image,
   Text,
   Dimensions,
-  Alert,
   Platform,
   Pressable,
 } from "react-native";
@@ -54,7 +52,6 @@ import { Plant, PlantState } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
 import { Routes } from "../types/route-names";
-import { calculateStreak } from "../utils/calendar-utils";
 import { HabitIcon } from "../components/elements/habit-icon";
 import { getEnumKeyByEnumValue } from "../utils/enum-type-utils";
 import { CONSTANTS } from "../utils/constants";
@@ -360,17 +357,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     }
   };
 
-  const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
-  const [streak, _, __] = useMemo(
-    () =>
-      calculateStreak(
-        today,
-        habit ? habit.progress : [],
-        habit ? habit.days : []
-      ),
-    [habit]
-  );
-
   const progressCircleWidth: number =
     screenWidth - 32 - 54 - (screenHeight < 800 ? 28 : 0);
 
@@ -407,9 +393,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         >
           {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
         </Text>
-        {streak > 0 && !isIntroduction && (
-          <Text style={CommonStyles.habitStreak}>{streak > 0 && streak}</Text>
-        )}
       </View>
       <View style={TimeScreenStyles.peers}>
         <Text style={TimeScreenStyles.peersNum}>2K</Text>

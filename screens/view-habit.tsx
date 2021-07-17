@@ -15,7 +15,6 @@ import React, {
   Dispatch,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useReducer,
   useState,
 } from "react";
@@ -29,7 +28,6 @@ import {
   Platform,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import BookIcon from "../components/svgs/book";
 import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
 import {
@@ -53,7 +51,6 @@ import {
   addHabitReducer,
   INITIAL_ADD_HABIT_STATE,
 } from "../components/modules/add-habit/add-habit-reducer";
-import { calculateStreak } from "../utils/calendar-utils";
 import { Header } from "../components/elements/header";
 import { Graph } from "../components/modules/view-habit/graph";
 import { OpenedDropDown } from "../components/modules/add-habit/add-habit";
@@ -100,16 +97,6 @@ export const ViewHabitScreen = () => {
     habit ? habit : INITIAL_ADD_HABIT_STATE
   );
   const { type, isEveryDay, days, duration } = state;
-  const toady: Date = new Date(new Date().setHours(0, 0, 0, 0));
-  const [streak, _, __] = useMemo(
-    () =>
-      calculateStreak(
-        toady,
-        habit ? habit.progress : [],
-        habit ? habit.days : []
-      ),
-    [habit]
-  );
 
   const onSaveChanges = () => {
     storeDispatch({
@@ -232,9 +219,6 @@ export const ViewHabitScreen = () => {
                     ]}
                   >
                     {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
-                  </Text>
-                  <Text style={CommonStyles.habitStreak}>
-                    {streak > 0 && streak}
                   </Text>
                 </View>
               </View>

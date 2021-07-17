@@ -20,7 +20,6 @@ import {
 import { CONSTANTS } from "../../utils/constants";
 import { Button } from "../elements/button";
 import { AddIconSvg } from "../svgs/add-icon";
-import BookIcon from "../svgs/book";
 import { ClockIcon } from "../svgs/clock-icon";
 import { DashboardRoomDay } from "./dashboard/dashboard-room-day";
 import { HabitIcon } from "../elements/habit-icon";
@@ -143,11 +142,6 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
                 >
                   {HabitTypesIdentity[habit.type]}
                 </Text>
-                {streak > 0 && (
-                  <Text style={CommonStyles.habitStreak}>
-                    {streak > 0 && streak}
-                  </Text>
-                )}
               </View>
               <View style={styles.habitFrequ}>
                 <ClockIcon
