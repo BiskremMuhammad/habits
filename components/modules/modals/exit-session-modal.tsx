@@ -99,6 +99,9 @@ export const ExitSessionModal = ({
           noBorder={true}
           text={submitText ? submitText : "Exit"}
           onPress={onExit}
+          extraStyles={
+            !!submitText && submitText.length > 5 && { paddingHorizontal: 28 }
+          }
         />
       </View>
     </MotiView>
