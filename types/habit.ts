@@ -41,7 +41,7 @@ export enum HabitTypesVerbale {
 export enum HabitTypesIdentity {
   READING = "Reader",
   JOURNALING = "Writer",
-  MEDITATING = "Meditation",
+  MEDITATING = "Meditater",
   FASTING = "Faster",
 }
 
