@@ -334,33 +334,20 @@ export const ViewHabitScreen = () => {
             </View>
           </View>
           <View style={styles.accentSection}>
-            <BookIcon width={40} height={53} style={{ opacity: 0.66 }} />
-            <View style={styles.lvlContainer}>
-              <Text style={styles.lvlLabel}>lvl</Text>
-              <Text style={styles.lvlText}>3</Text>
+            <View style={styles.statsItem}>
+              <Text style={styles.statsItemDescription}>total time</Text>
+              <Text style={styles.statsItemValue}>216</Text>
+              <Text style={styles.statsItemPeriod}>minutes</Text>
             </View>
-            <View style={styles.currentProgressContainer}>
-              <View style={styles.progressContainer}>
-                <View style={styles.progressbarContainer}>
-                  <View style={styles.processBar}></View>
-                  <View style={[styles.progress, { width: "40%" }]}></View>
-                </View>
-                <View style={styles.nextLvlContainer}>
-                  <Text style={styles.nextLvlText}>4</Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <Text style={[styles.progressText, styles.currentProgressText]}>
-                  14{" "}
-                </Text>
-                <Text style={styles.progressText}>/ 21</Text>
-              </View>
+            <View style={styles.statsItem}>
+              <Text style={styles.statsItemDescription}>total time</Text>
+              <Text style={styles.statsItemValue}>216</Text>
+              <Text style={styles.statsItemPeriod}>minutes</Text>
+            </View>
+            <View style={styles.statsItem}>
+              <Text style={styles.statsItemDescription}>total time</Text>
+              <Text style={styles.statsItemValue}>216</Text>
+              <Text style={styles.statsItemPeriod}>minutes</Text>
             </View>
           </View>
           <View style={styles.tabs}>
@@ -499,88 +486,35 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     backgroundColor: "rgba(78, 70, 126, 0.2)",
     paddingHorizontal: 50,
     marginVertical: 35,
   },
-  lvlContainer: {
-    display: "flex",
+  statsItem: {
     alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 13,
   },
-  lvlLabel: {
-    fontFamily: "JosefinSans-Regular",
-    fontSize: 13,
-    lineHeight: 24,
-    color: "#fff",
+  statsItemDescription: {
+    fontFamily: "Rubik-Medium",
     textTransform: "uppercase",
-  },
-  lvlText: {
-    fontFamily: "Rubik-Regular",
-    fontSize: 40,
-    lineHeight: 40,
+    fontSize: 11,
+    lineHeight: 17,
     color: "#fff",
-  },
-  currentProgressContainer: {
-    display: "flex",
-    flex: 1,
-    justifyContent: "center",
-  },
-  progressContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  progressbarContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    position: "relative",
-    height: 5,
-    flex: 1,
-  },
-  processBar: {
-    flex: 1,
-    backgroundColor: "rgba(255,255,255,0.33)",
-    height: 5,
-    borderTopLeftRadius: 5,
-    borderBottomLeftRadius: 5,
-  },
-  progress: {
-    backgroundColor: "#fff",
-    position: "absolute",
-    borderRadius: 5,
-    height: 5,
-    top: 0,
-    left: 0,
-  },
-  nextLvlContainer: {
-    width: 27,
-    height: 27,
-    borderRadius: 27,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#79758E",
-  },
-  nextLvlText: {
-    fontFamily: "Rubik-Bold",
-    fontSize: 18,
-    lineHeight: 24,
-    color: "#0E0A27",
     opacity: 0.5,
   },
-  progressText: {
-    fontFamily: "Rubik-Light",
-    fontSize: 18,
+  statsItemValue: {
+    fontFamily: "Rubik-Regular",
+    fontSize: 28,
+    marginTop: 7,
+    color: "#fff",
+  },
+  statsItemPeriod: {
+    fontFamily: "Rubik-Regular",
+    fontSize: 12,
     lineHeight: 24,
     color: "#fff",
-    opacity: 0.33,
-  },
-  currentProgressText: {
-    opacity: 1,
+    textTransform: "lowercase",
+    opacity: 0.5,
   },
   tabs: {
     display: "flex",
