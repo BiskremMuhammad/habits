@@ -413,7 +413,13 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       </View>
       <View style={TimeScreenStyles.peers}>
         <Text style={TimeScreenStyles.peersNum}>2K</Text>
-        <Text style={TimeScreenStyles.peersText}>are reading now</Text>
+        <Text style={TimeScreenStyles.peersText}>
+          are {HabitTypes[habit?.type || HabitTypes.READING].charAt(0)}
+          {HabitTypes[habit?.type || HabitTypes.READING]
+            .substr(1)
+            .toLowerCase()}{" "}
+          now
+        </Text>
       </View>
       <View style={TimeScreenStyles.timerContainer}>
         <View style={TimeScreenStyles.progressContainer}>
