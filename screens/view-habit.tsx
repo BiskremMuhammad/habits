@@ -33,6 +33,7 @@ import { CommonStyles } from "../styles/common";
 import {
   FASTING_HABIT_DURATIONS,
   Habit,
+  HabitProgressData,
   HabitTypes,
   HabitTypesIdentity,
 } from "../types/habit";
@@ -65,6 +66,8 @@ import InfoIcon from "../components/svgs/info-icon";
 import { AnimatePresence } from "moti";
 import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
 import { Modal } from "../components/modules/modals/modal";
+import { useMemo } from "react";
+import { calculateStreak } from "../utils/calendar-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -174,6 +177,59 @@ export const ViewHabitScreen = () => {
 
   const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
   const habitDurationText: string = `${duration / 60} hr`;
+
+  /**
+   * calculate total habit practiced time
+   *
+   * @type {number}
+   */
+  const totalTime: number = useMemo(() => {
+    if (!habit || !habit.progress.length) return 0;
+
+    return Math.floor(
+      habit.progress.reduce(
+        (time: number, progress: HabitProgressData) => time + progress.duration,
+        0
+      ) / 60
+    );
+  }, [habit?.progress]);
+
+  /**
+   * calculate average habit practiced time
+   *
+   * @type {string}
+   */
+  const averageTime: string = useMemo(() => {
+    if (!habit || !habit.progress.length) return "0";
+
+    return (totalTime / habit.progress.length).toFixed(2);
+  }, [habit?.progress, totalTime]);
+
+  /**
+   * calculate habit best streak
+   *
+   * @type {number}
+   */
+  const bestStreak: number = useMemo(() => {
+    if (!habit) return 0;
+
+    return Math.max(
+      ...habit.progress.reduce(
+        (streaks: number[], progress: HabitProgressData): number[] => {
+          const [streak, _, __] = calculateStreak(
+            progress.date,
+            habit.progress,
+            habit.days
+          );
+          if (!streaks.includes(streak)) {
+            streaks.push(streak);
+          }
+          return streaks;
+        },
+        [0]
+      )
+    );
+  }, [habit?.progress, habit?.days]);
 
   return (
     <View style={styles.container}>
@@ -320,18 +376,18 @@ export const ViewHabitScreen = () => {
           <View style={styles.accentSection}>
             <View style={styles.statsItem}>
               <Text style={styles.statsItemDescription}>total time</Text>
-              <Text style={styles.statsItemValue}>216</Text>
+              <Text style={styles.statsItemValue}>{totalTime}</Text>
               <Text style={styles.statsItemPeriod}>minutes</Text>
             </View>
             <View style={styles.statsItem}>
-              <Text style={styles.statsItemDescription}>total time</Text>
-              <Text style={styles.statsItemValue}>216</Text>
+              <Text style={styles.statsItemDescription}>Avg Session</Text>
+              <Text style={styles.statsItemValue}>{averageTime}</Text>
               <Text style={styles.statsItemPeriod}>minutes</Text>
             </View>
             <View style={styles.statsItem}>
-              <Text style={styles.statsItemDescription}>total time</Text>
-              <Text style={styles.statsItemValue}>216</Text>
-              <Text style={styles.statsItemPeriod}>minutes</Text>
+              <Text style={styles.statsItemDescription}>Best streak</Text>
+              <Text style={styles.statsItemValue}>{bestStreak}</Text>
+              <Text style={styles.statsItemPeriod}>days</Text>
             </View>
           </View>
           <View style={styles.tabs}>
