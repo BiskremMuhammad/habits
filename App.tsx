@@ -13,9 +13,10 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { enableScreens } from "react-native-screens";
 import * as Font from "expo-font";
 import { Provider } from "react-redux";
+import { createStackNavigator } from "@react-navigation/stack";
+
 import { store } from "./redux/store";
 import { SplashScreen } from "./screens/splash";
-import { createStackNavigator } from "@react-navigation/stack";
 import { TimerScreen } from "./screens/timer-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CONSTANTS } from "./utils/constants";
@@ -26,7 +27,6 @@ import { Routes } from "./types/route-names";
 import { IdentityReinforcement } from "./screens/identity-screen";
 import { ViewHabitScreen } from "./screens/view-habit";
 import { Drawer } from "./components/elements/drawer";
-import { AnimatePresence } from "moti";
 import { AnnouncementsScreen } from "./screens/announcements-screen";
 enableScreens();
 
@@ -58,11 +58,15 @@ export default function App() {
 
   useEffect(() => {
     const loadFonts = async () => {
-      await Font.loadAsync(fonts);
-      const firstTimer = await AsyncStorage.getItem(
-        CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY
-      );
-      setPlayIntroduction(!!!firstTimer);
+      try {
+        await Font.loadAsync(fonts);
+        const firstTimer = await AsyncStorage.getItem(
+          CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY
+        );
+        setPlayIntroduction(!!!firstTimer);
+      } catch (err) {
+        console.log("got error on initial load: ", err);
+      }
       setLoading(false);
     };
 
