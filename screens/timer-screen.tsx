@@ -19,6 +19,7 @@ import {
   Dimensions,
   Platform,
   Pressable,
+  AppState,
 } from "react-native";
 import { AnimatePresence, MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -30,6 +31,8 @@ import {
   useRoute,
 } from "@react-navigation/core";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch, useSelector } from "react-redux";
 
 import { CommonStyles } from "../styles/common";
 import { Button } from "../components/elements/button";
@@ -39,7 +42,6 @@ import {
   HabitTypes,
   HabitTypesIdentity,
 } from "../types/habit";
-import { useDispatch, useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
 import InfoIcon from "../components/svgs/info-icon";
 import {
@@ -137,6 +139,11 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   // ......for show fasting stage info modal
   const [fastingStageInfoModal, toggleFastingStageInfoModal] =
     useState<boolean>(false);
+
+  /**
+   * for the background timer
+   */
+  const appState = useRef(AppState.currentState);
 
   /**
    * update the progress value for the animations
@@ -238,6 +245,81 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     }
   }, [isOnFocus, habits, navigation, habitId]);
 
+  /**
+   * to register the timer in the background task
+   */
+  useEffect(() => {
+    AppState.addEventListener("change", handleAppStateChange);
+    return () => AppState.removeEventListener("change", handleAppStateChange);
+  }, [habit, state]);
+
+  /**
+   * record starting time immidiatly when background is invoked
+   */
+  const recordStartTime = async (): Promise<void> => {
+    try {
+      const now = new Date();
+      await AsyncStorage.setItem(
+        CONSTANTS.BACKGROUND_TIMER_KEY,
+        now.toISOString()
+      );
+    } catch (err) {
+      // TODO: handle errors from setItem properly
+      console.warn(err);
+    }
+  };
+
+  const handleAppStateChange = async (nextAppState: any) => {
+    if (!habit || state !== ProgressState.PLAYING) return;
+
+    if (nextAppState.match(/inactive|background/)) {
+      await recordStartTime();
+      stopTheTimer();
+    } else if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      // We just became active again: recalculate elapsed time based
+      // on what we stored in AsyncStorage when we started.
+      const elapsed = await getElapsedTime();
+
+      // Update the elapsed seconds state
+      setTimer((t) => {
+        const newTime: number =
+          habit.type === HabitTypes.FASTING ? t + elapsed : t - elapsed;
+        return habit.type === HabitTypes.FASTING && newTime >= 24 * 60 * 60
+          ? 24 * 60 * 60
+          : habit.type !== HabitTypes.FASTING && newTime <= 0
+          ? 0
+          : newTime;
+      });
+      runTheTimer();
+    }
+    appState.current = nextAppState;
+  };
+
+  /**
+   * To calculate the time elapsed since the app is backgrounded
+   *
+   * @returns {Promise<number>} the time elapsed since the app is backgrounded
+   */
+  const getElapsedTime: () => Promise<number> = async (): Promise<number> => {
+    try {
+      const startTime = await AsyncStorage.getItem(
+        CONSTANTS.BACKGROUND_TIMER_KEY
+      );
+      if (!startTime) return 0;
+
+      const now = new Date();
+      return Number(
+        Math.floor((now.getTime() - new Date(startTime).getTime()) / 1000)
+      );
+    } catch (err) {
+      console.warn(err);
+      return 0;
+    }
+  };
+
   // clear timeput whenever component unforced unmout
   useEffect(() => {
     return () => {
@@ -278,28 +360,36 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     }
   }, [timer]);
 
+  const runTheTimer = () => {
+    if (!timerCounter.current) {
+      timerCounter.current = setInterval(() => {
+        setTimer((t) =>
+          habit && habit.type === HabitTypes.FASTING ? t + 1 : t - 1
+        );
+      }, 1000);
+    }
+  };
+
+  const stopTheTimer = () => {
+    if (timerCounter.current) {
+      clearInterval(timerCounter.current);
+      timerCounter.current = null;
+    }
+  };
+
   const changeState = (newState?: ProgressState) => {
     if (
       (state === ProgressState.STOPPED || state === ProgressState.PAUSED) &&
       (!newState || newState === ProgressState.PLAYING)
     ) {
-      if (!timerCounter.current) {
-        timerCounter.current = setInterval(() => {
-          setTimer((t) =>
-            habit && habit.type === HabitTypes.FASTING ? t + 1 : t - 1
-          );
-        }, 1000);
-      }
+      runTheTimer();
       const timeToComplete: number =
         habit && habit.type === HabitTypes.FASTING
           ? habit.duration * 60
           : timer;
       setEta(new Date(Date.now() + timeToComplete * 1000));
     } else {
-      if (timerCounter.current) {
-        clearInterval(timerCounter.current);
-        timerCounter.current = null;
-      }
+      stopTheTimer();
     }
     setState(
       (state === ProgressState.STOPPED || state === ProgressState.PAUSED) &&
