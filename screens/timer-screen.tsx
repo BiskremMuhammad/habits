@@ -21,6 +21,8 @@ import {
   Pressable,
   AppState,
 } from "react-native";
+import * as BackgroundFetch from "expo-background-fetch";
+import * as TaskManager from "expo-task-manager";
 import { AnimatePresence, MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -64,6 +66,21 @@ import { FastingStageDuration } from "../components/modules/add-habit/fasting-st
 import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
+
+/**
+ * Initialize backrground timer task
+ */
+// 1. Define the task
+TaskManager.defineTask(CONSTANTS.BACKGROUND_TIMER_KEY, async () => {
+  const now = Date.now();
+
+  console.log(
+    `Got background fetch call at date: ${new Date(now).toISOString()}`
+  );
+
+  // Be sure to return the successful result type!
+  return BackgroundFetch.Result.NewData;
+});
 
 /**
  * define the various kinds of Progress State
@@ -139,6 +156,35 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   // ......for show fasting stage info modal
   const [fastingStageInfoModal, toggleFastingStageInfoModal] =
     useState<boolean>(false);
+
+  /**
+   * timer background task state
+   */
+  // 2. Register the background task
+  const registerBackgroundFetchAsync = async () => {
+    return BackgroundFetch.registerTaskAsync(CONSTANTS.BACKGROUND_TIMER_KEY, {
+      minimumInterval: 1, // 1 minutes
+      stopOnTerminate: false, // android only,
+      startOnBoot: true, // android only
+    });
+  };
+
+  // 3. Unregister the background task
+  const unregisterBackgroundFetchAsync = async () => {
+    return BackgroundFetch.unregisterTaskAsync(CONSTANTS.BACKGROUND_TIMER_KEY);
+  };
+
+  /**
+   * register the background the task when the timer screen first rendered
+   */
+  useEffect(() => {
+    registerBackgroundFetchAsync();
+
+    return () => {
+      // unregister when unmount
+      unregisterBackgroundFetchAsync();
+    };
+  }, []);
 
   /**
    * for the background timer
