@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 
 // import the services that you want to use
 import "firebase/firestore";
+import { UserResponce } from "../types/user-responce";
 // import "firebase/auth";
 // import "firebase/database";
 // import "firebase/functions";
@@ -45,8 +46,11 @@ export default class Firebase {
     });
   };
 
-  static readDocument = (collectionName: string, documentId: string) =>
-    new Promise((resolve) => {
+  static readDocument = (
+    collectionName: string,
+    documentId: string
+  ): Promise<UserResponce> =>
+    new Promise((resolve, reject) => {
       const docRef = firebase
         .firestore()
         .collection(collectionName)
@@ -55,12 +59,12 @@ export default class Firebase {
         .get()
         .then((doc: firebase.firestore.DocumentSnapshot) => {
           console.log("The Document: ", doc.data());
-          resolve(doc.data());
+          resolve(doc.data() as UserResponce);
           return;
         })
         .catch((error: any) => {
           console.log("Error getting document:", error);
-          resolve(null);
+          reject();
           return;
         });
     });
@@ -69,8 +73,8 @@ export default class Firebase {
     collectionName: string,
     data: {},
     documentId: string | null = null
-  ) =>
-    new Promise((resolve) => {
+  ): Promise<void> =>
+    new Promise((resolve, reject) => {
       let docRef: firebase.firestore.DocumentReference;
       if (documentId) {
         docRef = firebase
@@ -83,13 +87,13 @@ export default class Firebase {
 
       docRef
         .set(data)
-        .then((doc: firebase.firestore.DocumentSnapshot) => {
+        .then(() => {
           console.log("Document successfully written!");
-          resolve(doc.data());
+          resolve();
         })
         .catch((error: any) => {
           console.error("Error writing document: ", error);
-          resolve(null);
+          reject();
           return;
         });
 
