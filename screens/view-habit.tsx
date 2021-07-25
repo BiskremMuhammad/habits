@@ -501,6 +501,7 @@ const styles = StyleSheet.create({
   plant: {
     position: "absolute",
     width: "175%",
+    zIndex: -1,
     transform: [
       {
         translateX: -60,
