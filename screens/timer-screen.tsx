@@ -303,7 +303,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         }
         return;
       }),
-    [navigation, isIntroduction]
+    [navigation, isIntroduction, state]
   );
 
   useLayoutEffect(() => {
@@ -471,6 +471,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       // change user practicing state on the server
       changeUserPracticingState(habit ? habit.type : "none");
     } else {
+      console.log("else >> stop the timer: ", newState);
       stopTheTimer();
     }
     if (
