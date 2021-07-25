@@ -30,6 +30,10 @@ import { Drawer } from "./components/elements/drawer";
 import { AnnouncementsScreen } from "./screens/announcements-screen";
 enableScreens();
 
+// TODO:: tmp to remove the non-sence firebase timer warning
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
+
 const { width, height } = Dimensions.get("screen");
 
 /**
