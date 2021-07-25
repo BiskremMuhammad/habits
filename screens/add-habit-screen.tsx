@@ -7,7 +7,7 @@
 import { v4 as uuid } from "uuid";
 import React, { useEffect, useReducer, useState } from "react";
 import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
-import { AnimatePresence, View as MotiView } from "moti";
+import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import { useNavigation } from "@react-navigation/native";
@@ -113,25 +113,23 @@ export const AddHabitScreen = ({ isIntroduction }: AddHabitScreenProps) => {
           </MotiView>
         </View>
       </ScrollView>
-      <AnimatePresence>
-        {fastingStageInfoModal && (
-          <Modal>
-            <FastingStageInfoModal
-              stage={
-                Object.keys(FastingStages)[
-                  FASTING_HABIT_DURATIONS.findIndex(
-                    (s) => s === selectedDuration
-                  ) + 1
-                ] as FastingStages
-              }
-              index={FASTING_HABIT_DURATIONS.findIndex(
-                (s) => s === selectedDuration
-              )}
-              onDismiss={() => toggleFastingStageInfoModal(false)}
-            />
-          </Modal>
-        )}
-      </AnimatePresence>
+      {fastingStageInfoModal && (
+        <Modal>
+          <FastingStageInfoModal
+            stage={
+              Object.keys(FastingStages)[
+                FASTING_HABIT_DURATIONS.findIndex(
+                  (s) => s === selectedDuration
+                ) + 1
+              ] as FastingStages
+            }
+            index={FASTING_HABIT_DURATIONS.findIndex(
+              (s) => s === selectedDuration
+            )}
+            onDismiss={() => toggleFastingStageInfoModal(false)}
+          />
+        </Modal>
+      )}
     </View>
   );
 };

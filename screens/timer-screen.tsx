@@ -23,7 +23,7 @@ import {
 } from "react-native";
 import * as BackgroundFetch from "expo-background-fetch";
 import * as TaskManager from "expo-task-manager";
-import { AnimatePresence, MotiText, MotiView } from "moti";
+import { MotiText, MotiView } from "moti";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -825,44 +825,42 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             </View>
           )}
       </View>
-      <AnimatePresence>
-        {exitSessionModalOpened && !isIntroduction && (
-          <Modal>
-            <ExitSessionModal
-              onCancel={() => onCancelSessionHandler(false)}
-              onExit={goToViewHabit}
-            />
-          </Modal>
-        )}
-        {partialTimeWarningModalOpened && !isIntroduction && (
-          <Modal>
-            <ExitSessionModal
-              title="Submit a Partial Session?"
-              message="Are you sure you want to submit? It won’t count as a completed session. You can always pause and resume the session later."
-              submitText="submit"
-              onCancel={() => togglePartialTimeWarningModal(false)}
-              onExit={onSubmit}
-            />
-          </Modal>
-        )}
-        {habit && habit.type === HabitTypes.FASTING && fastingStageInfoModal && (
-          <Modal>
-            <FastingStageInfoModal
-              stage={
-                Object.keys(FastingStages)[
-                  FASTING_HABIT_DURATIONS.findIndex(
-                    (s) => s === habitDurationText
-                  ) + 1
-                ] as FastingStages
-              }
-              index={FASTING_HABIT_DURATIONS.findIndex(
-                (s) => s === habitDurationText
-              )}
-              onDismiss={() => toggleFastingStageInfoModal(false)}
-            />
-          </Modal>
-        )}
-      </AnimatePresence>
+      {exitSessionModalOpened && !isIntroduction && (
+        <Modal>
+          <ExitSessionModal
+            onCancel={() => onCancelSessionHandler(false)}
+            onExit={goToViewHabit}
+          />
+        </Modal>
+      )}
+      {partialTimeWarningModalOpened && !isIntroduction && (
+        <Modal>
+          <ExitSessionModal
+            title="Submit a Partial Session?"
+            message="Are you sure you want to submit? It won’t count as a completed session. You can always pause and resume the session later."
+            submitText="submit"
+            onCancel={() => togglePartialTimeWarningModal(false)}
+            onExit={onSubmit}
+          />
+        </Modal>
+      )}
+      {habit && habit.type === HabitTypes.FASTING && fastingStageInfoModal && (
+        <Modal>
+          <FastingStageInfoModal
+            stage={
+              Object.keys(FastingStages)[
+                FASTING_HABIT_DURATIONS.findIndex(
+                  (s) => s === habitDurationText
+                ) + 1
+              ] as FastingStages
+            }
+            index={FASTING_HABIT_DURATIONS.findIndex(
+              (s) => s === habitDurationText
+            )}
+            onDismiss={() => toggleFastingStageInfoModal(false)}
+          />
+        </Modal>
+      )}
     </View>
   );
 };

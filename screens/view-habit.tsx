@@ -63,7 +63,6 @@ import { HabitIcon } from "../components/elements/habit-icon";
 import { CONSTANTS } from "../utils/constants";
 import { FastingStages, FastingStagesLabels } from "../types/fasting-stages";
 import InfoIcon from "../components/svgs/info-icon";
-import { AnimatePresence } from "moti";
 import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
 import { Modal } from "../components/modules/modals/modal";
 import { useMemo } from "react";
@@ -416,25 +415,23 @@ export const ViewHabitScreen = () => {
           )}
         </View>
       </ScrollView>
-      <AnimatePresence>
-        {fastingStageInfoModal && (
-          <Modal>
-            <FastingStageInfoModal
-              stage={
-                Object.keys(FastingStages)[
-                  FASTING_HABIT_DURATIONS.findIndex(
-                    (s) => s === habitDurationText
-                  ) + 1
-                ] as FastingStages
-              }
-              index={FASTING_HABIT_DURATIONS.findIndex(
-                (s) => s === habitDurationText
-              )}
-              onDismiss={() => toggleFastingStageInfoModal(false)}
-            />
-          </Modal>
-        )}
-      </AnimatePresence>
+      {fastingStageInfoModal && (
+        <Modal>
+          <FastingStageInfoModal
+            stage={
+              Object.keys(FastingStages)[
+                FASTING_HABIT_DURATIONS.findIndex(
+                  (s) => s === habitDurationText
+                ) + 1
+              ] as FastingStages
+            }
+            index={FASTING_HABIT_DURATIONS.findIndex(
+              (s) => s === habitDurationText
+            )}
+            onDismiss={() => toggleFastingStageInfoModal(false)}
+          />
+        </Modal>
+      )}
     </View>
   );
 };

@@ -7,7 +7,7 @@
 import { v4 as uuid } from "uuid";
 import React, { useReducer, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import { AnimatePresence, View as MotiView } from "moti";
+import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
@@ -72,25 +72,23 @@ export const SplashScreen = () => {
           />
         </MotiView>
       </View>
-      <AnimatePresence>
-        {fastingStageInfoModal && (
-          <Modal>
-            <FastingStageInfoModal
-              stage={
-                Object.keys(FastingStages)[
-                  FASTING_HABIT_DURATIONS.findIndex(
-                    (s) => s === selectedDuration
-                  ) + 1
-                ] as FastingStages
-              }
-              index={FASTING_HABIT_DURATIONS.findIndex(
-                (s) => s === selectedDuration
-              )}
-              onDismiss={() => toggleFastingStageInfoModal(false)}
-            />
-          </Modal>
-        )}
-      </AnimatePresence>
+      {fastingStageInfoModal && (
+        <Modal>
+          <FastingStageInfoModal
+            stage={
+              Object.keys(FastingStages)[
+                FASTING_HABIT_DURATIONS.findIndex(
+                  (s) => s === selectedDuration
+                ) + 1
+              ] as FastingStages
+            }
+            index={FASTING_HABIT_DURATIONS.findIndex(
+              (s) => s === selectedDuration
+            )}
+            onDismiss={() => toggleFastingStageInfoModal(false)}
+          />
+        </Modal>
+      )}
     </View>
   );
 };
