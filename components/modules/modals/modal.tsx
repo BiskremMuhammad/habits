@@ -18,7 +18,6 @@ export const Modal = ({ children }: { children: React.ReactChild }) => {
       exit={{ opacity: 0 }}
       exitTransition={{ type: "timing", duration: 100 }}
       style={ModalStyles.container}
-      onDidAnimate={() => console.log("Modal has finsihed the animation!!")}
     >
       {children}
     </MotiView>
