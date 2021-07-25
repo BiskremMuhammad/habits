@@ -24,6 +24,8 @@ if (!firebase.apps.length) {
 }
 
 export default class Firebase {
+  static getFireStoreRef = () => firebase.firestore();
+
   static readCollection = (collectionName: string) => {
     return new Promise((resolve) => {
       const colRef = firebase.firestore().collection(collectionName);
@@ -102,5 +104,32 @@ export default class Firebase {
       //     position: "developer",
       //     age: "30"
       // })
+    });
+
+  static updateDocument = (
+    collectionName: string,
+    data: {},
+    documentId: string
+  ): Promise<void> =>
+    new Promise((resolve, reject) => {
+      if (!documentId || !data || !Object.keys(data).length) {
+        reject();
+      }
+
+      let docRef: firebase.firestore.DocumentReference = firebase
+        .firestore()
+        .collection(collectionName)
+        .doc(documentId);
+
+      docRef
+        .update(data)
+        .then(() => {
+          console.log("updated successfully!");
+          resolve();
+        })
+        .catch((error: any) => {
+          reject();
+          return;
+        });
     });
 }

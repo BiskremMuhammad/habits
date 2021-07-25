@@ -14,7 +14,7 @@ import {
 } from "redux-saga/effects";
 import { Habit, HabitTypes } from "../../types/habit";
 import { CONSTANTS } from "../../utils/constants";
-import { getInstallationIdManually } from "../../utils/user";
+import { getUserDeviceIdAsync } from "../../utils/user";
 import {
   HabitActions,
   HabitActionTypes,
@@ -39,7 +39,7 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
   });
 
   // if no habits check firebase
-  const userDeviceUniqueId: string = await getInstallationIdManually();
+  const userDeviceUniqueId: string = await getUserDeviceIdAsync();
   let habitsFetchedFromFirebase: boolean = false;
   if (!habits.length) {
     try {

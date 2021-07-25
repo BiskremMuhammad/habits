@@ -35,6 +35,7 @@ import {
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
+import firebase from "firebase/app";
 
 import { CommonStyles } from "../styles/common";
 import { Button } from "../components/elements/button";
@@ -51,7 +52,7 @@ import {
   HabitActionTypes,
   ProgressPayload,
 } from "../redux/reducers/habit/habit-actions";
-import { useDerivedValue } from "react-native-reanimated";
+import { cos, useDerivedValue } from "react-native-reanimated";
 import { Plant, PlantState } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
@@ -64,6 +65,9 @@ import { FastingProgressStage } from "../components/elements/fasting-progress-st
 import { FastingHuman } from "../components/elements/fasting-human";
 import { FastingStageDuration } from "../components/modules/add-habit/fasting-stage-duration";
 import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
+import Firebase from "../utils/firebase";
+import { UserResponce } from "../types/user-responce";
+import { getUserDeviceIdAsync } from "../utils/user";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -156,6 +160,36 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   // ......for show fasting stage info modal
   const [fastingStageInfoModal, toggleFastingStageInfoModal] =
     useState<boolean>(false);
+
+  const [peers, setPeers] = useState<number>(
+    Math.floor(Math.random() * 23) + 100
+  );
+
+  useEffect(() => {
+    if (!habit) return;
+
+    const habitUsersRef = Firebase.getFireStoreRef().collection(
+      CONSTANTS.FIREBASE_HABITS_COLLECTION
+    );
+    const registerPeersListener = habitUsersRef.onSnapshot({
+      next: (snapshot) => {
+        let peersCount: number = 0;
+        snapshot.forEach((doc: firebase.firestore.DocumentSnapshot) => {
+          const userData: UserResponce = doc.data()! as UserResponce;
+          if (userData.practicing === habit.type) {
+            peersCount++;
+          }
+        });
+        setPeers(
+          peersCount <= 100
+            ? Math.floor(Math.random() * 23) + 100 + peersCount
+            : peersCount
+        );
+      },
+    });
+
+    return () => registerPeersListener();
+  }, [habit?.type]);
 
   /**
    * timer background task state
@@ -434,8 +468,17 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           ? habit.duration * 60
           : timer;
       setEta(new Date(Date.now() + timeToComplete * 1000));
+      // change user practicing state on the server
+      changeUserPracticingState(habit ? habit.type : "none");
     } else {
       stopTheTimer();
+    }
+    if (
+      newState === ProgressState.ENDED ||
+      newState === ProgressState.SUBMITTED
+    ) {
+      // change user practicing state on the server to "none"
+      changeUserPracticingState("none");
     }
     setState(
       (state === ProgressState.STOPPED || state === ProgressState.PAUSED) &&
@@ -443,6 +486,18 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         ? ProgressState.PLAYING
         : ProgressState.PAUSED
     );
+  };
+
+  const changeUserPracticingState = (
+    userPracticingState: HabitTypes | "none"
+  ) => {
+    getUserDeviceIdAsync().then((id: string) => {
+      Firebase.updateDocument(
+        CONSTANTS.FIREBASE_HABITS_COLLECTION,
+        { practicing: userPracticingState } as UserResponce,
+        id
+      );
+    });
   };
 
   const onSubmit = () => {
@@ -453,6 +508,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         ? timer
         : (habit?.duration || 1) * 60 - timer;
     setSubmittedTimer(timeToSubmit);
+    changeUserPracticingState("none");
 
     dispatch({
       type: HabitActionTypes.SAVE_DAY_PROGRESS,
@@ -474,6 +530,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   };
 
   const goToViewHabit = () => {
+    changeUserPracticingState("none");
     navigation.dispatch(
       StackActions.push(Routes.VIEW_HABIT, {
         habitId: habitId,
@@ -531,7 +588,15 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         </Text>
       </View>
       <View style={TimeScreenStyles.peers}>
-        <Text style={TimeScreenStyles.peersNum}>2K</Text>
+        <Text style={TimeScreenStyles.peersNum}>
+          {peers >= 1000
+            ? Math.floor(peers / 1000) +
+              (peers % 1000 >= 100
+                ? `.${(peers % 1000).toString().charAt(0)}`
+                : "") +
+              "K"
+            : peers}
+        </Text>
         <Text style={TimeScreenStyles.peersText}>
           are {HabitTypes[habit?.type || HabitTypes.READING].charAt(0)}
           {HabitTypes[habit?.type || HabitTypes.READING]

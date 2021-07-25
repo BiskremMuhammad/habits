@@ -12,7 +12,7 @@ import v5 from "uuid/v5";
 import { v4 as uuidv4 } from "uuid";
 import { CONSTANTS } from "./constants";
 
-export async function getInstallationIdManually() {
+export async function getUserDeviceIdAsync() {
   let installationId;
 
   if (["android", "ios"].includes(Platform.OS)) {
