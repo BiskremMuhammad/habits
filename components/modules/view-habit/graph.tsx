@@ -235,12 +235,15 @@ export const Graph = ({ data }: GraphProps) => {
             fromZero={true}
             transparent={true}
             getDotColor={(d, i) =>
-              d !== 0 && i === graphData.lastIndexOf(Math.max(...graphData))
+              d !== 0 &&
+              d !== yLabelMaxValue &&
+              i === graphData.lastIndexOf(Math.max(...graphData))
                 ? "#fff"
                 : "rgba(255,255,255,0)"
             }
             renderDotContent={({ x, indexData, index }) =>
               indexData !== 0 &&
+              indexData !== yLabelMaxValue &&
               index === graphData.lastIndexOf(Math.max(...graphData)) && (
                 <View
                   key={x}
