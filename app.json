@@ -17,6 +17,14 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png"
+        }
+      ]
+    ],
     "ios": {
       "bundleIdentifier": "com.eisenberg.habit",
       "buildNumber": "1.0.0",
@@ -33,7 +41,8 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.eisenberg.habit",
-      "versionCode": 1
+      "versionCode": 1,
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png"
