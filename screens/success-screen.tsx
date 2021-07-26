@@ -21,6 +21,7 @@ import {
 import { CommonStyles } from "../styles/common";
 import { Routes } from "../types/route-names";
 import { CONSTANTS } from "../utils/constants";
+import { PushNotification } from "../utils/push-notification";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -60,6 +61,7 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
       type: HabitActionTypes.INTRODUCTION_CLEAR_UP,
     });
     onCompleteIntro();
+    PushNotification.registerForPushNotificationsAsync();
     navigation.navigate(Routes.ADD_HABIT);
   };
 

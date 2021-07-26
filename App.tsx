@@ -14,11 +14,12 @@ import { enableScreens } from "react-native-screens";
 import * as Font from "expo-font";
 import { Provider } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
 
 import { store } from "./redux/store";
 import { SplashScreen } from "./screens/splash";
 import { TimerScreen } from "./screens/timer-screen";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CONSTANTS } from "./utils/constants";
 import { SuccessScreen } from "./screens/success-screen";
 import { AddHabitScreen } from "./screens/add-habit-screen";
@@ -32,6 +33,7 @@ enableScreens();
 
 // TODO:: tmp to remove the non-sence firebase timer warning
 import { LogBox } from "react-native";
+import { PushNotification } from "./utils/push-notification";
 LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 
 const { width, height } = Dimensions.get("screen");
@@ -56,26 +58,38 @@ let fonts = {
   "Rubik-ExtraBold": require("./assets/fonts/Rubik-ExtraBold.ttf"),
 };
 
+// support for notifications
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [playIntroduction, setPlayIntroduction] = useState<boolean>(false);
 
   useEffect(() => {
-    const loadFonts = async () => {
-      try {
-        await Font.loadAsync(fonts);
-        const firstTimer = await AsyncStorage.getItem(
-          CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY
-        );
-        setPlayIntroduction(!!!firstTimer);
-      } catch (err) {
-        console.log("got error on initial load: ", err);
-      }
-      setLoading(false);
-    };
-
-    loadFonts();
+    init();
   }, []);
+
+  const init = async () => {
+    try {
+      await Font.loadAsync(fonts);
+      const firstTimer = await AsyncStorage.getItem(
+        CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY
+      );
+      setPlayIntroduction(!!!firstTimer); // triple ! to get the inverted value if string was found
+      // if it's not introduction (which means string has benn found)
+      //  >> trigger notification permission
+      PushNotification.registerForPushNotificationsAsync(!!firstTimer);
+    } catch (err) {
+      console.log("got error on initial load: ", err);
+    }
+    setLoading(false);
+  };
 
   const completeIntro = () => {
     setPlayIntroduction(false);
