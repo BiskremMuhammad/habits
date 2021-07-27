@@ -326,9 +326,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         const newTime: number =
           habit.type === HabitTypes.FASTING ? t + elapsed : t - elapsed;
         return habit.type === HabitTypes.FASTING && newTime >= 24 * 60 * 60
-          ? 24 * 60 * 60
+          ? 24 * 60 * 60 - 1
           : habit.type !== HabitTypes.FASTING && newTime <= 0
-          ? 0
+          ? 1
           : newTime;
       });
       runTheTimer();
