@@ -4,13 +4,15 @@
  * @description implement the success screen
  */
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/core";
-import React, { Dispatch, useEffect } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { useDispatch } from "react-redux";
 import { Button } from "../components/elements/button";
-import { Plant, PlantState } from "../components/elements/plant";
 import { Spoiler } from "../components/elements/spoiler";
+import { Modal } from "../components/modules/modals/modal";
+import { RequestNotificationAccessModal } from "../components/modules/modals/request-notification-access-modal";
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
@@ -21,7 +23,6 @@ import {
 import { CommonStyles } from "../styles/common";
 import { Routes } from "../types/route-names";
 import { CONSTANTS } from "../utils/constants";
-import { PushNotification } from "../utils/push-notification";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -42,6 +43,8 @@ interface SuccessScreenProps {
 export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
   const navigation = useNavigation();
   const dispatch = useDispatch<Dispatch<HabitActions>>();
+  const [notificationModalOpened, setNotificationModalVisibility] =
+    useState<boolean>(false);
 
   /**
    * Disable user from going back
@@ -61,7 +64,10 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
       type: HabitActionTypes.INTRODUCTION_CLEAR_UP,
     });
     onCompleteIntro();
-    PushNotification.registerForPushNotificationsAsync();
+    AsyncStorage.setItem(
+      CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY,
+      "true"
+    );
     navigation.navigate(Routes.ADD_HABIT);
   };
 
@@ -88,8 +94,13 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
         shape="oval"
         text="begin"
         extraStyles={{ marginTop: 14, alignSelf: "center" }}
-        onPress={onBegin}
+        onPress={() => setNotificationModalVisibility(true)}
       />
+      {notificationModalOpened && (
+        <Modal>
+          <RequestNotificationAccessModal callback={onBegin} />
+        </Modal>
+      )}
     </View>
   );
 };

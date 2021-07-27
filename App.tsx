@@ -34,6 +34,8 @@ enableScreens();
 // TODO:: tmp to remove the non-sence firebase timer warning
 import { LogBox } from "react-native";
 import { PushNotification } from "./utils/push-notification";
+import { Modal } from "./components/modules/modals/modal";
+import { RequestNotificationAccessModal } from "./components/modules/modals/request-notification-access-modal";
 LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 
 const { width, height } = Dimensions.get("screen");
@@ -70,6 +72,8 @@ Notifications.setNotificationHandler({
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [playIntroduction, setPlayIntroduction] = useState<boolean>(false);
+  const [notificationModalOpened, setNotificationModalVisibility] =
+    useState<boolean>(false);
 
   useEffect(() => {
     init();
@@ -82,13 +86,29 @@ export default function App() {
         CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY
       );
       setPlayIntroduction(!!!firstTimer); // triple ! to get the inverted value if string was found
-      // if it's not introduction (which means string has benn found)
+      // if it's not introduction (which means string has been found)
       //  >> trigger notification permission
-      PushNotification.registerForPushNotificationsAsync(!!firstTimer);
+      if (!!firstTimer) {
+        const granted: boolean =
+          !!(await PushNotification.registerForPushNotificationsAsync(false));
+        const notificationModalFirstTime: boolean =
+          !!!(await AsyncStorage.getItem(
+            CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY
+          ));
+        setNotificationModalVisibility(!granted || notificationModalFirstTime);
+      }
     } catch (err) {
       console.log("got error on initial load: ", err);
     }
     setLoading(false);
+  };
+
+  const onNotificationModalDismissed = () => {
+    setNotificationModalVisibility(false);
+    AsyncStorage.setItem(
+      CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY,
+      "true"
+    );
   };
 
   const completeIntro = () => {
@@ -168,6 +188,13 @@ export default function App() {
           </Route.Screen>
         </Route.Navigator>
       </NavigationContainer>
+      {notificationModalOpened && (
+        <Modal fadeDuration={1000} delayAnimation={1000}>
+          <RequestNotificationAccessModal
+            callback={onNotificationModalDismissed}
+          />
+        </Modal>
+      )}
     </Provider>
   );
 }

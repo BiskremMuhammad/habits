@@ -23,7 +23,7 @@ export class PushNotification {
    * @returns {Promise<string>} user's device expo push notification token
    */
   static registerForPushNotificationsAsync = async (
-    requestPermission?: boolean
+    requestPermission: boolean = true
   ): Promise<string | void> => {
     let token;
     if (Constants.isDevice) {
