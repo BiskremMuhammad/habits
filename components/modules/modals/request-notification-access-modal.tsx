@@ -5,6 +5,7 @@
  */
 
 import { MotiView } from "@motify/components";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import {
   View,
@@ -51,6 +52,10 @@ export const RequestNotificationAccessModal = ({
         );
       });
     }
+    AsyncStorage.setItem(
+      CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY,
+      "true"
+    );
     callback();
   };
 

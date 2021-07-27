@@ -105,10 +105,6 @@ export default function App() {
 
   const onNotificationModalDismissed = () => {
     setNotificationModalVisibility(false);
-    AsyncStorage.setItem(
-      CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY,
-      "true"
-    );
   };
 
   const completeIntro = () => {

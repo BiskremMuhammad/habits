@@ -4,7 +4,6 @@
  * @description implement the success screen
  */
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/core";
 import React, { Dispatch, useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
@@ -64,10 +63,6 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
       type: HabitActionTypes.INTRODUCTION_CLEAR_UP,
     });
     onCompleteIntro();
-    AsyncStorage.setItem(
-      CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY,
-      "true"
-    );
     navigation.navigate(Routes.ADD_HABIT);
   };
 
