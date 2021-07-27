@@ -67,6 +67,8 @@ import { FastingStageInfoModal } from "../components/modules/modals/fasting-stag
 import { Modal } from "../components/modules/modals/modal";
 import { useMemo } from "react";
 import { calculateStreak } from "../utils/calendar-utils";
+import { PushNotification } from "../utils/push-notification";
+import { scheduleHabitNotificationAsync } from "../utils/habit-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -100,10 +102,24 @@ export const ViewHabitScreen = () => {
   );
   const { type, isEveryDay, days, duration } = state;
 
-  const onSaveChanges = () => {
+  const onSaveChanges = async () => {
+    let updatedHabit: Habit = { ...state };
+    if (state.notification) {
+      // cancel habit existing scheduled notification
+      const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
+      PushNotification.cancelNotification(state.notification);
+      const updatedHabitNewNotification: string =
+        await scheduleHabitNotificationAsync(
+          updatedHabit,
+          !!state.progress.filter(
+            (p: HabitProgressData) => p.date.getTime() === today.getTime()
+          ).length // to skip today's notification if habit progress has today as a tracked day
+        );
+      updatedHabit = { ...state, notification: updatedHabitNewNotification };
+    }
     storeDispatch({
       type: HabitActionTypes.UPDATE_HABIT,
-      payload: state,
+      payload: updatedHabit,
     });
   };
 

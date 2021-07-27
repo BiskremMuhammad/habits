@@ -68,6 +68,8 @@ import { FastingStageInfoModal } from "../components/modules/modals/fasting-stag
 import Firebase from "../utils/firebase";
 import { UserResponce } from "../types/user-responce";
 import { getUserDeviceIdAsync } from "../utils/user";
+import { PushNotification } from "../utils/push-notification";
+import { scheduleHabitNotificationAsync } from "../utils/habit-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -470,8 +472,20 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       setEta(new Date(Date.now() + timeToComplete * 1000));
       // change user practicing state on the server
       changeUserPracticingState(habit ? habit.type : "none");
+      // cancel today's notification for this habit
+      if (habit?.notification) {
+        // cancel habit existing scheduled notification
+        PushNotification.cancelNotification(habit.notification);
+        scheduleHabitNotificationAsync(habit, true).then(
+          (notificationId: string) => {
+            dispatch({
+              type: HabitActionTypes.UPDATE_HABIT,
+              payload: { ...habit, notification: notificationId },
+            });
+          }
+        );
+      }
     } else {
-      console.log("else >> stop the timer: ", newState);
       stopTheTimer();
     }
     if (
