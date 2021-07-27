@@ -494,9 +494,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         : (habit?.duration || 1) * 60 - timer;
     setSubmittedTimer(timeToSubmit);
     changeUserPracticingState("none");
-    if (etaNotificationId) {
-      PushNotification.cancelNotification(etaNotificationId);
-    }
 
     dispatch({
       type: HabitActionTypes.SAVE_DAY_PROGRESS,
