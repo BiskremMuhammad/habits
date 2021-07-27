@@ -10,12 +10,25 @@ import { MotiView } from "@motify/components";
 
 const { width, height } = Dimensions.get("screen");
 
-export const Modal = ({ children }: { children: React.ReactChild }) => {
+export const Modal = ({
+  children,
+  delayAnimation,
+  fadeDuration,
+}: {
+  children: React.ReactChild;
+  delayAnimation?: number;
+  fadeDuration?: number;
+}) => {
   return (
     <MotiView
       from={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{
+        type: "timing",
+        duration: fadeDuration ? fadeDuration : 300,
+        delay: delayAnimation,
+      }}
       exitTransition={{ type: "timing", duration: 100 }}
       style={ModalStyles.container}
     >
