@@ -42,6 +42,7 @@ import {
   Habit,
   HabitTypes,
   HabitTypesIdentity,
+  HabitTypesVerbale,
 } from "../types/habit";
 import { GlobalStore } from "../redux/store";
 import InfoIcon from "../components/svgs/info-icon";
@@ -50,7 +51,7 @@ import {
   HabitActionTypes,
   ProgressPayload,
 } from "../redux/reducers/habit/habit-actions";
-import { cos, useDerivedValue } from "react-native-reanimated";
+import { useDerivedValue } from "react-native-reanimated";
 import { Plant, PlantState } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
@@ -132,6 +133,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   );
   const [submittedTimer, setSubmittedTimer] = useState<number>(0);
   const [eta, setEta] = useState<Date>(new Date());
+  const [etaNotificationId, setEtaNotificationId] = useState<string>("");
   let timerCounter = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ......for exit session modal
@@ -423,7 +425,17 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         habit && habit.type === HabitTypes.FASTING
           ? habit.duration * 60
           : timer;
-      setEta(new Date(Date.now() + timeToComplete * 1000));
+      const etaTime: Date = new Date(Date.now() + timeToComplete * 1000);
+      setEta(etaTime);
+      PushNotification.scheduleNotification(
+        "Congratulations!",
+        `Congratulations you have illuminated your ${
+          HabitTypesVerbale[habit!.type]
+        } plant`,
+        etaTime
+      ).then((id: string) => {
+        setEtaNotificationId(id);
+      });
       // change user practicing state on the server
       changeUserPracticingState(habit ? habit.type : "none");
       // cancel today's notification for this habit
@@ -478,6 +490,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         : (habit?.duration || 1) * 60 - timer;
     setSubmittedTimer(timeToSubmit);
     changeUserPracticingState("none");
+    if (etaNotificationId) {
+      PushNotification.cancelNotification(etaNotificationId);
+    }
 
     dispatch({
       type: HabitActionTypes.SAVE_DAY_PROGRESS,
@@ -500,6 +515,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   const goToViewHabit = () => {
     changeUserPracticingState("none");
+    if (etaNotificationId) {
+      PushNotification.cancelNotification(etaNotificationId);
+    }
     navigation.dispatch(
       StackActions.push(Routes.VIEW_HABIT, {
         habitId: habitId,
