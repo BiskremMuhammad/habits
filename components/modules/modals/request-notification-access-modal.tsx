@@ -13,7 +13,11 @@ import {
   ImageBackground,
   Dimensions,
 } from "react-native";
+import { UserResponce } from "../../../types/user-responce";
+import { CONSTANTS } from "../../../utils/constants";
+import Firebase from "../../../utils/firebase";
 import { PushNotification } from "../../../utils/push-notification";
+import { getUserDeviceIdAsync } from "../../../utils/user";
 import { Button } from "../../elements/button";
 
 const { height: screenHeight } = Dimensions.get("screen");
@@ -36,7 +40,17 @@ export const RequestNotificationAccessModal = ({
   callback,
 }: RequestNotificationAccessModalProps) => {
   const requestAccess = async () => {
-    await PushNotification.registerForPushNotificationsAsync();
+    const token: string | undefined =
+      await PushNotification.registerForPushNotificationsAsync();
+    if (token) {
+      getUserDeviceIdAsync().then((id: string) => {
+        Firebase.updateDocument(
+          CONSTANTS.FIREBASE_HABITS_COLLECTION,
+          { pushToken: token } as UserResponce,
+          id
+        );
+      });
+    }
     callback();
   };
 

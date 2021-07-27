@@ -24,7 +24,7 @@ export class PushNotification {
    */
   static registerForPushNotificationsAsync = async (
     requestPermission: boolean = true
-  ): Promise<string | void> => {
+  ): Promise<string | undefined> => {
     let token;
     if (Constants.isDevice) {
       const { status: existingStatus } =

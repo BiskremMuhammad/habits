@@ -26,4 +26,11 @@ export interface UserResponce {
    * @type {HabitTypes | "none"}
    */
   practicing: HabitTypes | "none";
+
+  /**
+   * user unique expo push token for notifications
+   *
+   * @type {string}
+   */
+  pushToken: string;
 }
