@@ -41,29 +41,34 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
   // if no habits check firebase
   const userDeviceUniqueId: string = await getUserDeviceIdAsync();
   let habitsFetchedFromFirebase: boolean = false;
-  if (!habits.length) {
-    try {
-      const userData = await firebase.readDocument(
-        CONSTANTS.FIREBASE_HABITS_COLLECTION,
-        userDeviceUniqueId
-      );
-      habitsFetchedFromFirebase = true;
-      habits = userData.habits.reduce<Habit[]>(
-        (acc: Habit[], v: Habit) =>
-          acc.concat({
-            ...v,
-            progress: v.progress.map((p) => ({ ...p, date: new Date(p.date) })),
-          }),
-        []
-      );
-    } catch (er) {
-      console.log("firebase no data for the user");
-    }
+  let userData;
+  try {
+    userData = await firebase.readDocument(
+      CONSTANTS.FIREBASE_HABITS_COLLECTION,
+      userDeviceUniqueId
+    );
+  } catch (er) {
+    console.log("firebase no data for the user");
+  }
+  if (userData && !habits.length) {
+    habitsFetchedFromFirebase = true;
+    habits = userData.habits.reduce<Habit[]>(
+      (acc: Habit[], v: Habit) =>
+        acc.concat({
+          ...v,
+          progress: v.progress.map((p) => ({ ...p, date: new Date(p.date) })),
+        }),
+      []
+    );
   }
   if (!habitsFetchedFromFirebase) {
     firebase.saveDocument(
       CONSTANTS.FIREBASE_HABITS_COLLECTION,
-      { habits, practicing: "none" } as UserResponce,
+      {
+        habits,
+        practicing: "none",
+        pushToken: userData ? userData.pushToken : "",
+      } as UserResponce,
       userDeviceUniqueId
     );
   }
