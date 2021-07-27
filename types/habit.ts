@@ -140,6 +140,13 @@ export interface Habit {
   duration: number;
 
   /**
+   * daily notification specified for this habit
+   *
+   * @type {string}
+   */
+  notification: string;
+
+  /**
    * habit tracker daily progress array
    *
    * @type {HabitProgressData[]}

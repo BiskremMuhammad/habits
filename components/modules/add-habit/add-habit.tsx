@@ -25,6 +25,7 @@ import { HabitFrequencyInput } from "./habit-frequency";
 import { HabitIcon } from "../../elements/habit-icon";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 import { useDispatch } from "react-redux";
+import { PushNotification } from "../../../utils/push-notification";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -139,19 +140,44 @@ export const AddHabit = (props: AddHabitProps) => {
     });
   };
 
-  const onCallToActionPress = () => {
+  const onCallToActionPress = async () => {
+    let notificationId: string = "";
+    if (!props.isIntroduction) {
+      // get the next 6pm datetime
+      const today6pm: Date = new Date(
+        new Date(Date.now()).setHours(18, 0, 0, 0)
+      );
+      const notificationNextAlarm: Date =
+        today6pm.getTime() > Date.now()
+          ? today6pm
+          : new Date(
+              new Date(Date.now()).setHours(18, 0, 0, 0) + 24 * 60 * 60 * 1000
+            );
+      const habitDuration: string = `${
+        duration >= 60 ? duration / 60 : duration
+      } ${duration >= 60 ? "hour" : "minute"}${duration > 1 && "s"}`;
+
+      notificationId = await PushNotification.scheduleNotification(
+        `Time for your ${HabitTypesVerbale[type]} Habit`,
+        `Building habits is about building momentum day over day. Perform your habit for ${habitDuration} now.`,
+        notificationNextAlarm,
+        true
+      );
+    }
+
+    const habit: Habit = { ...props.state, notification: notificationId };
     storeDispatch({
       type: HabitActionTypes.ADD_NEW_HABIT,
-      payload: props.state,
+      payload: habit,
     });
     if (props.isIntroduction) {
       navigation.navigate(Routes.TIMER, {
-        habitId: props.state.id,
+        habitId: habit.id,
       } as TimerScreenRouteParams);
     } else {
       navigation.dispatch(
         StackActions.push(Routes.IDENTITY_REINFORCEMENT, {
-          habitId: props.state.id,
+          habitId: habit.id,
         } as TimerScreenRouteParams)
       );
     }
