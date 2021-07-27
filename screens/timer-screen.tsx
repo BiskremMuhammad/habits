@@ -453,6 +453,10 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       }
     } else {
       stopTheTimer();
+      // cancel committed time notification reached
+      if (etaNotificationId) {
+        PushNotification.cancelNotification(etaNotificationId);
+      }
     }
     if (
       newState === ProgressState.ENDED ||
@@ -515,9 +519,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   const goToViewHabit = () => {
     changeUserPracticingState("none");
-    if (etaNotificationId) {
-      PushNotification.cancelNotification(etaNotificationId);
-    }
     navigation.dispatch(
       StackActions.push(Routes.VIEW_HABIT, {
         habitId: habitId,
