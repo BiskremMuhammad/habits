@@ -393,7 +393,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       if (timerCounter.current) {
         clearInterval(timerCounter.current);
         timerCounter.current = null;
-        setState(ProgressState.ENDED);
+        changeState(ProgressState.ENDED);
       }
     }
   }, [timer]);
@@ -438,19 +438,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       });
       // change user practicing state on the server
       changeUserPracticingState(habit ? habit.type : "none");
-      // cancel today's notification for this habit
-      if (habit?.notification) {
-        // cancel habit existing scheduled notification
-        PushNotification.cancelNotification(habit.notification);
-        scheduleHabitNotificationAsync(habit, true).then(
-          (notificationId: string) => {
-            dispatch({
-              type: HabitActionTypes.UPDATE_HABIT,
-              payload: { ...habit, notification: notificationId },
-            });
-          }
-        );
-      }
     } else {
       stopTheTimer();
       // cancel committed time notification reached
@@ -464,10 +451,24 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     ) {
       // change user practicing state on the server to "none"
       changeUserPracticingState("none");
+      // cancel today's notification for this habit
+      if (habit?.notification) {
+        // cancel habit existing scheduled notification
+        PushNotification.cancelNotification(habit.notification);
+        scheduleHabitNotificationAsync(habit, true).then(
+          (notificationId: string) => {
+            dispatch({
+              type: HabitActionTypes.UPDATE_HABIT,
+              payload: { ...habit, notification: notificationId },
+            });
+          }
+        );
+      }
     }
     setState(
-      (state === ProgressState.STOPPED || state === ProgressState.PAUSED) &&
-        (!newState || newState === ProgressState.PLAYING)
+      newState
+        ? newState
+        : state === ProgressState.STOPPED || state === ProgressState.PAUSED
         ? ProgressState.PLAYING
         : ProgressState.PAUSED
     );
@@ -486,14 +487,13 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   };
 
   const onSubmit = () => {
-    setState(ProgressState.SUBMITTED);
+    changeState(ProgressState.SUBMITTED);
     togglePartialTimeWarningModal(false);
     const timeToSubmit: number =
       habit && habit.type === HabitTypes.FASTING
         ? timer
         : (habit?.duration || 1) * 60 - timer;
     setSubmittedTimer(timeToSubmit);
-    changeUserPracticingState("none");
 
     dispatch({
       type: HabitActionTypes.SAVE_DAY_PROGRESS,
