@@ -4,7 +4,7 @@
  * @description implement utility functions that related to habit
  */
 
-import { Habit, HabitTypesVerbale } from "../types/habit";
+import { Habit, HabitTypes } from "../types/habit";
 import { PushNotification } from "./push-notification";
 
 /**
@@ -31,7 +31,9 @@ export const scheduleHabitNotificationAsync = async (
   } ${habit.duration >= 60 ? "hour" : "minute"}${habit.duration > 1 && "s"}`;
 
   const notificationId = await PushNotification.scheduleNotification(
-    `Time for your ${HabitTypesVerbale[habit.type]} Habit`,
+    `Time for your ${HabitTypes[habit.type].charAt(0)}${HabitTypes[habit.type]
+      .substr(1)
+      .toLowerCase()} Habit`,
     `Building habits is about building momentum day over day. Perform your habit for ${habitDuration} now.`,
     notificationNextAlarm,
     true

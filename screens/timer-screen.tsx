@@ -42,7 +42,6 @@ import {
   Habit,
   HabitTypes,
   HabitTypesIdentity,
-  HabitTypesVerbale,
 } from "../types/habit";
 import { GlobalStore } from "../redux/store";
 import InfoIcon from "../components/svgs/info-icon";
@@ -429,9 +428,10 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       setEta(etaTime);
       PushNotification.scheduleNotification(
         "Congratulations!",
-        `Congratulations you have illuminated your ${
-          HabitTypesVerbale[habit!.type]
-        } plant`,
+        `Congratulations you have illuminated your
+          ${HabitTypes[habit!.type].charAt(0)}${HabitTypes[habit!.type]
+          .substr(1)
+          .toLowerCase()} plant`,
         etaTime
       ).then((id: string) => {
         setEtaNotificationId(id);
