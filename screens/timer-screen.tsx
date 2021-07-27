@@ -428,10 +428,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       setEta(etaTime);
       PushNotification.scheduleNotification(
         "Congratulations!",
-        `Congratulations you have illuminated your
-          ${HabitTypes[habit!.type].charAt(0)}${HabitTypes[habit!.type]
-          .substr(1)
-          .toLowerCase()} plant`,
+        `Congratulations you have illuminated your ${HabitTypes[
+          habit!.type
+        ].charAt(0)}${HabitTypes[habit!.type].substr(1).toLowerCase()} plant`,
         etaTime
       ).then((id: string) => {
         setEtaNotificationId(id);
