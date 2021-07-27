@@ -35,14 +35,10 @@ export class PushNotification {
         finalStatus = status;
       }
       if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
+        alert("Warning. You won't recieve notifications about your habits!");
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(
-        "notification permission is granted, got an expo token: ",
-        token
-      );
     } else {
       alert("Must use physical device for Push Notifications");
     }

@@ -36,7 +36,6 @@ export default class Firebase {
           snapshot.forEach((doc: firebase.firestore.DocumentSnapshot) => {
             documents.push({ id: doc.id, data: doc.data() });
           });
-          console.log("All Documents: ", documents);
           resolve(documents);
           return;
         })
@@ -60,7 +59,6 @@ export default class Firebase {
       docRef
         .get()
         .then((doc: firebase.firestore.DocumentSnapshot) => {
-          console.log("The Document: ", doc.data());
           resolve(doc.data() as UserResponce);
           return;
         })
@@ -90,7 +88,6 @@ export default class Firebase {
       docRef
         .set(data)
         .then(() => {
-          console.log("Document successfully written!");
           resolve();
         })
         .catch((error: any) => {
@@ -124,7 +121,6 @@ export default class Firebase {
       docRef
         .update(data)
         .then(() => {
-          console.log("updated successfully!");
           resolve();
         })
         .catch((error: any) => {
