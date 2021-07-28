@@ -12,12 +12,15 @@ import {
   HabitActionTypes,
   ProgressPayload,
 } from "./habit-actions";
+import firebase from "../../../utils/firebase";
+import { UserResponce } from "../../../types/user-responce";
+import { getUserDeviceIdAsync } from "../../../utils/user";
 
 export const habitReducer = (
   state: Habit[] = [],
   action: HabitActions
 ): Habit[] => {
-  let newState: Habit[] = [];
+  let newState: Habit[] | null = null;
 
   switch (action.type) {
     case HabitActionTypes.LOAD_HABITS_FROM_STORAGE:
@@ -54,46 +57,43 @@ export const habitReducer = (
         }
         return h;
       });
-      AsyncStorage.setItem(
-        CONSTANTS.ASYNC_STORAGE_HABITS,
-        JSON.stringify(newState)
-      );
-      return newState;
+      break;
 
     case HabitActionTypes.ADD_NEW_HABIT:
       newState = [...state, action.payload as Habit];
-      AsyncStorage.setItem(
-        CONSTANTS.ASYNC_STORAGE_HABITS,
-        JSON.stringify(newState)
-      );
-      return newState;
+      break;
 
     case HabitActionTypes.UPDATE_HABIT:
       newState = state.map((h: Habit, _) =>
         h.id === (action.payload as Habit).id ? (action.payload as Habit) : h
       );
-      AsyncStorage.setItem(
-        CONSTANTS.ASYNC_STORAGE_HABITS,
-        JSON.stringify(newState)
-      );
-      return newState;
+      break;
 
     case HabitActionTypes.DELETE_HABIT:
       newState = state.filter((h: Habit, i: number) => h.id !== action.payload);
-      AsyncStorage.setItem(
-        CONSTANTS.ASYNC_STORAGE_HABITS,
-        JSON.stringify(newState)
-      );
-      return newState;
+      break;
 
     case HabitActionTypes.INTRODUCTION_CLEAR_UP:
       newState = [];
-      AsyncStorage.setItem(
-        CONSTANTS.ASYNC_STORAGE_HABITS,
-        JSON.stringify(newState)
-      );
-      return newState;
+      break;
     default:
       return state;
   }
+  if (newState !== null) {
+    AsyncStorage.setItem(
+      CONSTANTS.ASYNC_STORAGE_HABITS,
+      JSON.stringify(newState)
+    );
+    getUserDeviceIdAsync().then((id: string) =>
+      firebase.updateDocument(
+        CONSTANTS.FIREBASE_HABITS_COLLECTION,
+        {
+          habits: newState,
+        } as UserResponce,
+        id
+      )
+    );
+    return newState;
+  }
+  return state;
 };
