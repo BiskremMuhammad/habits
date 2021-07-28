@@ -9,6 +9,28 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
 /**
+ * interface that defines the input for a notification that will trigger at some hour
+ *
+ * @interface
+ * @exports
+ */
+export interface NotificationHourInput {
+  /**
+   * the hour from 1 to 24
+   *
+   * @type {number}
+   */
+  hour: number;
+
+  /**
+   * the minute
+   *
+   * @type {number}
+   */
+  minute: number;
+}
+
+/**
  * class to manage push notitifications in the app
  *
  * @class
@@ -60,7 +82,7 @@ export class PushNotification {
    *
    * @param {string} title notification title
    * @param {string} body notification message
-   * @param {Date} date notification date and time
+   * @param {Date | NotificationHourInput} date notification date and time
    * @param {boolean} repeats notification Does repeat state?
    * @param {any} data (optional) pass data along with the notification
    *
@@ -69,11 +91,20 @@ export class PushNotification {
   static scheduleNotification = async (
     title: string,
     body: string,
-    date: Date,
+    date: Date | NotificationHourInput,
     repeats?: boolean,
     data?: any
   ): Promise<string> => {
-    const notificationTime: number = (date.getTime() - Date.now()) / 1000;
+    const notificationTime: number =
+      "hour" in date ? 0 : (date.getTime() - Date.now()) / 1000;
+    const triggerTime: Notifications.NotificationTriggerInput =
+      "hour" in date
+        ? {
+            hour: date.hour,
+            minute: date.minute,
+            repeats,
+          }
+        : { seconds: notificationTime, repeats };
     const notificationId: string =
       await Notifications.scheduleNotificationAsync({
         content: {
@@ -81,7 +112,7 @@ export class PushNotification {
           body,
           data,
         },
-        trigger: { seconds: notificationTime, repeats },
+        trigger: triggerTime,
       });
 
     return notificationId;

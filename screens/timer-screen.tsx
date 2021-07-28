@@ -454,14 +454,12 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       if (habit?.notification) {
         // cancel habit existing scheduled notification
         PushNotification.cancelNotification(habit.notification);
-        scheduleHabitNotificationAsync(habit, true).then(
-          (notificationId: string) => {
-            dispatch({
-              type: HabitActionTypes.UPDATE_HABIT,
-              payload: { ...habit, notification: notificationId },
-            });
-          }
-        );
+        scheduleHabitNotificationAsync(habit).then((notificationId: string) => {
+          dispatch({
+            type: HabitActionTypes.UPDATE_HABIT,
+            payload: { ...habit, notification: notificationId },
+          });
+        });
       }
     }
     setState(

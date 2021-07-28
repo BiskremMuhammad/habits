@@ -5,7 +5,7 @@
  */
 
 import { Habit, HabitTypes } from "../types/habit";
-import { PushNotification } from "./push-notification";
+import { NotificationHourInput, PushNotification } from "./push-notification";
 
 /**
  * to schedule a daily notification for the habit
@@ -15,17 +15,8 @@ import { PushNotification } from "./push-notification";
  * @returns {Promise<string>} habit notification reference id
  */
 export const scheduleHabitNotificationAsync = async (
-  habit: Habit,
-  rescheduleForTomrrow: boolean = false
+  habit: Habit
 ): Promise<string> => {
-  // get the next 6pm datetime
-  const today6pm: Date = new Date(new Date(Date.now()).setHours(18, 0, 0, 0));
-  const notificationNextAlarm: Date =
-    today6pm.getTime() > Date.now() && !rescheduleForTomrrow
-      ? today6pm
-      : new Date(
-          new Date(Date.now()).setHours(18, 0, 0, 0) + 24 * 60 * 60 * 1000
-        );
   const habitDuration: string = `${
     habit.duration >= 60 ? habit.duration / 60 : habit.duration
   } ${habit.duration >= 60 ? "hour" : "minute"}${habit.duration > 1 && "s"}`;
@@ -35,7 +26,7 @@ export const scheduleHabitNotificationAsync = async (
       .substr(1)
       .toLowerCase()} Habit`,
     `Building habits is about building momentum day over day. Perform your habit for ${habitDuration} now.`,
-    notificationNextAlarm,
+    { hour: 18, minute: 0 } as NotificationHourInput,
     true
   );
   return notificationId;

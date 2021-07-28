@@ -106,15 +106,9 @@ export const ViewHabitScreen = () => {
     let updatedHabit: Habit = { ...state };
     if (state.notification) {
       // cancel habit existing scheduled notification
-      const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
       PushNotification.cancelNotification(state.notification);
       const updatedHabitNewNotification: string =
-        await scheduleHabitNotificationAsync(
-          updatedHabit,
-          !!state.progress.filter(
-            (p: HabitProgressData) => p.date.getTime() === today.getTime()
-          ).length // to skip today's notification if habit progress has today as a tracked day
-        );
+        await scheduleHabitNotificationAsync(updatedHabit);
       updatedHabit = { ...state, notification: updatedHabitNewNotification };
     }
     storeDispatch({
