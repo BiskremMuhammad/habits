@@ -33,6 +33,7 @@ import { CommonStyles } from "../styles/common";
 import {
   FASTING_HABIT_DURATIONS,
   Habit,
+  HabitNotEveryDayNotificationId,
   HabitProgressData,
   HabitTypes,
   HabitTypesIdentity,
@@ -67,8 +68,7 @@ import { FastingStageInfoModal } from "../components/modules/modals/fasting-stag
 import { Modal } from "../components/modules/modals/modal";
 import { useMemo } from "react";
 import { calculateStreak } from "../utils/calendar-utils";
-import { PushNotification } from "../utils/push-notification";
-import { scheduleHabitNotificationAsync } from "../utils/habit-utils";
+import { HabitUtils } from "../utils/habit-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -103,12 +103,18 @@ export const ViewHabitScreen = () => {
   const { type, isEveryDay, days, duration } = state;
 
   const onSaveChanges = async () => {
-    let updatedHabit: Habit = { ...state };
+    let updatedHabit: Habit = {
+      ...state,
+      notification: state.isEveryDay ? "" : {},
+    };
     if (state.notification) {
       // cancel habit existing scheduled notification
-      PushNotification.cancelNotification(state.notification);
-      const updatedHabitNewNotification: string =
-        await scheduleHabitNotificationAsync(updatedHabit);
+      HabitUtils.cancelAllHabitNotifications(state);
+      const updatedHabitNewNotification:
+        | string
+        | HabitNotEveryDayNotificationId = await HabitUtils.scheduleHabitNotificationAsync(
+        updatedHabit
+      );
       updatedHabit = { ...state, notification: updatedHabitNewNotification };
     }
     storeDispatch({

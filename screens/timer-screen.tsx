@@ -40,6 +40,7 @@ import { Button } from "../components/elements/button";
 import {
   FASTING_HABIT_DURATIONS,
   Habit,
+  HabitNotEveryDayNotificationId,
   HabitTypes,
   HabitTypesIdentity,
 } from "../types/habit";
@@ -67,7 +68,7 @@ import Firebase from "../utils/firebase";
 import { UserResponce } from "../types/user-responce";
 import { getUserDeviceIdAsync } from "../utils/user";
 import { PushNotification } from "../utils/push-notification";
-import { scheduleHabitNotificationAsync } from "../utils/habit-utils";
+import { HabitUtils } from "../utils/habit-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -451,15 +452,16 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       // change user practicing state on the server to "none"
       changeUserPracticingState("none");
       // cancel today's notification for this habit
-      if (habit?.notification) {
-        // cancel habit existing scheduled notification
-        PushNotification.cancelNotification(habit.notification);
-        scheduleHabitNotificationAsync(habit).then((notificationId: string) => {
-          dispatch({
-            type: HabitActionTypes.UPDATE_HABIT,
-            payload: { ...habit, notification: notificationId },
-          });
-        });
+      if (habit && !HabitUtils.isHabitRestDay(habit)) {
+        HabitUtils.cancelHabitTodaysNotification(habit).then(
+          (notification: string | HabitNotEveryDayNotificationId) => {
+            console.log("new upated notifications..", notification);
+            dispatch({
+              type: HabitActionTypes.UPDATE_HABIT,
+              payload: { ...habit, notification },
+            });
+          }
+        );
       }
     }
     setState(

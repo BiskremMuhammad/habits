@@ -31,6 +31,21 @@ export interface NotificationHourInput {
 }
 
 /**
+ * interface that defines the input for a notification that will trigger at weekly at specific week day
+ *
+ * @interface
+ * @exports
+ */
+export interface NotificationWeeklyInput extends NotificationHourInput {
+  /**
+   * the day of the week will trigger the notification
+   *
+   * @type {number}
+   */
+  weekday: number;
+}
+
+/**
  * class to manage push notitifications in the app
  *
  * @class
@@ -91,14 +106,21 @@ export class PushNotification {
   static scheduleNotification = async (
     title: string,
     body: string,
-    date: Date | NotificationHourInput,
+    date: Date | NotificationHourInput | NotificationWeeklyInput,
     repeats?: boolean,
     data?: any
   ): Promise<string> => {
     const notificationTime: number =
       "hour" in date ? 0 : (date.getTime() - Date.now()) / 1000;
     const triggerTime: Notifications.NotificationTriggerInput =
-      "hour" in date
+      "weekday" in date
+        ? {
+            weekday: date.weekday,
+            hour: date.hour,
+            minute: date.minute,
+            repeats,
+          }
+        : "hour" in date
         ? {
             hour: date.hour,
             minute: date.minute,
@@ -125,5 +147,8 @@ export class PushNotification {
    */
   static cancelNotification = async (id: string) => {
     await Notifications.cancelScheduledNotificationAsync(id);
+  };
+  static cancelAllNotifications = async () => {
+    await Notifications.cancelAllScheduledNotificationsAsync();
   };
 }

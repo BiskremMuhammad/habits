@@ -98,6 +98,22 @@ export interface HabitProgressData {
 }
 
 /**
+ * interface that defines the object type for the
+ * array of notifications ids specified for habit days if habit is not for everyday
+ *
+ * @interface
+ * @exports
+ */
+export type HabitNotEveryDayNotificationId = {
+  /**
+   * object indecies are weeks days
+   *
+   * @type {string}
+   */
+  [index in WeekDays]?: string;
+};
+
+/**
  * interface that defines the habit object
  *
  * @interface
@@ -144,7 +160,7 @@ export interface Habit {
    *
    * @type {string}
    */
-  notification: string;
+  notification: string | HabitNotEveryDayNotificationId;
 
   /**
    * habit tracker daily progress array

@@ -12,7 +12,11 @@ import {
   call,
   takeLatest,
 } from "redux-saga/effects";
-import { Habit } from "../../types/habit";
+import {
+  Habit,
+  HabitNotEveryDayNotificationId,
+  HabitTypes,
+} from "../../types/habit";
 import { CONSTANTS } from "../../utils/constants";
 import { getUserDeviceIdAsync } from "../../utils/user";
 import {
@@ -21,7 +25,7 @@ import {
 } from "../reducers/habit/habit-actions";
 import firebase from "../../utils/firebase";
 import { UserResponce } from "../../types/user-responce";
-import { scheduleHabitNotificationAsync } from "../../utils/habit-utils";
+import { HabitUtils } from "../../utils/habit-utils";
 
 const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
   let habits: Habit[] = await AsyncStorage.getItem(
@@ -65,18 +69,21 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
 
   // check for unnotified habit.
   habits = await Promise.all(
-    habits.map(async (h: Habit): Promise<Habit> => {
-      // generate a scheduled notification for the habit if there is no notification
-      let notificationId: string = h.notification;
-      if (!notificationId) {
-        habitsFetchedFromFirebase = false; // to update firebase with notification ids
-        notificationId = await scheduleHabitNotificationAsync(h);
-      }
-      return {
-        ...h,
-        notification: notificationId,
-      };
-    })
+    habits
+      .filter((h: Habit) => Object.keys(HabitTypes).includes(h.type))
+      .map(async (h: Habit): Promise<Habit> => {
+        // generate a scheduled notification for the habit if there is no notification
+        let notificationId: string | HabitNotEveryDayNotificationId =
+          h.notification;
+        if (!notificationId) {
+          habitsFetchedFromFirebase = false; // to update firebase with notification ids
+          notificationId = await HabitUtils.scheduleHabitNotificationAsync(h);
+        }
+        return {
+          ...h,
+          notification: notificationId,
+        };
+      })
   );
   if (!habitsFetchedFromFirebase) {
     firebase.saveDocument(
@@ -84,7 +91,7 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
       {
         habits,
         practicing: "none",
-        pushToken: userData ? userData.pushToken : "",
+        pushToken: userData && userData.pushToken ? userData.pushToken : "",
       } as UserResponce,
       userDeviceUniqueId
     );
