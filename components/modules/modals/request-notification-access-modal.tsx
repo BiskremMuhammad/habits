@@ -44,6 +44,7 @@ export const RequestNotificationAccessModal = ({
     const token: string | undefined =
       await PushNotification.registerForPushNotificationsAsync();
     if (token) {
+      AsyncStorage.setItem(CONSTANTS.EXPO_PUSH_TOKEN, token);
       getUserDeviceIdAsync().then((id: string) => {
         Firebase.updateDocument(
           CONSTANTS.FIREBASE_HABITS_COLLECTION,

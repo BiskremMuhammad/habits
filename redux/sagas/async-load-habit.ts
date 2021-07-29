@@ -86,12 +86,18 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
       })
   );
   if (!habitsFetchedFromFirebase) {
+    let userPushNotificationsToken: string =
+      userData && userData.pushToken ? userData.pushToken : "";
+    if (!userPushNotificationsToken) {
+      userPushNotificationsToken =
+        (await AsyncStorage.getItem(CONSTANTS.EXPO_PUSH_TOKEN)) || "";
+    }
     firebase.saveDocument(
       CONSTANTS.FIREBASE_HABITS_COLLECTION,
       {
         habits,
         practicing: "none",
-        pushToken: userData && userData.pushToken ? userData.pushToken : "",
+        pushToken: userPushNotificationsToken,
       } as UserResponce,
       userDeviceUniqueId
     );
