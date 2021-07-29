@@ -75,7 +75,11 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
         // generate a scheduled notification for the habit if there is no notification
         let notificationId: string | HabitNotEveryDayNotificationId =
           h.notification;
-        if (!notificationId) {
+        if (
+          !notificationId ||
+          (typeof notificationId !== "string" &&
+            !Object.keys(notificationId).length)
+        ) {
           habitsFetchedFromFirebase = false; // to update firebase with notification ids
           notificationId = await HabitUtils.scheduleHabitNotificationAsync(h);
         }
