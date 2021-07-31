@@ -269,11 +269,18 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       const getHabit = habits.find((h) => h.id === habitId);
       if (getHabit) {
         setHabit(getHabit);
-        setTimer(
-          getHabit.type === HabitTypes.FASTING
-            ? 0
-            : (getHabit.duration || 1) * 60
-        );
+        if (
+          habit?.id !== getHabit.id ||
+          habit.duration !== getHabit.duration ||
+          habit.type !== getHabit.type ||
+          habit.isEveryDay !== getHabit.isEveryDay
+        ) {
+          setTimer(
+            getHabit.type === HabitTypes.FASTING
+              ? 0
+              : (getHabit.duration || 1) * 60
+          );
+        }
         // setState(ProgressState.STOPPED);
       } else {
         navigation.dispatch(
@@ -377,7 +384,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     ) {
       setTimer(
         habit && habit.type === HabitTypes.FASTING
-          ? timer + 47
+          ? timer + 7 * 59 >= habit.duration * 60
+            ? habit.duration * 60
+            : timer + 7 * 59
           : timer <= 8
           ? 1
           : timer - 8
@@ -387,14 +396,14 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   useEffect(() => {
     if (
+      (habit &&
+        isIntroduction &&
+        habit.type === HabitTypes.FASTING &&
+        timer >= habit.duration * 60) ||
       (habit && habit.type === HabitTypes.FASTING && timer === 24 * 60 * 60) ||
       (habit && habit.type !== HabitTypes.FASTING && timer <= 0)
     ) {
-      if (timerCounter.current) {
-        clearInterval(timerCounter.current);
-        timerCounter.current = null;
-        changeState(ProgressState.ENDED);
-      }
+      changeState(ProgressState.ENDED);
     }
   }, [timer]);
 
@@ -455,7 +464,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       if (habit && !HabitUtils.isHabitRestDay(habit)) {
         HabitUtils.cancelHabitTodaysNotification(habit).then(
           (notification: string | HabitNotEveryDayNotificationId) => {
-            console.log("new upated notifications..", notification);
             dispatch({
               type: HabitActionTypes.UPDATE_HABIT,
               payload: { ...habit, notification },
@@ -506,7 +514,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   const onSubmitAnimationHasCompleted = (a: string) => {
     if (state === ProgressState.SUBMITTED && isOnFocus && a === "top") {
       if (isIntroduction) {
-        navigation.navigate(Routes.SUCCESS);
+        navigation.navigate(Routes.SUCCESS, {
+          habitId: habitId,
+        } as TimerScreenRouteParams);
       } else {
         goToViewHabit();
       }
@@ -703,10 +713,18 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               ]}
             >
               {state === ProgressState.SUBMITTED
-                ? `${
-                    submittedTimer / 60 < 10
-                      ? `0${Math.floor(submittedTimer / 60)}`
-                      : Math.floor(submittedTimer / 60)
+                ? `+${
+                    habit && habit.duration >= 60
+                      ? `${
+                          submittedTimer / (60 * 60) < 10
+                            ? `0${Math.floor(submittedTimer / (60 * 60))}`
+                            : Math.floor(submittedTimer / (60 * 60))
+                        }:`
+                      : ""
+                  }${
+                    (submittedTimer / 60) % 60 < 10
+                      ? `0${Math.floor((submittedTimer / 60) % 60)}`
+                      : Math.floor((submittedTimer / 60) % 60)
                   }:${
                     submittedTimer % 60 < 10
                       ? `0${submittedTimer % 60}`

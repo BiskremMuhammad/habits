@@ -5,9 +5,10 @@
  */
 
 import { useNavigation } from "@react-navigation/core";
+import { useRoute } from "@react-navigation/native";
 import React, { Dispatch, useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../components/elements/button";
 import { Spoiler } from "../components/elements/spoiler";
 import { Modal } from "../components/modules/modals/modal";
@@ -19,9 +20,12 @@ import {
   HabitActions,
   HabitActionTypes,
 } from "../redux/reducers/habit/habit-actions";
+import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
+import { Habit } from "../types/habit";
 import { Routes } from "../types/route-names";
 import { CONSTANTS } from "../utils/constants";
+import { TimerScreenRouteParams } from "./timer-screen";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -41,7 +45,10 @@ interface SuccessScreenProps {
 
 export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
   const navigation = useNavigation();
-  const dispatch = useDispatch<Dispatch<HabitActions>>();
+  const route = useRoute();
+  const params = route.params as TimerScreenRouteParams;
+  const habitId: string = params ? params.habitId : "";
+
   const [notificationModalOpened, setNotificationModalVisibility] =
     useState<boolean>(false);
 
@@ -59,11 +66,10 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
   );
 
   const onBegin = () => {
-    dispatch({
-      type: HabitActionTypes.INTRODUCTION_CLEAR_UP,
-    });
     onCompleteIntro();
-    navigation.navigate(Routes.ADD_HABIT);
+    navigation.navigate(Routes.VIEW_HABIT, {
+      habitId: habitId,
+    } as TimerScreenRouteParams);
   };
 
   return (
