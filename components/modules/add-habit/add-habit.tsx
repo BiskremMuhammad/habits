@@ -13,7 +13,12 @@ import {
 } from "../../../redux/reducers/habit/habit-actions";
 import { TimerScreenRouteParams } from "../../../screens/timer-screen";
 import { CommonStyles } from "../../../styles/common";
-import { Habit, HabitTypes, HabitTypesVerbale } from "../../../types/habit";
+import {
+  Habit,
+  HabitNotEveryDayNotificationId,
+  HabitTypes,
+  HabitTypesVerbale,
+} from "../../../types/habit";
 import { Routes } from "../../../types/route-names";
 import { WeekDays } from "../../../types/week-days";
 import { CONSTANTS } from "../../../utils/constants";
@@ -25,7 +30,7 @@ import { HabitFrequencyInput } from "./habit-frequency";
 import { HabitIcon } from "../../elements/habit-icon";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 import { useDispatch } from "react-redux";
-import { scheduleHabitNotificationAsync } from "../../../utils/habit-utils";
+import { HabitUtils } from "../../../utils/habit-utils";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -141,9 +146,13 @@ export const AddHabit = (props: AddHabitProps) => {
   };
 
   const onCallToActionPress = async () => {
-    let notificationId: string = "";
+    let notificationId: string | HabitNotEveryDayNotificationId = isEveryDay
+      ? ""
+      : {};
     if (!props.isIntroduction) {
-      notificationId = await scheduleHabitNotificationAsync(props.state);
+      notificationId = await HabitUtils.scheduleHabitNotificationAsync(
+        props.state
+      );
     }
 
     const habit: Habit = { ...props.state, notification: notificationId };
