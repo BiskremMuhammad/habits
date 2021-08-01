@@ -436,15 +436,17 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           : timer;
       const etaTime: Date = new Date(Date.now() + timeToComplete * 1000);
       setEta(etaTime);
-      PushNotification.scheduleNotification(
-        "Congratulations!",
-        `Congratulations you have illuminated your ${HabitTypes[
-          habit!.type
-        ].charAt(0)}${HabitTypes[habit!.type].substr(1).toLowerCase()} plant`,
-        etaTime
-      ).then((id: string) => {
-        setEtaNotificationId(id);
-      });
+      if (!isIntroduction) {
+        PushNotification.scheduleNotification(
+          "Congratulations!",
+          `Congratulations you have illuminated your ${HabitTypes[
+            habit!.type
+          ].charAt(0)}${HabitTypes[habit!.type].substr(1).toLowerCase()} plant`,
+          etaTime
+        ).then((id: string) => {
+          setEtaNotificationId(id);
+        });
+      }
       // change user practicing state on the server
       changeUserPracticingState(habit ? habit.type : "none");
     } else {
