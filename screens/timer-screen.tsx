@@ -678,20 +678,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             animate={{ opacity: state === ProgressState.ENDED ? 0 : 1 }}
             style={TimeScreenStyles.timer}
           >
-            <MotiView
-              from={{ opacity: 0 }}
-              animate={{ opacity: state === ProgressState.PLAYING ? 0.2 : 0 }}
-              style={TimeScreenStyles.timerEta}
-            >
-              <Text style={TimeScreenStyles.timerEtaText}>Eta </Text>
-              <Text style={TimeScreenStyles.timerEtaText}>{`${
-                eta.getHours() > 12 ? eta.getHours() % 12 : eta.getHours()
-              }:${
-                eta.getMinutes() < 10
-                  ? `0${eta.getMinutes()}`
-                  : eta.getMinutes()
-              } ${eta.getHours() > 12 ? "pm" : "am"}`}</Text>
-            </MotiView>
             <MotiText
               animate={{
                 top: state === ProgressState.SUBMITTED ? 220 : 0,
@@ -747,6 +733,20 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                       : Math.floor((timer / 60) % 60)
                   }:${timer % 60 < 10 ? `0${timer % 60}` : timer % 60}`}
             </MotiText>
+            <MotiView
+              from={{ opacity: 0 }}
+              animate={{ opacity: state === ProgressState.PLAYING ? 0.2 : 0 }}
+              style={TimeScreenStyles.timerEta}
+            >
+              <Text style={TimeScreenStyles.timerEtaText}>Eta </Text>
+              <Text style={TimeScreenStyles.timerEtaText}>{`${
+                eta.getHours() > 12 ? eta.getHours() % 12 : eta.getHours()
+              }:${
+                eta.getMinutes() < 10
+                  ? `0${eta.getMinutes()}`
+                  : eta.getMinutes()
+              } ${eta.getHours() > 12 ? "pm" : "am"}`}</Text>
+            </MotiView>
           </MotiView>
         </View>
         <View style={TimeScreenStyles.timerControls}>
@@ -936,7 +936,7 @@ const TimeScreenStyles = StyleSheet.create({
   },
   timer: {
     position: "absolute",
-    top: 0,
+    top: 32,
     left: 0,
     display: "flex",
     alignItems: "center",
