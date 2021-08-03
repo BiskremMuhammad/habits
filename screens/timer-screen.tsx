@@ -424,7 +424,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     }
   };
 
-  const changeState = (newState?: ProgressState) => {
+  const changeState = async (newState?: ProgressState) => {
     if (
       (state === ProgressState.STOPPED || state === ProgressState.PAUSED) &&
       (!newState || newState === ProgressState.PLAYING)
@@ -464,7 +464,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       changeUserPracticingState("none");
       // cancel today's notification for this habit
       if (habit && !HabitUtils.isHabitRestDay(habit)) {
-        HabitUtils.cancelHabitTodaysNotification(habit).then(
+        await HabitUtils.cancelHabitTodaysNotification(habit).then(
           (notification: string | HabitNotEveryDayNotificationId) => {
             dispatch({
               type: HabitActionTypes.UPDATE_HABIT,
@@ -495,22 +495,23 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     });
   };
 
-  const onSubmit = () => {
-    changeState(ProgressState.SUBMITTED);
+  const onSubmit = async () => {
+    await changeState(ProgressState.SUBMITTED);
     togglePartialTimeWarningModal(false);
     const timeToSubmit: number =
       habit && habit.type === HabitTypes.FASTING
         ? timer
         : (habit?.duration || 1) * 60 - timer;
     setSubmittedTimer(timeToSubmit);
-
-    dispatch({
-      type: HabitActionTypes.SAVE_DAY_PROGRESS,
-      payload: {
-        habitId,
-        time: timeToSubmit,
-      } as ProgressPayload,
-    });
+    if (!isIntroduction) {
+      dispatch({
+        type: HabitActionTypes.SAVE_DAY_PROGRESS,
+        payload: {
+          habitId,
+          time: timeToSubmit,
+        } as ProgressPayload,
+      });
+    }
   };
 
   const onSubmitAnimationHasCompleted = (a: string) => {
