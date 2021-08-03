@@ -5,7 +5,7 @@
  */
 
 import { StackActions, useNavigation } from "@react-navigation/core";
-import React, { Dispatch, useState } from "react";
+import React, { Dispatch, useLayoutEffect, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Platform } from "react-native";
 import {
   HabitActions,
@@ -29,8 +29,9 @@ import { HabitDurationInput } from "./habit-duration";
 import { HabitFrequencyInput } from "./habit-frequency";
 import { HabitIcon } from "../../elements/habit-icon";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HabitUtils } from "../../../utils/habit-utils";
+import { GlobalStore } from "../../../redux/store";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -99,10 +100,27 @@ interface AddHabitProps {
 
 export const AddHabit = (props: AddHabitProps) => {
   const { dispatch } = props;
+  const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
+    (store: GlobalStore): Habit[] => store.habits
+  );
   const { type, isEveryDay, days, duration } = props.state;
   const navigation = useNavigation();
   const [currentOpenInput, setCurrentOpenInput] = useState(OpenedDropDown.NONE);
   const storeDispatch = useDispatch<Dispatch<HabitActions>>();
+
+  // to limit the habit creation to only one usage of habit type
+  useLayoutEffect(() => {
+    const availableTypes: HabitTypes[] = Object.values(HabitTypes).filter(
+      (habitType) =>
+        !habits.length || !!!habits.find((h) => h.type === habitType)
+    );
+    if (!availableTypes.includes(type)) {
+      dispatch({
+        type: AddHabitActionTypes.CHANGE_HABIT_TYPE,
+        payload: availableTypes[0],
+      });
+    }
+  }, [habits]);
 
   const onChangeOpenedDropdown = (state: boolean, input: OpenedDropDown) => {
     setCurrentOpenInput(state ? input : OpenedDropDown.NONE);
@@ -202,7 +220,17 @@ export const AddHabit = (props: AddHabitProps) => {
           isDropdown={true}
           dropdownOptions={
             props.enableChangeHabit
-              ? Object.values(HabitTypesVerbale).map((k) => k)
+              ? Object.values(HabitTypesVerbale)
+                  .filter(
+                    (habitType) =>
+                      !habits.length ||
+                      !!!habits.find(
+                        (h) =>
+                          h.type ===
+                          getEnumKeyByEnumValue(HabitTypesVerbale, habitType)
+                      )
+                  )
+                  .map((k) => k)
               : undefined
           }
           hasBorder={true}

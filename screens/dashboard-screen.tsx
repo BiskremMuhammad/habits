@@ -15,7 +15,7 @@ import { DashboardRoom } from "../components/modules/dashboard-room";
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { DashboardIcon } from "../components/svgs/dashboard-graphic";
 import { GlobalStore } from "../redux/store";
-import { Habit } from "../types/habit";
+import { Habit, HabitTypes } from "../types/habit";
 import { CONSTANTS } from "../utils/constants";
 
 const { height: screenHeight } = Dimensions.get("screen");
@@ -42,12 +42,15 @@ export const DashboardScreen = () => {
   );
 
   useEffect(() => {
-    setRooms([
+    const rooms: Habit[] = [
       { ...INITIAL_ADD_HABIT_STATE, id: "empty-Left" },
       ...habits,
-      { ...INITIAL_ADD_HABIT_STATE, id: "ADD_HABIT" },
-      { ...INITIAL_ADD_HABIT_STATE, id: "empty-right" },
-    ]);
+    ];
+    if (habits.length < Object.keys(HabitTypes).length) {
+      rooms.push({ ...INITIAL_ADD_HABIT_STATE, id: "ADD_HABIT" });
+    }
+    rooms.push({ ...INITIAL_ADD_HABIT_STATE, id: "empty-right" });
+    setRooms(rooms);
   }, [habits]);
 
   return (

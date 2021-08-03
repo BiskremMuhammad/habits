@@ -134,7 +134,12 @@ export const Input = (props: InputProps) => {
   }, [props.forceState]);
 
   const onInputPress = () => {
-    if (!props.isDropdown || !props.dropdownOptions) return;
+    if (
+      !props.isDropdown ||
+      !props.dropdownOptions ||
+      props.dropdownOptions.length <= 1
+    )
+      return;
     setDropdownState(!dropdownOpen);
     if (props.toggleCallback) {
       props.toggleCallback(!dropdownOpen);
@@ -206,82 +211,86 @@ export const Input = (props: InputProps) => {
           </Text>
         )}
       </Pressable>
-      {props.isDropdown && (
-        <View
-          style={[
-            InputStyles.inputChevron,
-            dropdownOpen && { zIndex: 20 },
-            dropdownOpen && props.width === "full" && { right: -30 },
-          ]}
-        >
-          <MotiView
-            animate={{ rotate: dropdownOpen ? "180deg" : "0deg" }}
-            transition={{ type: "timing" }}
+      {props.isDropdown &&
+        !!props.dropdownOptions &&
+        props.dropdownOptions.length > 1 && (
+          <View
+            style={[
+              InputStyles.inputChevron,
+              dropdownOpen && { zIndex: 20 },
+              dropdownOpen && props.width === "full" && { right: -30 },
+            ]}
           >
-            <CaretDown />
-          </MotiView>
-        </View>
-      )}
-      {dropdownOpen && !!props.dropdownOptions && (
-        <MotiView
-          from={{ opacity: 0, translateY: 10, height: 0 }}
-          animate={{ opacity: 1, translateY: 0, height: "100%" }}
-          style={[
-            InputStyles.dropdownContainer,
-            props.width === "full" && { width: "125%" },
-          ]}
-        >
-          <View style={InputStyles.dropdownBorderContainer}>
-            <View style={InputStyles.dropdownBorder}></View>
-          </View>
-          <ScrollView>
-            <View
-              style={[
-                InputStyles.dropdownList,
-                props.width === "full" && {
-                  paddingTop: 12,
-                  paddingLeft: 16.5,
-                },
-              ]}
+            <MotiView
+              animate={{ rotate: dropdownOpen ? "180deg" : "0deg" }}
+              transition={{ type: "timing" }}
             >
-              {props.isCustomDropDown &&
-                (props.dropdownOptions as JSX.Element[]).map(
-                  (i: JSX.Element, index: number) => (
-                    <View
-                      key={index}
-                      style={[
-                        CommonStyles.rowContainer,
-                        { alignItems: "center" },
-                      ]}
-                    >
-                      {i}
-                    </View>
-                  )
-                )}
-              {!props.isCustomDropDown &&
-                (props.dropdownOptions as string[]).map(
-                  (o: string, i: number) => (
-                    <Pressable key={i} onPress={() => onChange(o)}>
-                      <Text
+              <CaretDown />
+            </MotiView>
+          </View>
+        )}
+      {dropdownOpen &&
+        !!props.dropdownOptions &&
+        props.dropdownOptions.length > 1 && (
+          <MotiView
+            from={{ opacity: 0, translateY: 10, height: 0 }}
+            animate={{ opacity: 1, translateY: 0, height: "100%" }}
+            style={[
+              InputStyles.dropdownContainer,
+              props.width === "full" && { width: "125%" },
+            ]}
+          >
+            <View style={InputStyles.dropdownBorderContainer}>
+              <View style={InputStyles.dropdownBorder}></View>
+            </View>
+            <ScrollView>
+              <View
+                style={[
+                  InputStyles.dropdownList,
+                  props.width === "full" && {
+                    paddingTop: 12,
+                    paddingLeft: 16.5,
+                  },
+                ]}
+              >
+                {props.isCustomDropDown &&
+                  (props.dropdownOptions as JSX.Element[]).map(
+                    (i: JSX.Element, index: number) => (
+                      <View
+                        key={index}
                         style={[
-                          InputStyles.dropdownListText,
-                          props.customTextStyle,
-                          i === props.dropdownOptions!.length - 1 && {
-                            marginBottom: 0,
-                          },
-                          o === props.text &&
-                            InputStyles.dropdownOptionSelected,
+                          CommonStyles.rowContainer,
+                          { alignItems: "center" },
                         ]}
                       >
-                        {o}
-                      </Text>
-                    </Pressable>
-                  )
-                )}
-            </View>
-          </ScrollView>
-        </MotiView>
-      )}
+                        {i}
+                      </View>
+                    )
+                  )}
+                {!props.isCustomDropDown &&
+                  (props.dropdownOptions as string[]).map(
+                    (o: string, i: number) => (
+                      <Pressable key={i} onPress={() => onChange(o)}>
+                        <Text
+                          style={[
+                            InputStyles.dropdownListText,
+                            props.customTextStyle,
+                            i === props.dropdownOptions!.length - 1 && {
+                              marginBottom: 0,
+                            },
+                            o === props.text &&
+                              InputStyles.dropdownOptionSelected,
+                          ]}
+                        >
+                          {o}
+                        </Text>
+                      </Pressable>
+                    )
+                  )}
+              </View>
+            </ScrollView>
+          </MotiView>
+        )}
     </View>
   );
 };
