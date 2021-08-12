@@ -633,7 +633,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                   : (habit.duration * 60 - timer) / (habit.duration * 60)
               }
               forceGlow={state === ProgressState.SUBMITTED}
-              extraStyles={{ width: "60%" }}
+              useHeight={true}
             />
           ) : null}
           <MotiView

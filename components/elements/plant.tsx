@@ -6,9 +6,22 @@
 
 import React, { useMemo } from "react";
 import { MotiView } from "moti";
-import { View, Image, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import {
+  View,
+  Image,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  Dimensions,
+} from "react-native";
 import { Habit, HabitProgressData } from "../../types/habit";
 import { calculateStreak } from "../../utils/calendar-utils";
+import Animated, {
+  useAnimatedStyle,
+  useDerivedValue,
+} from "react-native-reanimated";
+
+const screenHeight = Dimensions.get("screen").height;
 
 /**
  * the stage of the seed
@@ -103,9 +116,36 @@ interface PlantProps {
    * @type {number}
    */
   sessionProgress?: number;
+
+  /**
+   * to use set height instead of set width
+   *
+   * @type {boolean}
+   */
+  useHeight?: boolean;
 }
 
 export const Plant = (props: PlantProps) => {
+  const animatedHeight = useDerivedValue(() => {
+    if (!props.useHeight) return undefined;
+    if (
+      props.isActiveSession &&
+      props.sessionProgress &&
+      props.sessionProgress > 0 &&
+      props.sessionProgress < 0.4
+    ) {
+      return (0.68 + props.sessionProgress / 1.25) * 0.3095833 * screenHeight;
+    } else {
+      return 0.3095833 * screenHeight;
+    }
+  }, [props.useHeight, props.isActiveSession, props.sessionProgress]);
+
+  const scalePlantAnimation = useAnimatedStyle(() => {
+    return {
+      height: animatedHeight.value,
+    };
+  });
+
   /**
    * to get the plant image corresponds to the stage and the state
    *
@@ -1157,7 +1197,15 @@ export const Plant = (props: PlantProps) => {
   ]);
 
   return (
-    <View style={[PlantStyles.plantContainer, props.extraStyles]}>
+    <View
+      style={[
+        PlantStyles.plantContainer,
+        props.useHeight
+          ? { height: 0.3095833 * screenHeight }
+          : { width: "100%" },
+        props.extraStyles,
+      ]}
+    >
       <View style={PlantStyles.potContainer}>
         <Image
           source={require("../../assets/pot.png")}
@@ -1172,9 +1220,22 @@ export const Plant = (props: PlantProps) => {
           opacity:
             props.isActiveSession && props.sessionProgress === 0 ? 0.3 : 1,
         }}
-        style={PlantStyles.thePlant}
+        style={[
+          PlantStyles.thePlant,
+          props.useHeight && {
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-end",
+          },
+        ]}
       >
-        {generatePlant}
+        {!props.useHeight ? (
+          generatePlant
+        ) : (
+          <Animated.View style={[{ width: "100%" }, scalePlantAnimation]}>
+            {generatePlant}
+          </Animated.View>
+        )}
       </MotiView>
     </View>
   );
@@ -1183,7 +1244,6 @@ export const Plant = (props: PlantProps) => {
 const PlantStyles = StyleSheet.create({
   plantContainer: {
     position: "absolute",
-    width: "100%",
     aspectRatio: 1948 / 2615,
     bottom: 0,
     display: "flex",
