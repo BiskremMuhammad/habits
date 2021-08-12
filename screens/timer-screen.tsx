@@ -52,7 +52,7 @@ import {
   ProgressPayload,
 } from "../redux/reducers/habit/habit-actions";
 import { useDerivedValue } from "react-native-reanimated";
-import { Plant, PlantStage } from "../components/elements/plant";
+import { Plant } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
 import { Routes } from "../types/route-names";
@@ -623,13 +623,15 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           ) : !!habit ? (
             <Plant
               habit={habit}
+              isActiveSession={
+                state !== ProgressState.SUBMITTED || isIntroduction
+              }
               sessionProgress={
                 timer <= 0
                   ? 1
                   : (habit.duration * 60 - timer) / (habit.duration * 60)
               }
-              forceGlow={true}
-              forceStage={PlantStage.STAGE_26}
+              forceGlow={state === ProgressState.SUBMITTED}
               extraStyles={{ width: "60%" }}
             />
           ) : null}
