@@ -85,8 +85,6 @@ export const ViewHabitScreen = () => {
   const [habit, setHabit] = useState<Habit>();
   const [tab, setTab] = useState<"CALENDAR" | "GRAPH">("CALENDAR");
   const tabs: Array<"CALENDAR" | "GRAPH"> = ["CALENDAR", "GRAPH"];
-  const plantHeight = useSharedValue<number>(250);
-  const plantPosition = useSharedValue<number>(20);
   const [currentOpenInput, setCurrentOpenInput] = useState(OpenedDropDown.NONE);
 
   const onChangeOpenedDropdown = (state: boolean, input: OpenedDropDown) => {
@@ -103,6 +101,8 @@ export const ViewHabitScreen = () => {
   const { type, isEveryDay, days, duration } = state;
 
   const onSaveChanges = async () => {
+    if (!days.length) return;
+
     let updatedHabit: Habit = {
       ...state,
       notification: state.isEveryDay ? "" : {},
