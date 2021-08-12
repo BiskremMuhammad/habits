@@ -52,7 +52,7 @@ import {
   ProgressPayload,
 } from "../redux/reducers/habit/habit-actions";
 import { useDerivedValue } from "react-native-reanimated";
-import { Plant, PlantState } from "../components/elements/plant";
+import { Plant, PlantStage } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
 import { Routes } from "../types/route-names";
@@ -204,47 +204,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           totalDuration) /* add 1% because this will evaluate to 1% delay, which means the last re-render will be skipped */
     );
   }, [timer]);
-
-  /**
-   * plant animation props
-   */
-  const plantPositionX = useDerivedValue<number>(() => {
-    return curProgress.value >= 0 &&
-      curProgress.value < 50 &&
-      state !== ProgressState.STOPPED
-      ? 9
-      : 6;
-  }, [state]);
-
-  const plantHeight = useDerivedValue<number>(() => {
-    return curProgress.value >= 0 &&
-      curProgress.value < 50 &&
-      state !== ProgressState.STOPPED
-      ? 48.35
-      : (curProgress.value / 100 || 1) * 255.4;
-  }, [state]);
-
-  const plantPositionBottom = useDerivedValue<number>(() => {
-    return curProgress.value >= 0 &&
-      curProgress.value < 50 &&
-      state !== ProgressState.STOPPED
-      ? 75
-      : curProgress.value >= 50 && state !== ProgressState.ENDED
-      ? (1 - curProgress.value / 100 + 0.4 || 1) * 75
-      : 24;
-  }, [state]);
-
-  const plant = useDerivedValue<PlantState>(() => {
-    if (state === ProgressState.STOPPED) {
-      return PlantState.DARK;
-    } else if (curProgress.value >= 0 && curProgress.value < 50) {
-      return PlantState.SMALL;
-    } else if (curProgress.value >= 100 && state === ProgressState.SUBMITTED) {
-      return PlantState.GLOW;
-    } else {
-      return PlantState.NORMAL;
-    }
-  }, [state]);
 
   /**
    * Disable user from going back
@@ -661,18 +620,19 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                 timer >= habit.duration * 60 ? 1 : timer / (habit.duration * 60)
               }
             />
-          ) : (
+          ) : !!habit ? (
             <Plant
-              state={
-                state === ProgressState.SUBMITTED
-                  ? PlantState.GLOW
-                  : plant.value
+              habit={habit}
+              sessionProgress={
+                timer <= 0
+                  ? 1
+                  : (habit.duration * 60 - timer) / (habit.duration * 60)
               }
-              height={plantHeight}
-              positionX={plantPositionX}
-              positionBottom={plantPositionBottom}
+              forceGlow={true}
+              forceStage={PlantStage.STAGE_26}
+              extraStyles={{ width: "60%" }}
             />
-          )}
+          ) : null}
           <MotiView
             from={{ opacity: 0 }}
             animate={{ opacity: state === ProgressState.ENDED ? 0 : 1 }}

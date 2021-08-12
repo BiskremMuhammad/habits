@@ -41,7 +41,7 @@ import {
 import { Routes } from "../types/route-names";
 import { TimerScreenRouteParams } from "./timer-screen";
 import { WeekDays, WeekDaysFullName } from "../types/week-days";
-import { Plant, PlantState } from "../components/elements/plant";
+import { Plant } from "../components/elements/plant";
 import { Button } from "../components/elements/button";
 import { useSharedValue } from "react-native-reanimated";
 import { MotiView } from "@motify/components";
@@ -367,14 +367,7 @@ export const ViewHabitScreen = () => {
                 Platform.OS === "ios" && { zIndex: 2 },
               ]}
             >
-              <Plant
-                state={PlantState.GLOW}
-                potWidth="20%"
-                potGlowTopPosition={6}
-                height={plantHeight}
-                positionBottom={plantPosition}
-                extraStyles={styles.plant}
-              />
+              {!!habit && <Plant habit={habit} extraStyles={styles.plant} />}
               <Text style={styles.weekday}>
                 {Object.values(WeekDaysFullName).find(
                   (d, i) => i === today.getDay()
@@ -516,15 +509,8 @@ const styles = StyleSheet.create({
   },
   plant: {
     position: "absolute",
-    width: "175%",
     zIndex: -1,
-    transform: [
-      {
-        translateX: -60,
-      },
-    ],
-    height: "100%",
-    bottom: 30,
+    bottom: 83,
   },
   weekday: {
     fontFamily: "JosefinSans-Regular",

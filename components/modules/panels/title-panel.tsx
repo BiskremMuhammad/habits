@@ -1,3 +1,9 @@
+/**
+ * @author Muhammad Omran
+ * @date 29-06-2021
+ * @description implement a panel for titles
+ */
+
 import { MotiView } from "moti";
 import React from "react";
 import {
@@ -8,9 +14,8 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
-import { CONSTANTS } from "../../../utils/constants";
-import { Plant, PlantState } from "../../elements/plant";
-import { AddIconSvg } from "../../svgs/add-icon";
+import { Plant, PlantStage } from "../../elements/plant";
+import { INITIAL_ADD_HABIT_STATE } from "../add-habit/add-habit-reducer";
 
 /**
  * interface that defines the props of the component
@@ -69,7 +74,13 @@ export const TitlePanel = (props: TitlePanelProps) => {
       >
         <View style={styles.titleWithIcon}>
           {props.showPlant && (
-            <Plant state={PlantState.GLOW} extraStyles={styles.plant} />
+            <Plant
+              habit={INITIAL_ADD_HABIT_STATE}
+              isActiveSession={true}
+              forceGlow={true}
+              forceStage={PlantStage.STAGE_8}
+              extraStyles={styles.plant}
+            />
           )}
           {!!props.title && (
             <Text style={[styles.title, props.titleStyles]}>{props.title}</Text>
@@ -101,10 +112,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   plant: {
-    width: "200%",
-    transform: [{ scale: 0.5 }],
-    left: -2.7 * CONSTANTS.PADDING,
-    bottom: -15,
+    position: "absolute",
+    left: "-80%",
+    bottom: "30%",
     zIndex: 1,
   },
   title: {
