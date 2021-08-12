@@ -23,6 +23,7 @@ import { AddIconSvg } from "../svgs/add-icon";
 import { ClockIcon } from "../svgs/clock-icon";
 import { DashboardRoomDay } from "./dashboard/dashboard-room-day";
 import { HabitIcon } from "../elements/habit-icon";
+import { Plant } from "../elements/plant";
 
 /**
  * interface that defines the props of the component
@@ -131,6 +132,21 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
       <Pressable onPress={onViewHabit}>
         <View style={styles.roomContainer}>
           <Image source={roomGraphic} style={styles.room} />
+          {!!habit && (
+            <Plant
+              habit={habit}
+              extraStyles={[
+                styles.roomPlant,
+                habit.type === HabitTypes.FASTING
+                  ? styles.fastingPlant
+                  : habit.type === HabitTypes.JOURNALING
+                  ? styles.journalingPlant
+                  : habit.type === HabitTypes.MEDITATING
+                  ? styles.meditatingPlant
+                  : styles.readingPlant,
+              ]}
+            />
+          )}
         </View>
       </Pressable>
       <View style={styles.infoContianer}>
@@ -272,6 +288,26 @@ const styles = StyleSheet.create({
       1.1 * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE -
       CONSTANTS.DASHBOARD_ROOM_SPACING * 2,
     resizeMode: "contain",
+  },
+  roomPlant: {
+    position: "absolute",
+    width: 64,
+  },
+  readingPlant: {
+    bottom: "48%",
+    left: "31%",
+  },
+  fastingPlant: {
+    bottom: "26%",
+    right: "7%",
+  },
+  journalingPlant: {
+    bottom: "27%",
+    right: "5%",
+  },
+  meditatingPlant: {
+    bottom: "48%",
+    left: "35%",
   },
   roomBottomBorder: {
     position: "absolute",
