@@ -133,7 +133,8 @@ export const ViewHabitScreen = () => {
       });
     } else if (isOnFocus) {
       navigation.dispatch(
-        StackActions.push(habits.length ? Routes.HOME_ROUTE : Routes.SPLASH)
+        // StackActions.push(habits.length ? Routes.HOME_ROUTE : Routes.SPLASH)
+        StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
       );
     }
   }, [isOnFocus, habits, navigation, habitId]);
@@ -147,7 +148,8 @@ export const ViewHabitScreen = () => {
         // Prevent default behavior of leaving the screen
         e.preventDefault();
         onSaveChanges();
-        navigation.dispatch(StackActions.push(Routes.HOME_ROUTE));
+        // navigation.dispatch(StackActions.push(Routes.HOME_ROUTE));
+        navigation.dispatch(StackActions.push(Routes.HOME));
         return;
       }),
     [navigation, state]

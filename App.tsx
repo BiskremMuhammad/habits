@@ -127,10 +127,12 @@ export default function App() {
             },
           }}
           initialRouteName={
-            playIntroduction ? Routes.SPLASH : Routes.HOME_ROUTE
+            // temp disable drawer and annoucements navigation
+            // playIntroduction ? Routes.SPLASH : Routes.HOME_ROUTE
+            playIntroduction ? Routes.SPLASH : Routes.HOME
           }
         >
-          <Route.Screen name={Routes.HOME_ROUTE}>
+          {/* <Route.Screen name={Routes.HOME_ROUTE}>
             {() => (
               <DrawerNav.Navigator
                 initialRouteName={Routes.HOME}
@@ -156,7 +158,8 @@ export default function App() {
                 />
               </DrawerNav.Navigator>
             )}
-          </Route.Screen>
+          </Route.Screen> */}
+          <DrawerNav.Screen name={Routes.HOME} component={DashboardScreen} />
           {playIntroduction && (
             <Route.Screen name={Routes.SPLASH} component={SplashScreen} />
           )}

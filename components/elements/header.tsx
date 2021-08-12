@@ -71,26 +71,26 @@ export const Header = ({
           onPress={() =>
             normalGoBack
               ? navigation.goBack()
-              : navigation.dispatch(StackActions.push(Routes.HOME_ROUTE))
+              : // : navigation.dispatch(StackActions.push(Routes.HOME_ROUTE))
+                navigation.dispatch(StackActions.push(Routes.HOME))
           }
         >
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </Pressable>
-      ) : (
-        <Pressable
-          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-        >
-          <DrawerIcon />
-        </Pressable>
-      )}
-      {!hideNotification && (
+      ) : // <Pressable
+      //   onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+      // >
+      //   <DrawerIcon />
+      // </Pressable>
+      null}
+      {/* {!hideNotification && (
         <View style={styles.notificationContainer}>
           <NotificationIcon />
           <View style={styles.notificationBadge}>
             <Text style={styles.NotificationBadgeText}>3</Text>
           </View>
         </View>
-      )}
+      )} */}
     </View>
   );
 };
