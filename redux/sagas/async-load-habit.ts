@@ -107,13 +107,16 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
     await firebase.saveDocument(
       CONSTANTS.FIREBASE_HABITS_COLLECTION,
       {
-        createdAt: userData ? userData.createdAt : new Date(Date.now()),
+        createdAt:
+          userData && userData.createdAt
+            ? userData.createdAt
+            : new Date(Date.now()),
         habits,
         practicing: "none",
         pushToken: userPushNotificationsToken,
         resetData: false,
         useFirebaseData: false,
-        version: userData ? userData.version : 1,
+        version: userData && userData.version ? userData.version : 1,
       } as UserResponce,
       userDeviceUniqueId
     );
