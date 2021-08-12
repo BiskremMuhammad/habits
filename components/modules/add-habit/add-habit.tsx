@@ -164,6 +164,8 @@ export const AddHabit = (props: AddHabitProps) => {
   };
 
   const onCallToActionPress = async () => {
+    if (!days.length) return;
+
     let notificationId: string | HabitNotEveryDayNotificationId = isEveryDay
       ? ""
       : {};
