@@ -26,6 +26,7 @@ import {
 import firebase from "../../utils/firebase";
 import { UserResponce } from "../../types/user-responce";
 import { HabitUtils } from "../../utils/habit-utils";
+import { PushNotification } from "../../utils/push-notification";
 
 const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
   let habits: Habit[] = await AsyncStorage.getItem(
@@ -55,7 +56,10 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
   } catch (er) {
     console.log("firebase no data for the user");
   }
-  if (userData && !habits.length) {
+  const reset: boolean = !!userData && userData.resetData;
+  const useFirebaseData: boolean = !!userData && userData.useFirebaseData;
+
+  if (userData && (!habits.length || useFirebaseData) && !reset) {
     habitsFetchedFromFirebase = true;
     habits = userData.habits.reduce<Habit[]>(
       (acc: Habit[], v: Habit) =>
@@ -68,27 +72,31 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
   }
 
   // check for unnotified habit.
-  habits = await Promise.all(
-    habits
-      .filter((h: Habit) => Object.keys(HabitTypes).includes(h.type))
-      .map(async (h: Habit): Promise<Habit> => {
-        // generate a scheduled notification for the habit if there is no notification
-        let notificationId: string | HabitNotEveryDayNotificationId =
-          h.notification;
-        if (
-          !notificationId ||
-          (typeof notificationId !== "string" &&
-            !Object.keys(notificationId).length)
-        ) {
-          habitsFetchedFromFirebase = false; // to update firebase with notification ids
-          notificationId = await HabitUtils.scheduleHabitNotificationAsync(h);
-        }
-        return {
-          ...h,
-          notification: notificationId,
-        };
-      })
-  );
+  habits = reset
+    ? []
+    : await Promise.all(
+        habits
+          .filter((h: Habit) => Object.keys(HabitTypes).includes(h.type))
+          .map(async (h: Habit): Promise<Habit> => {
+            // generate a scheduled notification for the habit if there is no notification
+            let notificationId: string | HabitNotEveryDayNotificationId =
+              h.notification;
+            if (
+              !notificationId ||
+              (typeof notificationId !== "string" &&
+                !Object.keys(notificationId).length)
+            ) {
+              habitsFetchedFromFirebase = false; // to update firebase with notification ids
+              notificationId = await HabitUtils.scheduleHabitNotificationAsync(
+                h
+              );
+            }
+            return {
+              ...h,
+              notification: notificationId,
+            };
+          })
+      );
   if (!habitsFetchedFromFirebase) {
     let userPushNotificationsToken: string =
       userData && userData.pushToken ? userData.pushToken : "";
@@ -96,12 +104,36 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
       userPushNotificationsToken =
         (await AsyncStorage.getItem(CONSTANTS.EXPO_PUSH_TOKEN)) || "";
     }
-    firebase.saveDocument(
+    await firebase.saveDocument(
+      CONSTANTS.FIREBASE_HABITS_COLLECTION,
+      {
+        createdAt: userData ? userData.createdAt : new Date(Date.now()),
+        habits,
+        practicing: "none",
+        pushToken: userPushNotificationsToken,
+        resetData: false,
+        useFirebaseData: false,
+        version: userData ? userData.version : 1,
+      } as UserResponce,
+      userDeviceUniqueId
+    );
+  }
+  if (reset || useFirebaseData) {
+    AsyncStorage.setItem(
+      CONSTANTS.ASYNC_STORAGE_HABITS,
+      JSON.stringify(habits)
+    );
+    if (reset) {
+      PushNotification.cancelAllNotifications();
+    }
+    firebase.updateDocument(
       CONSTANTS.FIREBASE_HABITS_COLLECTION,
       {
         habits,
         practicing: "none",
-        pushToken: userPushNotificationsToken,
+        resetData: false,
+        useFirebaseData: false,
+        version: reset ? 1 : userData ? userData.version : 1,
       } as UserResponce,
       userDeviceUniqueId
     );

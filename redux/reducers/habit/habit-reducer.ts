@@ -21,6 +21,7 @@ export const habitReducer = (
   action: HabitActions
 ): Habit[] => {
   let newState: Habit[] | null = null;
+  let udpateVersion: boolean = false;
 
   switch (action.type) {
     case HabitActionTypes.LOAD_HABITS_FROM_STORAGE:
@@ -61,16 +62,19 @@ export const habitReducer = (
 
     case HabitActionTypes.ADD_NEW_HABIT:
       newState = [...state, action.payload as Habit];
+      udpateVersion = true;
       break;
 
     case HabitActionTypes.UPDATE_HABIT:
       newState = state.map((h: Habit, _) =>
         h.id === (action.payload as Habit).id ? (action.payload as Habit) : h
       );
+      udpateVersion = true;
       break;
 
     case HabitActionTypes.DELETE_HABIT:
       newState = state.filter((h: Habit, i: number) => h.id !== action.payload);
+      udpateVersion = true;
       break;
 
     case HabitActionTypes.INTRODUCTION_CLEAR_UP:
@@ -84,15 +88,34 @@ export const habitReducer = (
       CONSTANTS.ASYNC_STORAGE_HABITS,
       JSON.stringify(newState)
     );
-    getUserDeviceIdAsync().then((id: string) =>
-      firebase.updateDocument(
-        CONSTANTS.FIREBASE_HABITS_COLLECTION,
-        {
-          habits: newState,
-        } as UserResponce,
-        id
+    getUserDeviceIdAsync()
+      .then((id: string) =>
+        !udpateVersion
+          ? firebase.updateDocument(
+              CONSTANTS.FIREBASE_HABITS_COLLECTION,
+              {
+                habits: newState,
+              } as UserResponce,
+              id
+            )
+          : new Promise((res) => {
+              firebase
+                .readDocument(CONSTANTS.FIREBASE_HABITS_COLLECTION, id)
+                .then((user) => res([id, user]));
+            })
       )
-    );
+      .then((data: any) =>
+        !udpateVersion
+          ? undefined
+          : firebase.updateDocument(
+              CONSTANTS.FIREBASE_HABITS_COLLECTION,
+              {
+                habits: newState,
+                version: udpateVersion ? data[0] + 1 : data[0],
+              } as UserResponce,
+              data[0]
+            )
+      );
     return newState;
   }
   return state;
