@@ -48,6 +48,15 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
       case HabitTypes.READING:
         roomGraphic = require("../../assets/rooms/reading-room.png");
         break;
+      case HabitTypes.FASTING:
+        roomGraphic = require("../../assets/rooms/fasting-room.png");
+        break;
+      case HabitTypes.JOURNALING:
+        roomGraphic = require("../../assets/rooms/writing-room.png");
+        break;
+      case HabitTypes.MEDITATING:
+        roomGraphic = require("../../assets/rooms/meditating-room.png");
+        break;
       default:
         roomGraphic = require("../../assets/rooms/reading-room.png");
     }
