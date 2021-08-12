@@ -130,6 +130,7 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
     );
     if (reset) {
       PushNotification.cancelAllNotifications();
+      AsyncStorage.removeItem(CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY);
     }
     firebase
       .updateDocument(
