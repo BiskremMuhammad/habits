@@ -12,6 +12,7 @@ import {
   call,
   takeLatest,
 } from "redux-saga/effects";
+import fb from "firebase/app";
 import {
   Habit,
   HabitNotEveryDayNotificationId,
@@ -61,14 +62,15 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
 
   if (userData && (!habits.length || useFirebaseData) && !reset) {
     habitsFetchedFromFirebase = true;
-    habits = userData.habits.reduce<Habit[]>(
-      (acc: Habit[], v: Habit) =>
-        acc.concat({
-          ...v,
-          progress: v.progress.map((p) => ({ ...p, date: new Date(p.date) })),
-        }),
-      []
-    );
+    habits = userData.habits.reduce<Habit[]>((acc: Habit[], v: Habit) => {
+      return acc.concat({
+        ...v,
+        progress: v.progress.map((p) => ({
+          ...p,
+          date: new Date((p.date as any).toDate()),
+        })),
+      });
+    }, []);
   }
 
   // check for unnotified habit.
@@ -129,17 +131,23 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
     if (reset) {
       PushNotification.cancelAllNotifications();
     }
-    firebase.updateDocument(
-      CONSTANTS.FIREBASE_HABITS_COLLECTION,
-      {
-        habits,
-        practicing: "none",
-        resetData: false,
-        useFirebaseData: false,
-        version: reset ? 1 : userData ? userData.version : 1,
-      } as UserResponce,
-      userDeviceUniqueId
-    );
+    firebase
+      .updateDocument(
+        CONSTANTS.FIREBASE_HABITS_COLLECTION,
+        {
+          habits,
+          practicing: "none",
+          resetData: false,
+          useFirebaseData: false,
+          version: reset
+            ? 1
+            : userData && userData.version
+            ? userData.version
+            : 1,
+        } as UserResponce,
+        userDeviceUniqueId
+      )
+      .catch((er) => console.log("error when saving data to firebase", er));
   }
   return habits;
 };

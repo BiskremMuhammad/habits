@@ -106,16 +106,17 @@ export const habitReducer = (
       )
       .then((data: any) =>
         !udpateVersion
-          ? undefined
+          ? null
           : firebase.updateDocument(
               CONSTANTS.FIREBASE_HABITS_COLLECTION,
               {
                 habits: newState,
-                version: udpateVersion ? data[0] + 1 : data[0],
+                version: udpateVersion ? data[1].version + 1 : data[1],
               } as UserResponce,
               data[0]
             )
-      );
+      )
+      .catch((er) => console.log("error in reducer..", er));
     return newState;
   }
   return state;
