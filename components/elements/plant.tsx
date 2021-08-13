@@ -1044,7 +1044,11 @@ export const Plant = (props: PlantProps) => {
       !props.isActiveSession
     ) {
       plantResource = getPlantResource(PlantStage.STAGE_1, PlantState.NORMAL);
-    } else if (props.habit.progress.length < 1) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 1
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession
           ? !!props.sessionProgress &&
@@ -1055,7 +1059,11 @@ export const Plant = (props: PlantProps) => {
           : PlantStage.STAGE_1,
         plantState
       );
-    } else if (props.habit.progress.length < 2) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 2
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession
           ? !!props.sessionProgress &&
@@ -1066,7 +1074,11 @@ export const Plant = (props: PlantProps) => {
           : PlantStage.STAGE_2,
         plantState
       );
-    } else if (props.habit.progress.length < 3) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 3
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession
           ? !!props.sessionProgress &&
@@ -1077,12 +1089,20 @@ export const Plant = (props: PlantProps) => {
           : PlantStage.STAGE_4,
         plantState
       );
-    } else if (props.habit.progress.length < 4) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 4
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_7 : PlantStage.STAGE_6,
         plantState
       );
-    } else if (props.habit.progress.length < 5) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 5
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession
           ? !!props.sessionProgress &&
@@ -1093,7 +1113,11 @@ export const Plant = (props: PlantProps) => {
           : PlantStage.STAGE_7,
         plantState
       );
-    } else if (props.habit.progress.length < 6) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 6
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession
           ? !!props.sessionProgress &&
@@ -1104,77 +1128,137 @@ export const Plant = (props: PlantProps) => {
           : PlantStage.STAGE_9,
         plantState
       );
-    } else if (props.habit.progress.length < 9) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 9
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_12 : PlantStage.STAGE_11,
         plantState
       );
-    } else if (props.habit.progress.length < 13) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 13
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_13 : PlantStage.STAGE_12,
         plantState
       );
-    } else if (props.habit.progress.length < 16) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 16
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_14 : PlantStage.STAGE_13,
         plantState
       );
-    } else if (props.habit.progress.length < 18) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 18
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_15 : PlantStage.STAGE_14,
         plantState
       );
-    } else if (props.habit.progress.length < 20) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 20
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_16 : PlantStage.STAGE_15,
         plantState
       );
-    } else if (props.habit.progress.length < 23) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 23
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_17 : PlantStage.STAGE_16,
         plantState
       );
-    } else if (props.habit.progress.length < 28) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 28
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_18 : PlantStage.STAGE_17,
         plantState
       );
-    } else if (props.habit.progress.length < 38) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 38
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_19 : PlantStage.STAGE_18,
         plantState
       );
-    } else if (props.habit.progress.length < 48) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 48
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_20 : PlantStage.STAGE_19,
         plantState
       );
-    } else if (props.habit.progress.length < 52) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 52
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_21 : PlantStage.STAGE_20,
         plantState
       );
-    } else if (props.habit.progress.length < 58) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 58
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_22 : PlantStage.STAGE_21,
         plantState
       );
-    } else if (props.habit.progress.length < 68) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 68
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_23 : PlantStage.STAGE_22,
         plantState
       );
-    } else if (props.habit.progress.length < 77) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 77
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_24 : PlantStage.STAGE_23,
         plantState
       );
-    } else if (props.habit.progress.length < 81) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 81
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_25 : PlantStage.STAGE_24,
         plantState
       );
-    } else if (props.habit.progress.length < 89) {
+    } else if (
+      props.habit.progress.filter(
+        (p: HabitProgressData) => p.duration >= props.habit.duration * 60
+      ).length < 89
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_26 : PlantStage.STAGE_25,
         plantState
