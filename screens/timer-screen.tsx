@@ -518,10 +518,33 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         colors={["rgb(13, 9, 39)", "rgb(33, 29, 66)"]}
         style={TimeScreenStyles.backgroundOverlay}
       />
-      <Image
-        source={require("../assets/illustration.png")}
-        style={TimeScreenStyles.illustrationBackground}
-      />
+      {!!habit ? (
+        habit.type === HabitTypes.READING ? (
+          <Image
+            source={require("../assets/timer/read.png")}
+            style={[
+              TimeScreenStyles.illustrationBackground,
+              { height: (screenWidth * 375) / 362 },
+            ]}
+          />
+        ) : habit.type === HabitTypes.MEDITATING ? (
+          <Image
+            source={require("../assets/timer/meditate.png")}
+            style={[
+              TimeScreenStyles.illustrationBackground,
+              { height: (screenWidth * 750) / 830 },
+            ]}
+          />
+        ) : habit.type === HabitTypes.JOURNALING ? (
+          <Image
+            source={require("../assets/timer/write.png")}
+            style={[
+              TimeScreenStyles.illustrationBackground,
+              { height: (screenWidth * 750) / 745 },
+            ]}
+          />
+        ) : null
+      ) : null}
       <View style={TimeScreenStyles.header}>
         <Pressable onPress={() => onCancelSessionHandler(true)}>
           <MaterialIcons name="arrow-back" size={24} color="white" />
@@ -847,7 +870,6 @@ const TimeScreenStyles = StyleSheet.create({
   },
   illustrationBackground: {
     width: screenWidth,
-    height: screenWidth * (362 / 375),
     resizeMode: "cover",
     position: "absolute",
     alignSelf: "flex-start",
