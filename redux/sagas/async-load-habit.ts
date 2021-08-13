@@ -118,7 +118,6 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
         pushToken: userPushNotificationsToken,
         resetData: false,
         useFirebaseData: false,
-        version: userData && userData.version ? userData.version : 1,
       } as UserResponce,
       userDeviceUniqueId
     );
@@ -140,11 +139,6 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
           practicing: "none",
           resetData: false,
           useFirebaseData: false,
-          version: reset
-            ? 1
-            : userData && userData.version
-            ? userData.version
-            : 1,
         } as UserResponce,
         userDeviceUniqueId
       )

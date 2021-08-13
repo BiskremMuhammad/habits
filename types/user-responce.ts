@@ -54,11 +54,4 @@ export interface UserResponce {
    * @type  {boolean}
    */
   useFirebaseData: boolean;
-
-  /**
-   * update version of user's data
-   *
-   * @type {number}
-   */
-  version: number;
 }
