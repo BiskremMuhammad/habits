@@ -7,7 +7,7 @@
 import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { Dimensions, Image, StyleSheet } from "react-native";
+import { Dimensions, Image, StyleSheet, I18nManager } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { enableScreens } from "react-native-screens";
@@ -39,6 +39,13 @@ import { RequestNotificationAccessModal } from "./components/modules/modals/requ
 LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 
 const { width, height } = Dimensions.get("screen");
+
+// disable RTL
+try {
+  I18nManager.allowRTL(false);
+} catch (e) {
+  console.log(e);
+}
 
 /**
  * App Routing instance
