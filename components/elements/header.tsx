@@ -72,7 +72,7 @@ export const Header = ({
             normalGoBack
               ? navigation.goBack()
               : // : navigation.dispatch(StackActions.push(Routes.HOME_ROUTE))
-                navigation.dispatch(StackActions.push(Routes.HOME))
+                navigation.navigate(Routes.HOME)
           }
         >
           <MaterialIcons name="arrow-back" size={24} color="white" />

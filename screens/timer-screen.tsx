@@ -69,6 +69,7 @@ import { UserResponce } from "../types/user-responce";
 import { getUserDeviceIdAsync } from "../utils/user";
 import { PushNotification } from "../utils/push-notification";
 import { HabitUtils } from "../utils/habit-utils";
+import { CommonActions } from "@react-navigation/native";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -212,15 +213,15 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     () =>
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
-        e.preventDefault();
-        if (!isIntroduction) {
+        if (!isIntroduction && !exitSessionModalOpened) {
           onCancelSessionHandler(true);
         } else {
           navigation.dispatch(e.data.action);
         }
+        e.preventDefault();
         return;
       }),
-    [navigation, isIntroduction, state]
+    [navigation, isIntroduction, state, exitSessionModalOpened]
   );
 
   useLayoutEffect(() => {
@@ -242,10 +243,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         }
         // setState(ProgressState.STOPPED);
       } else {
-        navigation.dispatch(
-          // StackActions.push(habits.length ? Routes.HOME_ROUTE : Routes.SPLASH)
-          StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
-        );
+        navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
       }
     }
   }, [isOnFocus, habits, navigation, habitId]);
@@ -489,9 +487,18 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   const goToViewHabit = () => {
     changeUserPracticingState("none");
     navigation.dispatch(
-      StackActions.push(Routes.VIEW_HABIT, {
-        habitId: habitId,
-      } as TimerScreenRouteParams)
+      CommonActions.reset({
+        index: 1,
+        routes: [
+          { name: Routes.HOME },
+          {
+            name: Routes.VIEW_HABIT,
+            params: {
+              habitId,
+            } as TimerScreenRouteParams,
+          },
+        ],
+      })
     );
   };
 
@@ -503,6 +510,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         changeState(ProgressState.PAUSED);
       }
     } else {
+      dispatch({
+        type: HabitActionTypes.INTRODUCTION_CLEAR_UP,
+      });
       navigation.goBack();
     }
   };

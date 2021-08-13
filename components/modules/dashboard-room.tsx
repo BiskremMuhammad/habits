@@ -87,29 +87,31 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
   );
 
   const goToAddHabit = () => {
-    navigation.dispatch(StackActions.push(Routes.ADD_HABIT));
+    navigation.navigate(Routes.ADD_HABIT);
+    // navigation.dispatch(StackActions.push(Routes.ADD_HABIT));
   };
 
   const onViewHabit = () => {
     if (!habit) {
       goToAddHabit();
     } else {
-      navigation.dispatch(
-        StackActions.push(Routes.VIEW_HABIT, {
-          habitId: habit.id,
-        } as TimerScreenRouteParams)
-      );
+      navigation.navigate(Routes.VIEW_HABIT, {
+        habitId: habit.id,
+      } as TimerScreenRouteParams);
+      // navigation.dispatch(
+      //   StackActions.push(Routes.VIEW_HABIT, {
+      //     habitId: habit.id,
+      //   } as TimerScreenRouteParams)
+      // );
     }
   };
 
   const onStartHabit = () => {
     if (!habit) return;
 
-    navigation.dispatch(
-      StackActions.push(Routes.TIMER, {
-        habitId: habit.id,
-      } as TimerScreenRouteParams)
-    );
+    navigation.navigate(Routes.TIMER, {
+      habitId: habit.id,
+    } as TimerScreenRouteParams);
   };
 
   const roomBottomBorderWidth: number =

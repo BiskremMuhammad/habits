@@ -185,11 +185,9 @@ export const AddHabit = (props: AddHabitProps) => {
         habitId: habit.id,
       } as TimerScreenRouteParams);
     } else {
-      navigation.dispatch(
-        StackActions.push(Routes.IDENTITY_REINFORCEMENT, {
-          habitId: habit.id,
-        } as TimerScreenRouteParams)
-      );
+      navigation.navigate(Routes.IDENTITY_REINFORCEMENT, {
+        habitId: habit.id,
+      } as TimerScreenRouteParams);
     }
   };
 

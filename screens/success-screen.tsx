@@ -29,21 +29,7 @@ import { TimerScreenRouteParams } from "./timer-screen";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
-/**
- * interface that defines the props of the component
- *
- * @interface
- */
-interface SuccessScreenProps {
-  /**
-   * on complete the introduction callback
-   *
-   * @type {() => void}
-   */
-  onCompleteIntro: () => void;
-}
-
-export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
+export const SuccessScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const params = route.params as TimerScreenRouteParams;
@@ -59,14 +45,15 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
     () =>
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
-        e.preventDefault();
-        return;
+        if (e.data.action.type === "GO_BACK") {
+          e.preventDefault();
+          return;
+        }
       }),
     [navigation]
   );
 
   const onBegin = () => {
-    onCompleteIntro();
     navigation.navigate(Routes.VIEW_HABIT, {
       habitId: habitId,
     } as TimerScreenRouteParams);

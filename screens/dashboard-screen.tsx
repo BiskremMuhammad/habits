@@ -35,8 +35,10 @@ export const DashboardScreen = () => {
     () =>
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
-        e.preventDefault();
-        return;
+        if (e.data.action.type === "GO_BACK") {
+          e.preventDefault();
+          return;
+        }
       }),
     [navigation]
   );

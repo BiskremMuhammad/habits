@@ -9,6 +9,8 @@ import {
   useNavigation,
   useIsFocused,
   StackActions,
+  NavigationAction,
+  CommonActions,
 } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, {
@@ -43,7 +45,6 @@ import { TimerScreenRouteParams } from "./timer-screen";
 import { WeekDays, WeekDaysFullName } from "../types/week-days";
 import { Plant } from "../components/elements/plant";
 import { Button } from "../components/elements/button";
-import { useSharedValue } from "react-native-reanimated";
 import { MotiView } from "@motify/components";
 import { MonthView } from "../components/modules/view-habit/month-view";
 import { HabitDurationInput } from "../components/modules/add-habit/habit-duration";
@@ -72,7 +73,31 @@ import { HabitUtils } from "../utils/habit-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
-export const ViewHabitScreen = () => {
+/**
+ * interface that defines the props of the component
+ *
+ * @interface
+ */
+interface ViewHabitScreenProps {
+  /**
+   * flag if app state is still playing the introduction
+   *
+   * @type {boolean}
+   */
+  isIntroduction: boolean;
+
+  /**
+   * on complete the introduction callback
+   *
+   * @type {() => void}
+   */
+  onCompleteIntro: () => void;
+}
+
+export const ViewHabitScreen = ({
+  isIntroduction,
+  onCompleteIntro,
+}: ViewHabitScreenProps) => {
   const route = useRoute();
   const navigation = useNavigation();
   const isOnFocus = useIsFocused();
@@ -86,6 +111,7 @@ export const ViewHabitScreen = () => {
   const [tab, setTab] = useState<"CALENDAR" | "GRAPH">("CALENDAR");
   const tabs: Array<"CALENDAR" | "GRAPH"> = ["CALENDAR", "GRAPH"];
   const [currentOpenInput, setCurrentOpenInput] = useState(OpenedDropDown.NONE);
+  const [hasChanges, setHasChanges] = useState<boolean>(false);
 
   const onChangeOpenedDropdown = (state: boolean, input: OpenedDropDown) => {
     setCurrentOpenInput(state ? input : OpenedDropDown.NONE);
@@ -101,7 +127,7 @@ export const ViewHabitScreen = () => {
   const { type, isEveryDay, days, duration } = state;
 
   const onSaveChanges = async () => {
-    if (!days.length) return;
+    if (!days.length || !hasChanges) return;
 
     let updatedHabit: Habit = {
       ...state,
@@ -109,7 +135,7 @@ export const ViewHabitScreen = () => {
     };
     if (state.notification) {
       // cancel habit existing scheduled notification
-      HabitUtils.cancelAllHabitNotifications(state);
+      await HabitUtils.cancelAllHabitNotifications(state);
       const updatedHabitNewNotification:
         | string
         | HabitNotEveryDayNotificationId = await HabitUtils.scheduleHabitNotificationAsync(
@@ -121,6 +147,7 @@ export const ViewHabitScreen = () => {
       type: HabitActionTypes.UPDATE_HABIT,
       payload: updatedHabit,
     });
+    setHasChanges(false);
   };
 
   useLayoutEffect(() => {
@@ -132,10 +159,7 @@ export const ViewHabitScreen = () => {
         payload: getHabit,
       });
     } else if (isOnFocus) {
-      navigation.dispatch(
-        // StackActions.push(habits.length ? Routes.HOME_ROUTE : Routes.SPLASH)
-        StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
-      );
+      navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
     }
   }, [isOnFocus, habits, navigation, habitId]);
 
@@ -146,16 +170,27 @@ export const ViewHabitScreen = () => {
     () =>
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
-        e.preventDefault();
-        onSaveChanges();
+        if (hasChanges) {
+          onSaveChanges();
+        }
+        if (e.data.action.type === "GO_BACK" && isIntroduction) {
+          e.preventDefault();
+          onCompleteIntro();
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: Routes.HOME }],
+            })
+          );
+          return;
+        }
         // navigation.dispatch(StackActions.push(Routes.HOME_ROUTE));
-        navigation.dispatch(StackActions.push(Routes.HOME));
-        return;
       }),
     [navigation, state]
   );
 
   const onChangeDuration = (val: string) => {
+    setHasChanges(true);
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_DURATION,
       payload: val,
@@ -163,6 +198,7 @@ export const ViewHabitScreen = () => {
   };
 
   const onChangeFreq = (radio: number) => {
+    setHasChanges(true);
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_EVERYDAY_STATE,
       payload:
@@ -177,6 +213,7 @@ export const ViewHabitScreen = () => {
   };
 
   const dispatchDays = (selectedDays: WeekDays[]) => {
+    setHasChanges(true);
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_FREQUENCY,
       payload: selectedDays,
@@ -184,12 +221,12 @@ export const ViewHabitScreen = () => {
   };
 
   const onStartPracticing = () => {
-    onSaveChanges();
-    navigation.dispatch(
-      StackActions.push(Routes.TIMER, {
-        habitId: state.id,
-      } as TimerScreenRouteParams)
-    );
+    if (hasChanges) {
+      onSaveChanges();
+    }
+    navigation.navigate(Routes.TIMER, {
+      habitId: state.id,
+    } as TimerScreenRouteParams);
   };
 
   const today: Date = new Date(new Date().setHours(0, 0, 0, 0));

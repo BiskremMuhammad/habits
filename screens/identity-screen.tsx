@@ -6,7 +6,11 @@
 
 import { MotiView } from "@motify/components";
 import { StackActions, useNavigation } from "@react-navigation/core";
-import { useRoute, useIsFocused } from "@react-navigation/native";
+import {
+  useRoute,
+  useIsFocused,
+  CommonActions,
+} from "@react-navigation/native";
 import React, {
   useEffect,
   useLayoutEffect,
@@ -87,8 +91,10 @@ export const IdentityReinforcement = () => {
     () =>
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
-        e.preventDefault();
-        return;
+        if (e.data.action.type === "GO_BACK") {
+          e.preventDefault();
+          return;
+        }
       }),
     [navigation]
   );
@@ -180,9 +186,18 @@ export const IdentityReinforcement = () => {
     const autoNavigate = setTimeout(() => {
       if (isOnFocus) {
         navigation.dispatch(
-          StackActions.push(Routes.VIEW_HABIT, {
-            habitId,
-          } as TimerScreenRouteParams)
+          CommonActions.reset({
+            index: 1,
+            routes: [
+              { name: Routes.HOME },
+              {
+                name: Routes.VIEW_HABIT,
+                params: {
+                  habitId,
+                } as TimerScreenRouteParams,
+              },
+            ],
+          })
         );
       }
     }, automaticNavigateDuration);
@@ -197,10 +212,7 @@ export const IdentityReinforcement = () => {
     if (getHabit) {
       setHabit(getHabit);
     } else if (isOnFocus) {
-      navigation.dispatch(
-        // StackActions.push(habits.length ? Routes.HOME_ROUTE : Routes.SPLASH)
-        StackActions.push(habits.length ? Routes.HOME : Routes.SPLASH)
-      );
+      navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
     }
   }, [isOnFocus, habits, navigation, habitId]);
 
