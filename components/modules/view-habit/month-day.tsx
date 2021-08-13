@@ -46,7 +46,7 @@ interface MonthDayProps {
 
 export const MonthDay = (props: MonthDayProps) => {
   const dayState: DayState = useMemo(
-    () => stateOfTheDay(props.day, props.habit.progress, props.habit.days),
+    () => stateOfTheDay(props.day, props.habit),
     [props.day, props.habit.progress, props.habit.days]
   );
   return (

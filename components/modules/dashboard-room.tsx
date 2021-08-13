@@ -71,11 +71,7 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
       .fill(0)
       .forEach((_, i: number) => {
         const day: Date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
-        const dayState: DayState = stateOfTheDay(
-          day,
-          habit.progress,
-          habit.days
-        );
+        const dayState: DayState = stateOfTheDay(day, habit);
         recentDays.push({
           day,
           label: daysLabels[day.getDay()],
@@ -86,12 +82,7 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
   }
 
   const [streak, curStreakStart, __] = useMemo(
-    () =>
-      calculateStreak(
-        today,
-        habit ? habit.progress : [],
-        habit ? habit.days : []
-      ),
+    () => (!habit ? [0, undefined, undefined] : calculateStreak(today, habit)),
     [habit]
   );
 

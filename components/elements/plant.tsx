@@ -1010,11 +1010,7 @@ export const Plant = (props: PlantProps) => {
     if (!props.isActiveSession) {
       // get yesterday streak data to set inactive plant state when yesterday is not active streak
       const yesterday: Date = new Date(today.getTime() - 24 * 60 * 60 * 1000);
-      const [yesterdayStreak, _, __] = calculateStreak(
-        yesterday,
-        props.habit.progress,
-        props.habit.days
-      );
+      const [yesterdayStreak, _, __] = calculateStreak(yesterday, props.habit);
       if (yesterdayStreak === 0) {
         activePlant = false;
       }

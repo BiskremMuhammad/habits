@@ -4,7 +4,7 @@
  * @description implement util functions that is related to dealing with date and time
  */
 
-import { HabitProgressData } from "../types/habit";
+import { Habit, HabitProgressData } from "../types/habit";
 import { WeekDays } from "../types/week-days";
 import { getEnumKeyByEnumValue } from "./enum-type-utils";
 
@@ -61,46 +61,40 @@ export function getTheWeekDay(day: Date): WeekDays {
  * to calculate the State of a given day
  *
  * @param {Date} day the day to get the state for
- * @param {HabitProgressData[]} habitProgress the habit dates progress array
- * @param {WeekDays[]} habitFrequency the habit active days (frequency)
+ * @param {Habit} habit the habit to get day status for
+ *
  * @returns {DayState} the state of the day
  */
-export function stateOfTheDay(
-  day: Date,
-  habitProgress: HabitProgressData[],
-  habitFrequency: WeekDays[]
-): DayState {
+export function stateOfTheDay(day: Date, habit: Habit): DayState {
   day.setHours(0, 0, 0, 0);
+  const { progress: habitProgress, days: habitFrequency, duration } = habit;
   const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
 
   // get the streak data of the day
-  const [streak, start, end] = calculateStreak(
-    day,
-    habitProgress,
-    habitFrequency
-  );
+  const [streak, start, end] = calculateStreak(day, habit);
 
   // if date is today >> there is gonna be one of 4 cases TODAY, TODAY_REST, TODAY_LOGGED, TODAY_STREAK
   if (day.getTime() === today.getTime()) {
-    if (!habitFrequency.includes(getTheWeekDay(day))) {
-      if (streak > 0) {
-        return DayState.TODAY_REST_STREAK;
-      }
-      return DayState.TODAY_REST;
-    }
     if (
       streak > 1 &&
       habitProgress.find(
-        (d: HabitProgressData, _) => d.date.getTime() === day.getTime()
+        (d: HabitProgressData, _) =>
+          d.date.getTime() === day.getTime() && d.duration >= duration * 60
       )
     ) {
       return DayState.TODAY_STREAK;
     } else if (
       habitProgress.find(
-        (d: HabitProgressData, _) => d.date.getTime() === day.getTime()
+        (d: HabitProgressData, _) =>
+          d.date.getTime() === day.getTime() && d.duration >= duration * 60
       )
     ) {
       return DayState.TODAY_LOGGED;
+    } else if (!habitFrequency.includes(getTheWeekDay(day))) {
+      if (streak > 0) {
+        return DayState.TODAY_REST_STREAK;
+      }
+      return DayState.TODAY_REST;
     } else if (streak > 0) {
       return DayState.TODAY_IN_STREAK;
     } else {
@@ -123,7 +117,8 @@ export function stateOfTheDay(
       end &&
       end.getTime() === today.getTime() &&
       habitProgress.find(
-        (d: HabitProgressData, _) => d.date.getTime() === day.getTime()
+        (d: HabitProgressData, _) =>
+          d.date.getTime() === day.getTime() && d.duration >= duration * 60
       )
     ) {
       return DayState.STREAK;
@@ -143,7 +138,8 @@ export function stateOfTheDay(
     } else if (
       streak > 0 &&
       habitProgress.find(
-        (d: HabitProgressData, _) => d.date.getTime() === day.getTime()
+        (d: HabitProgressData, _) =>
+          d.date.getTime() === day.getTime() && d.duration >= duration * 60
       )
     ) {
       return DayState.INACTIVE_STREAK;
@@ -161,15 +157,17 @@ export function stateOfTheDay(
  * To Calculate Streak data of a day
  *
  * @param {Date} day the day to calculate it's streak data
- * @param {HabitProgressData[]} habitProgress the habit tracked progress days
- * @param {WeekDays[]} habitFrequency the habit active days (frequency)
+ * @param {Habit} habit the habit to calculate it's streak data
+ *
  * @returns {[number, Date | undefined, Date | undefined]} the streak data, 1st index represents the number of streak days, 2nd index is the starting day of the streak, 3rd index is last day of the streak
  */
 export function calculateStreak(
   day: Date,
-  habitProgress: HabitProgressData[],
-  habitFrequency: WeekDays[]
+  habit: Habit
 ): [number, Date | undefined, Date | undefined] {
+  if (!habit) return [0, undefined, undefined];
+  const { progress: habitProgress, days: habitFrequency, duration } = habit;
+
   if (!habitProgress.length || !habitFrequency.length) {
     return [0, undefined, undefined];
   }
@@ -185,7 +183,8 @@ export function calculateStreak(
     day.getTime() !== today.getTime() &&
     habitFrequency.includes(getTheWeekDay(day)) &&
     !habitProgress.find(
-      (d: HabitProgressData, _) => d.date.getTime() === day.getTime()
+      (d: HabitProgressData, _) =>
+        d.date.getTime() === day.getTime() && d.duration >= duration * 60
     )
   ) {
     return [streak, undefined, undefined];
@@ -197,13 +196,16 @@ export function calculateStreak(
     firstStreakDay.getTime() === today.getTime() ||
     !habitFrequency.includes(getTheWeekDay(firstStreakDay)) ||
     habitProgress.find(
-      (d: HabitProgressData, _) => d.date.getTime() === firstStreakDay.getTime()
+      (d: HabitProgressData, _) =>
+        d.date.getTime() === firstStreakDay.getTime() &&
+        d.duration >= duration * 60
     )
   ) {
     if (
       habitProgress.find(
         (d: HabitProgressData, _) =>
-          d.date.getTime() === firstStreakDay.getTime()
+          d.date.getTime() === firstStreakDay.getTime() &&
+          d.duration >= duration * 60
       )
     ) {
       streak++;
@@ -217,13 +219,16 @@ export function calculateStreak(
   while (
     !habitFrequency.includes(getTheWeekDay(lastStreakDay)) ||
     habitProgress.find(
-      (d: HabitProgressData, _) => d.date.getTime() === lastStreakDay.getTime()
+      (d: HabitProgressData, _) =>
+        d.date.getTime() === lastStreakDay.getTime() &&
+        d.duration >= duration * 60
     )
   ) {
     if (
       habitProgress.find(
         (d: HabitProgressData, _) =>
-          d.date.getTime() === lastStreakDay.getTime()
+          d.date.getTime() === lastStreakDay.getTime() &&
+          d.duration >= duration * 60
       )
     ) {
       streak++;

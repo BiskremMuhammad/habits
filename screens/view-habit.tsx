@@ -233,11 +233,7 @@ export const ViewHabitScreen = () => {
     return Math.max(
       ...habit.progress.reduce(
         (streaks: number[], progress: HabitProgressData): number[] => {
-          const [streak, _, __] = calculateStreak(
-            progress.date,
-            habit.progress,
-            habit.days
-          );
+          const [streak, _, __] = calculateStreak(progress.date, habit);
           if (!streaks.includes(streak)) {
             streaks.push(streak);
           }
