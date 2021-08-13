@@ -98,11 +98,6 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
       navigation.navigate(Routes.VIEW_HABIT, {
         habitId: habit.id,
       } as TimerScreenRouteParams);
-      // navigation.dispatch(
-      //   StackActions.push(Routes.VIEW_HABIT, {
-      //     habitId: habit.id,
-      //   } as TimerScreenRouteParams)
-      // );
     }
   };
 
