@@ -267,6 +267,10 @@ export const Graph = ({ data }: GraphProps) => {
                       position: "absolute",
                       top: graphHeight - 13,
                       width: "200%",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
                     <Text
@@ -276,14 +280,14 @@ export const Graph = ({ data }: GraphProps) => {
                         {
                           marginLeft:
                             index !== xAxisLabels.length - 1
-                              ? 0
+                              ? -3
                               : timespan === Timespans.TWO_WEEKS
                               ? -2
                               : timespan === Timespans.ONE_MONTH
                               ? -5
                               : timespan === Timespans.THREE_MONTHS
                               ? -7
-                              : 0,
+                              : -2,
                         },
                       ]}
                     >

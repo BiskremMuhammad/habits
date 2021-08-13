@@ -29,14 +29,12 @@ import { IdentityReinforcement } from "./screens/identity-screen";
 import { ViewHabitScreen } from "./screens/view-habit";
 import { Drawer } from "./components/elements/drawer";
 import { AnnouncementsScreen } from "./screens/announcements-screen";
-enableScreens();
-
-// TODO:: tmp to remove the non-sence firebase timer warning
-import { LogBox } from "react-native";
 import { PushNotification } from "./utils/push-notification";
 import { Modal } from "./components/modules/modals/modal";
 import { RequestNotificationAccessModal } from "./components/modules/modals/request-notification-access-modal";
+import { LogBox } from "react-native";
 LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
+enableScreens();
 
 const { width, height } = Dimensions.get("screen");
 
