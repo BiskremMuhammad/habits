@@ -270,7 +270,22 @@ export const Graph = ({ data }: GraphProps) => {
                     }}
                   >
                     <Text
-                      style={[styles.xAxisLabel, styles.xAxisLabelHeighest]}
+                      style={[
+                        styles.xAxisLabel,
+                        styles.xAxisLabelHeighest,
+                        {
+                          marginLeft:
+                            index !== xAxisLabels.length - 1
+                              ? 0
+                              : timespan === Timespans.TWO_WEEKS
+                              ? -2
+                              : timespan === Timespans.ONE_MONTH
+                              ? -5
+                              : timespan === Timespans.THREE_MONTHS
+                              ? -7
+                              : 0,
+                        },
+                      ]}
                     >
                       {xAxisLabels[index]}
                     </Text>
