@@ -136,7 +136,7 @@ export class HabitUtils {
    *
    * @returns {Promise<string | HabitNotEveryDayNotificationId>} newly updated notifications for the habit
    */
-  static cancelHabitTodaysNotification = (
+  static cancelHabitTodaysNotification = async (
     habit: Habit
   ): Promise<string | HabitNotEveryDayNotificationId> => {
     // cancel habit existing scheduled notification
@@ -148,10 +148,10 @@ export class HabitUtils {
         ) as WeekDays
       ];
     if (habit.isEveryDay) {
-      PushNotification.cancelNotification(habit.notification as string);
+      await PushNotification.cancelNotification(habit.notification as string);
     } else {
       if (weekDay in (habit.notification as HabitNotEveryDayNotificationId)) {
-        PushNotification.cancelNotification(
+        await PushNotification.cancelNotification(
           (habit.notification as HabitNotEveryDayNotificationId)[weekDay]!
         );
       }
