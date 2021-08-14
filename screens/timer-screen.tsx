@@ -213,7 +213,11 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     () =>
       navigation.addListener("beforeRemove", (e) => {
         // Prevent default behavior of leaving the screen
-        if (!isIntroduction && !exitSessionModalOpened) {
+        if (
+          !isIntroduction &&
+          !exitSessionModalOpened &&
+          state !== ProgressState.SUBMITTED
+        ) {
           onCancelSessionHandler(true);
         } else {
           navigation.dispatch(e.data.action);
