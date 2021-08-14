@@ -40,7 +40,7 @@ export const habitReducer = (
             ...h,
             progress: h.progress.concat({
               date: today,
-              duration: timeRounded,
+              duration: h.duration === 1 ? time : timeRounded,
             }),
           };
         } else if (h.id === habitId) {
@@ -50,7 +50,7 @@ export const habitReducer = (
               date: data.date,
               duration:
                 data.date.getTime() === today.getTime()
-                  ? data.duration + timeRounded
+                  ? data.duration + (h.duration === 1 ? time : timeRounded)
                   : data.duration,
             })),
           };
