@@ -426,14 +426,18 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       changeUserPracticingState("none");
       // cancel today's notification for this habit
       if (habit && !HabitUtils.isHabitRestDay(habit)) {
-        await HabitUtils.cancelHabitTodaysNotification(habit).then(
-          (notification: string | HabitNotEveryDayNotificationId) => {
-            dispatch({
-              type: HabitActionTypes.UPDATE_HABIT,
-              payload: { ...habit, notification },
-            });
-          }
-        );
+        const today6pm: Date = new Date(new Date().setHours(18, 0, 0, 0));
+        const now: Date = new Date(Date.now());
+        if (now.getTime() < today6pm.getTime()) {
+          await HabitUtils.cancelHabitTodaysNotification(habit).then(
+            (notification: string | HabitNotEveryDayNotificationId) => {
+              dispatch({
+                type: HabitActionTypes.UPDATE_HABIT,
+                payload: { ...habit, notification },
+              });
+            }
+          );
+        }
       }
     }
     setState(
