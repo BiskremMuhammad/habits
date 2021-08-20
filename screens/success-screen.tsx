@@ -54,7 +54,6 @@ export const SuccessScreen = () => {
   );
 
   const onBegin = () => {
-    setNotificationModalVisibility(false);
     navigation.navigate(Routes.VIEW_HABIT, {
       habitId: habitId,
     } as TimerScreenRouteParams);

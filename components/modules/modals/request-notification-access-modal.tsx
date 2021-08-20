@@ -77,7 +77,7 @@ export const RequestNotificationAccessModal = ({
       transition={{
         type: "timing",
         duration: 1000,
-        delay: 1000,
+        delay: 300,
       }}
       exitTransition={{ type: "timing", duration: 300 }}
       style={styles.container}

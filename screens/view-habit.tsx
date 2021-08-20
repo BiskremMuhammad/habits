@@ -126,29 +126,6 @@ export const ViewHabitScreen = ({
   );
   const { type, isEveryDay, days, duration } = state;
 
-  /**
-   * complete intro when mount if app is currently onboarding
-   */
-  useEffect(() => {
-    if (isIntroduction) {
-      onCompleteIntro();
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [
-            { name: Routes.HOME },
-            {
-              name: Routes.VIEW_HABIT,
-              params: {
-                habitId,
-              } as TimerScreenRouteParams,
-            },
-          ],
-        })
-      );
-    }
-  }, [navigation, isIntroduction]);
-
   const onSaveChanges = async () => {
     if (!days.length || !hasChanges) return;
 
@@ -198,7 +175,18 @@ export const ViewHabitScreen = ({
         if (hasChanges) {
           onSaveChanges();
         }
-        navigation.dispatch(e.data.action);
+        if (e.data.action.type === "GO_BACK" && isIntroduction) {
+          e.preventDefault();
+          onCompleteIntro();
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: Routes.HOME }],
+            })
+          );
+          return;
+        }
+        // navigation.dispatch(StackActions.push(Routes.HOME_ROUTE));
       }),
     [navigation, state]
   );
@@ -238,9 +226,33 @@ export const ViewHabitScreen = ({
     if (hasChanges) {
       onSaveChanges();
     }
-    navigation.navigate(Routes.TIMER, {
-      habitId: state.id,
-    } as TimerScreenRouteParams);
+    if (isIntroduction) {
+      onCompleteIntro();
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 2,
+          routes: [
+            { name: Routes.HOME },
+            {
+              name: Routes.VIEW_HABIT,
+              params: {
+                habitId: state.id,
+              } as TimerScreenRouteParams,
+            },
+            {
+              name: Routes.TIMER,
+              params: {
+                habitId: state.id,
+              } as TimerScreenRouteParams,
+            },
+          ],
+        })
+      );
+    } else {
+      navigation.navigate(Routes.TIMER, {
+        habitId: state.id,
+      } as TimerScreenRouteParams);
+    }
   };
 
   const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
