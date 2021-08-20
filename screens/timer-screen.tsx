@@ -341,17 +341,15 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     if (
       isIntroduction &&
       state === ProgressState.PLAYING &&
+      habit &&
+      habit.type === HabitTypes.FASTING &&
       timer > 0 &&
       timer % 3 === 0
     ) {
       setTimer(
-        habit && habit.type === HabitTypes.FASTING
-          ? timer + 7 * 59 >= habit.duration * 60
-            ? habit.duration * 60
-            : timer + 7 * 59
-          : timer <= 8
-          ? 1
-          : timer - 8
+        timer + 5 * 59 >= habit.duration * 60
+          ? habit.duration * 60
+          : timer + 5 * 59
       );
     }
   }, [isIntroduction, timer, state]);
@@ -370,12 +368,13 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   }, [timer]);
 
   const runTheTimer = () => {
-    if (!timerCounter.current) {
+    if (!timerCounter.current && habit) {
+      const period: number = isIntroduction ? 100 : 1000;
       timerCounter.current = setInterval(() => {
         setTimer((t) =>
           habit && habit.type === HabitTypes.FASTING ? t + 1 : t - 1
         );
-      }, 1000);
+      }, period);
     }
   };
 
