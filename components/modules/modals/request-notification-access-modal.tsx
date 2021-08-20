@@ -13,6 +13,7 @@ import {
   StyleSheet,
   ImageBackground,
   Dimensions,
+  Alert,
 } from "react-native";
 import { UserResponce } from "../../../types/user-responce";
 import { CONSTANTS } from "../../../utils/constants";
@@ -41,22 +42,30 @@ export const RequestNotificationAccessModal = ({
   callback,
 }: RequestNotificationAccessModalProps) => {
   const requestAccess = async () => {
-    const token: string | undefined =
-      await PushNotification.registerForPushNotificationsAsync();
-    if (token) {
-      AsyncStorage.setItem(CONSTANTS.EXPO_PUSH_TOKEN, token);
-      getUserDeviceIdAsync().then((id: string) => {
-        Firebase.updateDocument(
-          CONSTANTS.FIREBASE_HABITS_COLLECTION,
-          { pushToken: token } as UserResponce,
-          id
-        );
-      });
+    try {
+      const token: string | undefined =
+        await PushNotification.registerForPushNotificationsAsync();
+      if (token) {
+        AsyncStorage.setItem(CONSTANTS.EXPO_PUSH_TOKEN, token);
+        getUserDeviceIdAsync().then((id: string) => {
+          Firebase.updateDocument(
+            CONSTANTS.FIREBASE_HABITS_COLLECTION,
+            { pushToken: token } as UserResponce,
+            id
+          );
+        });
+      }
+      AsyncStorage.setItem(
+        CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY,
+        "true"
+      );
+    } catch (e) {
+      Alert.alert(
+        "Can't get notification access",
+        "Please browse throught your apps and allow notification permission for this app.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
     }
-    AsyncStorage.setItem(
-      CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY,
-      "true"
-    );
     callback();
   };
 
