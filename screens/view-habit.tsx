@@ -126,6 +126,29 @@ export const ViewHabitScreen = ({
   );
   const { type, isEveryDay, days, duration } = state;
 
+  /**
+   * complete intro when mount if app is currently onboarding
+   */
+  useEffect(() => {
+    if (isIntroduction) {
+      onCompleteIntro();
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: Routes.HOME },
+            {
+              name: Routes.VIEW_HABIT,
+              params: {
+                habitId,
+              } as TimerScreenRouteParams,
+            },
+          ],
+        })
+      );
+    }
+  }, [navigation, isIntroduction]);
+
   const onSaveChanges = async () => {
     if (!days.length || !hasChanges) return;
 
@@ -151,15 +174,17 @@ export const ViewHabitScreen = ({
   };
 
   useLayoutEffect(() => {
-    const getHabit = habits.find((h) => h.id === habitId);
-    if (getHabit) {
-      setHabit(getHabit);
-      dispatch({
-        type: AddHabitActionTypes.UPDATE_HABIT,
-        payload: getHabit,
-      });
-    } else if (isOnFocus) {
-      navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
+    if (isOnFocus) {
+      const getHabit = habits.find((h) => h.id === habitId);
+      if (getHabit) {
+        setHabit(getHabit);
+        dispatch({
+          type: AddHabitActionTypes.UPDATE_HABIT,
+          payload: getHabit,
+        });
+      } else {
+        navigation.navigate(habits.length ? Routes.HOME : Routes.SPLASH);
+      }
     }
   }, [isOnFocus, habits, navigation, habitId]);
 
@@ -173,18 +198,7 @@ export const ViewHabitScreen = ({
         if (hasChanges) {
           onSaveChanges();
         }
-        if (e.data.action.type === "GO_BACK" && isIntroduction) {
-          e.preventDefault();
-          onCompleteIntro();
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: Routes.HOME }],
-            })
-          );
-          return;
-        }
-        // navigation.dispatch(StackActions.push(Routes.HOME_ROUTE));
+        navigation.dispatch(e.data.action);
       }),
     [navigation, state]
   );
