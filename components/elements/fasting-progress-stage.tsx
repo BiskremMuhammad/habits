@@ -8,6 +8,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { FastingStages } from "../../types/fasting-stages";
 import { AutophagyIcon } from "../svgs/fasting/autophagy-icon";
+import { AutophagyTwoIcon } from "../svgs/fasting/autophagy-two-icon";
 import { BurnIcon } from "../svgs/fasting/burn-icon";
 import { FullDayIcon } from "../svgs/fasting/full-day-icon";
 import { KetosisIcon } from "../svgs/fasting/ketosis-icon";
@@ -105,7 +106,14 @@ export const FastingProgressStage = ({
         arcRotation + ((14 * 360) / 24) * ((300 + ((24 - 14) / 24) * 30) / 360);
       break;
     case FastingStages.AUTOPHAGY_TWO:
-      icon = <AutophagyIcon fill={iconFill} />;
+      icon = (
+        <AutophagyTwoIcon
+          width={34}
+          height={34}
+          fill={iconFill}
+          style={{ marginTop: -1, marginLeft: 2 }}
+        />
+      );
       angle =
         arcRotation + ((18 * 360) / 24) * ((300 + ((24 - 18) / 24) * 30) / 360);
       break;

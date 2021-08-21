@@ -29,9 +29,9 @@ export enum FastingStages {
  */
 export enum FastingStagesLabels {
   STARTING = "Starting",
-  LOWERING = "Lowering",
-  STABILIZING = "Stabilizing",
-  BURN = "Burn",
+  LOWERING = "Blood Sugar+",
+  STABILIZING = "Blood Sugar=",
+  BURN = "Fat Burn",
   KETOSOS = "Ketosis",
   AUTOPHAGY = "Autophagy",
   AUTOPHAGY_TWO = "Autophagy II",

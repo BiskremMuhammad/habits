@@ -20,6 +20,7 @@ import {
 } from "../../../types/fasting-stages";
 import { FASTING_HABIT_DURATIONS } from "../../../types/habit";
 import { AutophagyIcon } from "../../svgs/fasting/autophagy-icon";
+import { AutophagyTwoIcon } from "../../svgs/fasting/autophagy-two-icon";
 import { BurnIcon } from "../../svgs/fasting/burn-icon";
 import { FullDayIcon } from "../../svgs/fasting/full-day-icon";
 import { KetosisIcon } from "../../svgs/fasting/ketosis-icon";
@@ -115,8 +116,16 @@ export const FastingStageDuration = ({
       Icon = <KetosisIcon width={22} height={22} />;
       break;
     case FastingStages.AUTOPHAGY:
-    case FastingStages.AUTOPHAGY_TWO:
       Icon = <AutophagyIcon />;
+      break;
+    case FastingStages.AUTOPHAGY_TWO:
+      Icon = (
+        <AutophagyTwoIcon
+          width={22}
+          height={22}
+          style={{ transform: [{ scale: 1.4 }] }}
+        />
+      );
       break;
     case FastingStages.FULL_DAY:
       Icon = <FullDayIcon width={22} height={22} />;
