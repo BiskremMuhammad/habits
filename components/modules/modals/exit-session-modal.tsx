@@ -89,9 +89,9 @@ export const ExitSessionModal = ({
         <Button
           shape="oval"
           hasBackground={true}
-          hasCircleBorder={true}
           text="Keep Going"
           onPress={onCancel}
+          extraStyles={{ height: 46 }}
         />
         <Button
           shape="oval"
@@ -99,9 +99,10 @@ export const ExitSessionModal = ({
           noBorder={true}
           text={submitText ? submitText : "Exit"}
           onPress={onExit}
-          extraStyles={
-            !!submitText && submitText.length > 5 && { paddingHorizontal: 28 }
-          }
+          extraStyles={[
+            { height: 46 },
+            !!submitText && submitText.length > 5 && { paddingHorizontal: 28 },
+          ]}
         />
       </View>
     </MotiView>
@@ -111,7 +112,7 @@ export const ExitSessionModal = ({
 const styles = StyleSheet.create({
   container: {
     alignSelf: "flex-end",
-    backgroundColor: "rgba(22, 17, 54, 0.72)",
+    backgroundColor: "rgba(22, 17, 54, 0.82)",
     borderRadius: 40,
     paddingTop: 47,
     paddingBottom: 33,

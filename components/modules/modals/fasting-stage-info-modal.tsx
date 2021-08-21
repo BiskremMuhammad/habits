@@ -138,7 +138,7 @@ export const FastingStageInfoModal = ({
 const styles = StyleSheet.create({
   container: {
     alignSelf: "flex-end",
-    backgroundColor: "rgba(12, 8, 52, 0.8)",
+    backgroundColor: "rgba(12, 8, 52, 0.82)",
     borderRadius: 16,
     marginBottom: 137,
     width: "80%",

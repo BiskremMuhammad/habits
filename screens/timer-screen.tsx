@@ -525,14 +525,14 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   };
 
   const progressCircleWidth: number =
-    screenWidth - 32 - 54 - (screenHeight < 800 ? 28 : 0);
+    screenWidth - 36.5 - (screenHeight < 800 ? 16 : 0);
 
   const habitDurationText: string = `${(habit?.duration || 1) / 60} hr`;
 
   return (
     <View style={TimeScreenStyles.container}>
-      <LinearGradient
-        colors={["rgb(13, 9, 39)", "rgb(33, 29, 66)"]}
+      <Image
+        source={require("../assets/timer/timer-bg.png")}
         style={TimeScreenStyles.backgroundOverlay}
       />
       {!!habit ? (
@@ -607,7 +607,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           <View style={{ position: "relative" }}>
             <AnimatedCircularProgress
               size={progressCircleWidth}
-              width={5}
+              width={7}
               fill={
                 (habit &&
                   habit.type === HabitTypes.FASTING &&
@@ -619,8 +619,8 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               }
               tintColor="#fff"
               lineCap="round"
-              rotation={-145}
-              arcSweepAngle={290}
+              rotation={-150}
+              arcSweepAngle={300}
               backgroundColor="rgba(255,255,255, 0.16)"
             />
             {habit && habit.type === HabitTypes.FASTING && (
@@ -656,7 +656,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           </View>
           {habit && habit.type === HabitTypes.FASTING ? (
             <FastingHuman
-              size={progressCircleWidth}
+              size={0.85 * progressCircleWidth}
               fill={
                 timer >= habit.duration * 60 ? 1 : timer / (habit.duration * 60)
               }
@@ -674,6 +674,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               }
               forceGlow={state === ProgressState.SUBMITTED}
               useHeight={true}
+              extraStyles={{ bottom: "6%" }}
             />
           ) : null}
           <MotiView
@@ -738,17 +739,25 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             </MotiText>
             <MotiView
               from={{ opacity: 0 }}
-              animate={{ opacity: state === ProgressState.PLAYING ? 0.2 : 0 }}
+              animate={{ opacity: state === ProgressState.PLAYING ? 0.9 : 0 }}
               style={TimeScreenStyles.timerEta}
             >
               <Text style={TimeScreenStyles.timerEtaText}>Eta </Text>
-              <Text style={TimeScreenStyles.timerEtaText}>{`${
+              <Text
+                style={[
+                  TimeScreenStyles.timerEtaText,
+                  TimeScreenStyles.timerEtaTimeText,
+                ]}
+              >{`${
                 eta.getHours() > 12 ? eta.getHours() % 12 : eta.getHours()
               }:${
                 eta.getMinutes() < 10
                   ? `0${eta.getMinutes()}`
                   : eta.getMinutes()
-              } ${eta.getHours() > 12 ? "pm" : "am"}`}</Text>
+              }`}</Text>
+              <Text style={TimeScreenStyles.timerEtaText}>
+                {eta.getHours() > 12 ? " pm" : " am"}
+              </Text>
             </MotiView>
           </MotiView>
         </View>
@@ -758,6 +767,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             shape="circle"
             noBorder={true}
             hasBackground={true}
+            extraTextStyles={{ textTransform: "capitalize" }}
             onPress={() => onCancelSessionHandler(true)}
           />
           {state !== ProgressState.ENDED &&
@@ -773,6 +783,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                 shape="circle"
                 hasBackground={true}
                 hasCircleBorder={true}
+                extraTextStyles={{ textTransform: "capitalize" }}
                 darkBorder={state === ProgressState.PLAYING}
                 dim={state === ProgressState.PLAYING}
                 darkText={state !== ProgressState.STOPPED}
@@ -792,7 +803,11 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                   ? togglePartialTimeWarningModal(true)
                   : onSubmit()
               }
+              extraStyles={{ height: 56, width: "45%" }}
             />
+            {screenHeight >= 800 && (
+              <View style={TimeScreenStyles.footerSpacer} />
+            )}
             <View style={TimeScreenStyles.footerInfoSection}>
               <InfoIcon
                 style={[TimeScreenStyles.footerInfoIcon, CommonStyles.withIcon]}
@@ -802,6 +817,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                 Hit SUBMIT to infuse your habit with the light you've built up.
               </Text>
             </View>
+            {screenHeight >= 800 && (
+              <View style={TimeScreenStyles.footerSpacer} />
+            )}
           </View>
         )}
         {habit &&
@@ -883,7 +901,7 @@ const TimeScreenStyles = StyleSheet.create({
     left: 0,
     width: screenWidth,
     height: screenHeight,
-    opacity: 0.6,
+    resizeMode: "cover",
   },
   illustrationBackground: {
     width: screenWidth,
@@ -913,8 +931,8 @@ const TimeScreenStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     paddingHorizontal: 24,
-    marginTop: 25,
-    marginBottom: 40,
+    marginTop: 8,
+    marginBottom: 11,
   },
   peersNum: {
     fontFamily: "Rubik-Regular",
@@ -952,7 +970,6 @@ const TimeScreenStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    opacity: 0.2,
   },
   timerEtaText: {
     fontFamily: "Rubik-Light",
@@ -961,16 +978,21 @@ const TimeScreenStyles = StyleSheet.create({
     letterSpacing: 2,
     textTransform: "uppercase",
     color: "#fff",
+    opacity: 0.8,
+  },
+  timerEtaTimeText: {
+    fontSize: 24,
+    opacity: 1,
   },
   timerText: {
     fontFamily: "Rubik-Light",
-    fontSize: 69,
+    fontSize: 91,
     textAlign: "center",
     letterSpacing: 2,
     color: "#fff",
   },
   hourlyTimerText: {
-    fontSize: 51,
+    fontSize: 61,
   },
   timerFastingStagesContainer: {
     position: "absolute",
@@ -982,7 +1004,7 @@ const TimeScreenStyles = StyleSheet.create({
     justifyContent: "center",
   },
   timerControls: {
-    marginTop: screenHeight < 800 ? 0 : 33,
+    marginTop: screenHeight < 800 ? -32 : -26,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -991,6 +1013,7 @@ const TimeScreenStyles = StyleSheet.create({
   footer: {
     display: "flex",
     alignItems: "center",
+    flex: screenHeight < 800 ? 0 : 1,
     marginTop: -16,
   },
   footerInfoSection: {
@@ -998,7 +1021,7 @@ const TimeScreenStyles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 8,
     paddingVertical: 16,
-    marginTop: 21,
+    marginTop: 12,
     backgroundColor: "rgba(12, 8, 52, 0.6)",
     borderRadius: 16,
     marginHorizontal: "9%",
@@ -1008,6 +1031,7 @@ const TimeScreenStyles = StyleSheet.create({
     height: 14,
     opacity: 0.5,
   },
+  footerSpacer: { flex: 1 },
   footerInfoText: {
     fontFamily: "Rubik-Regular",
     fontSize: 16,

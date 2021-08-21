@@ -41,16 +41,12 @@ export const FastingHuman = ({ fill, size }: FastingHumanProps) => (
     >
       <Image
         source={require("../../assets/human-filled.png")}
-        width={size}
-        height={size}
-        style={[styles.human]}
+        style={[styles.human, { width: size, height: size }]}
       />
     </View>
     <Image
       source={require("../../assets/human.png")}
-      width={size}
-      height={size}
-      style={styles.human}
+      style={[styles.human, { width: size, height: size }]}
     />
   </View>
 );
@@ -58,13 +54,13 @@ export const FastingHuman = ({ fill, size }: FastingHumanProps) => (
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: -36,
+    bottom: -18,
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
   },
   human: {
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   humanProgress: {
     position: "absolute",

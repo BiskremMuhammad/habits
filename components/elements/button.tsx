@@ -12,6 +12,7 @@ import {
   Text,
   StyleProp,
   ViewStyle,
+  TextStyle,
 } from "react-native";
 
 /**
@@ -47,6 +48,13 @@ interface ButtonProps {
    * @type {StyleProp<ViewStyle>}
    */
   extraStyles?: StyleProp<ViewStyle>;
+
+  /**
+   * extra custom styles to the button
+   *
+   * @type {StyleProp<TextStyle>}
+   */
+  extraTextStyles?: StyleProp<TextStyle>;
 
   /**
    * flag if the button has a background
@@ -104,15 +112,16 @@ export const Button = (props: ButtonProps) => {
       style={[
         ButtonStyles.base,
         props.shape === "circle" ? ButtonStyles.circle : ButtonStyles.oval,
-        props.hasBackground && {
-          backgroundColor: props.noBorder
-            ? "#342F58"
-            : props.dim
-            ? props.darkBorder
-              ? "#575272"
-              : "#524A7B"
-            : "rgba(107, 97, 154, 0.5)",
-        },
+        props.shape === "circle" &&
+          props.hasBackground &&
+          props.noBorder && { width: 77, height: 77 },
+        props.shape === "circle" &&
+          props.hasBackground &&
+          !props.noBorder && { width: 83.77, height: 83.77 },
+        props.hasBackground &&
+          props.noBorder && {
+            backgroundColor: "#342F58",
+          },
         props.isAccentButton && ButtonStyles.accentButton,
         props.extraStyles,
       ]}
@@ -131,18 +140,22 @@ export const Button = (props: ButtonProps) => {
                 style={[
                   ButtonStyles.circleBorder,
                   ButtonStyles.circleBorder01,
+                  props.hasBackground && ButtonStyles.violetBorder,
                   props.darkBorder && ButtonStyles.darkBorder,
-                  props.darkBorder && { transform: [{ rotate: "0deg" }] },
+                  props.hasBackground && { transform: [{ rotate: "114deg" }] },
+                  props.darkBorder && { transform: [{ rotate: "150deg" }] },
                 ]}
-              ></View>
+              />
               <View
                 style={[
                   ButtonStyles.circleBorder,
                   ButtonStyles.circleBorder02,
+                  props.hasBackground && ButtonStyles.violetBorder,
                   props.darkBorder && ButtonStyles.darkBorder,
-                  props.darkBorder && { transform: [{ rotate: "90deg" }] },
+                  props.hasBackground && { transform: [{ rotate: "64deg" }] },
+                  props.darkBorder && { transform: [{ rotate: "200deg" }] },
                 ]}
-              ></View>
+              />
             </View>
           )}
           {props.hasCircleBorder && (
@@ -150,16 +163,32 @@ export const Button = (props: ButtonProps) => {
               style={[
                 ButtonStyles.borderCircle,
                 props.shape === "oval" && ButtonStyles.ovalBorderCircle,
+                props.hasBackground &&
+                  props.shape === "circle" && {
+                    borderColor: "#564B93",
+                    right: "30%",
+                    top: "90%",
+                    width: 12.35,
+                    height: 12.35,
+                  },
                 props.darkBorder && {
-                  borderColor: "#292441",
+                  borderColor: "#575272",
                   right: "auto",
-                  top: 38,
-                  left: 0,
+                  top: 48,
+                  left: -4,
                 },
               ]}
-            ></View>
+            />
           )}
         </View>
+      )}
+      {props.shape === "circle" && props.hasBackground && !props.noBorder && (
+        <View
+          style={[
+            ButtonStyles.circleInnerBackground,
+            { backgroundColor: props.dim ? "#575272" : "#564B93" },
+          ]}
+        />
       )}
       <Text
         style={[
@@ -167,6 +196,7 @@ export const Button = (props: ButtonProps) => {
           props.shape === "oval" && ButtonStyles.ovalText,
           props.darkText && { color: "#0E0A27" },
           props.isAccentButton && ButtonStyles.accentText,
+          props.extraTextStyles,
         ]}
       >
         {props.text}
@@ -180,12 +210,18 @@ const ButtonStyles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 30,
+    borderRadius: 99,
     position: "relative",
   },
   circle: {
     width: 60,
     height: 60,
+  },
+  circleInnerBackground: {
+    width: 72,
+    height: 72,
+    position: "absolute",
+    borderRadius: 99,
   },
   oval: {
     paddingVertical: 15,
@@ -210,7 +246,7 @@ const ButtonStyles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    borderRadius: 30,
+    borderRadius: 99,
   },
   ovalBorderContainer: {
     alignSelf: "center",
@@ -234,17 +270,22 @@ const ButtonStyles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    borderRadius: 30,
+    borderRadius: 99,
     borderWidth: 2,
     borderTopColor: "#fff",
     borderLeftColor: "#fff",
     borderBottomColor: "#fff",
     borderRightColor: "transparent",
   },
+  violetBorder: {
+    borderTopColor: "#564B93",
+    borderLeftColor: "#564B93",
+    borderBottomColor: "#564B93",
+  },
   darkBorder: {
-    borderTopColor: "#292441",
-    borderLeftColor: "#292441",
-    borderBottomColor: "#292441",
+    borderTopColor: "#575272",
+    borderLeftColor: "#575272",
+    borderBottomColor: "#575272",
   },
   circleBorder01: {
     transform: [
