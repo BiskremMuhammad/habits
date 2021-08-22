@@ -468,15 +468,13 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         ? timer
         : (habit?.duration || 1) * 60 - timer;
     setSubmittedTimer(timeToSubmit);
-    if (!isIntroduction) {
-      dispatch({
-        type: HabitActionTypes.SAVE_DAY_PROGRESS,
-        payload: {
-          habitId,
-          time: timeToSubmit,
-        } as ProgressPayload,
-      });
-    }
+    dispatch({
+      type: HabitActionTypes.SAVE_DAY_PROGRESS,
+      payload: {
+        habitId,
+        time: timeToSubmit,
+      } as ProgressPayload,
+    });
   };
 
   const onSubmitAnimationHasCompleted = (a: string) => {
