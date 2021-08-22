@@ -45,6 +45,7 @@ enum Timespans {
 
 export const Graph = ({ data }: GraphProps) => {
   const [timespan, setTimespan] = useState<Timespans>(Timespans.FIVE_DAYS);
+  const [dot, setDot] = useState<number>();
 
   const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
   const recentDays = useMemo((): { day: string; duration: number }[] => {
@@ -91,23 +92,7 @@ export const Graph = ({ data }: GraphProps) => {
           )!.duration;
         }
         return {
-          day:
-            i === 0 ||
-            i === timespanDays.length - 1 ||
-            timespan === Timespans.FIVE_DAYS ||
-            (timespan === Timespans.TWO_WEEKS && i === 6) ||
-            ((timespan === Timespans.ONE_MONTH ||
-              timespan === Timespans.THREE_MONTHS) &&
-              (i === Math.floor(timespanDays.length * 0.3333) ||
-                i === Math.floor(timespanDays.length * 0.666667)))
-              ? `${day.getMonth() + 1}/${day.getDate()}${
-                  timespan === Timespans.ONE_MONTH && i === 0 ? "     " : ""
-                }${
-                  timespan === Timespans.THREE_MONTHS && i === 0
-                    ? "        "
-                    : ""
-                }`
-              : "",
+          day: `${day.getMonth() + 1}/${day.getDate()}`,
           duration: dayProgress,
         };
       })
@@ -119,10 +104,28 @@ export const Graph = ({ data }: GraphProps) => {
    *
    * @type {string[]}
    */
-  const xAxisLabels: string[] = recentDays.reduce<string[]>(
-    (a, v) => a.concat(v.day),
-    []
-  );
+  const xAxisLabels: string[] = recentDays
+    .reduce<string[]>((a, v) => a.concat(v.day), [])
+    .map((d: string, i: number) =>
+      i === 0 ||
+      i === recentDays.length - 1 ||
+      timespan === Timespans.FIVE_DAYS ||
+      (timespan === Timespans.TWO_WEEKS && i === 6) ||
+      ((timespan === Timespans.ONE_MONTH ||
+        timespan === Timespans.THREE_MONTHS) &&
+        (i === Math.floor(recentDays.length * 0.3333) ||
+          i === Math.floor(recentDays.length * 0.666667)))
+        ? `${d}${
+            timespan === Timespans.ONE_MONTH && i === recentDays.length - 1
+              ? "     "
+              : ""
+          }${
+            timespan === Timespans.THREE_MONTHS && i === recentDays.length - 1
+              ? "        "
+              : ""
+          }`
+        : ""
+    );
 
   /**
    * populate the graph points dataset
@@ -182,7 +185,12 @@ export const Graph = ({ data }: GraphProps) => {
               i === Object.keys(Timespans).length - 1 && { marginRight: 0 },
             ]}
           >
-            <Pressable onPress={() => setTimespan(t as Timespans)}>
+            <Pressable
+              onPress={() => {
+                setDot(undefined);
+                setTimespan(t as Timespans);
+              }}
+            >
               <Text
                 style={[
                   styles.timspanItemText,
@@ -235,16 +243,12 @@ export const Graph = ({ data }: GraphProps) => {
             fromZero={true}
             transparent={true}
             getDotColor={(d, i) =>
-              d !== 0 &&
-              d !== yLabelMaxValue &&
-              i === graphData.lastIndexOf(Math.max(...graphData))
-                ? "#fff"
-                : "rgba(255,255,255,0)"
+              d !== yLabelMaxValue && i === dot ? "#fff" : "rgba(255,255,255,0)"
             }
-            renderDotContent={({ x, indexData, index }) =>
-              indexData !== 0 &&
+            onDataPointClick={({ index }) => setDot(index)}
+            renderDotContent={({ x, y, indexData, index }) =>
               indexData !== yLabelMaxValue &&
-              index === graphData.lastIndexOf(Math.max(...graphData)) && (
+              index === dot && (
                 <View
                   key={x}
                   style={[
@@ -263,35 +267,32 @@ export const Graph = ({ data }: GraphProps) => {
                     style={{ width: "100%", height: "100%" }}
                   />
                   <View
-                    style={{
-                      position: "absolute",
-                      top: graphHeight - 13,
-                      width: "200%",
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
+                    style={[
+                      styles.dotTextContainer,
+                      {
+                        top: y - 72,
+                      },
+                    ]}
                   >
-                    <Text
-                      style={[
-                        styles.xAxisLabel,
-                        styles.xAxisLabelHeighest,
-                        {
-                          marginLeft:
-                            index !== xAxisLabels.length - 1
-                              ? -3
-                              : timespan === Timespans.TWO_WEEKS
-                              ? -2
-                              : timespan === Timespans.ONE_MONTH
-                              ? -5
-                              : timespan === Timespans.THREE_MONTHS
-                              ? -7
-                              : -2,
-                        },
-                      ]}
-                    >
-                      {xAxisLabels[index]}
+                    <Text style={styles.dotTextDate}>
+                      {recentDays[index].day}
+                    </Text>
+                    <Text style={styles.dotTextDuration}>
+                      {Number(graphData[index]) < 60
+                        ? `${Math.floor(Number(graphData[index]))}s`
+                        : Number(graphData[index]) >= 60 * 60
+                        ? Number(graphData[index]) % (60 * 60) === 0
+                          ? `${Math.floor(
+                              Number(graphData[index]) / (60 * 60)
+                            )}h`
+                          : `${Math.floor(
+                              Number(graphData[index]) / (60 * 60)
+                            )}h ${Math.floor(
+                              (Number(graphData[index]) / 60) % 60
+                            )}m`
+                        : `${Math.floor(
+                            (Number(graphData[index]) / 60) % 60
+                          )}m`}
                     </Text>
                   </View>
                   <View
@@ -405,6 +406,39 @@ const styles = StyleSheet.create({
     opacity: 1,
     fontFamily: "Rubik-SemiBold",
     letterSpacing: -0.5,
+    textAlign: "center",
+  },
+  dotTextContainer: {
+    position: "absolute",
+    width: "200%",
+    display: "flex",
+    flexDirection: "column",
+    alignContent: "center",
+    padding: 8,
+    borderRadius: 12,
+    backgroundColor: "rgba(52, 48, 91, 0.9)",
+    shadowColor: "rgba(0,0,0,0.25)",
+    shadowOffset: {
+      width: 0,
+      height: 7,
+    },
+    shadowOpacity: 0.41,
+    shadowRadius: 9.11,
+
+    elevation: 14,
+  },
+  dotTextDate: {
+    fontFamily: "Rubik-Medium",
+    fontSize: 16,
+    color: "#fff",
+    lineHeight: 20,
+    textAlign: "center",
+  },
+  dotTextDuration: {
+    fontFamily: "Rubik-Light",
+    fontSize: 14,
+    color: "#fff",
+    lineHeight: 20,
     textAlign: "center",
   },
 });
