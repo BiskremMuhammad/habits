@@ -52,7 +52,7 @@ import {
   ProgressPayload,
 } from "../redux/reducers/habit/habit-actions";
 import { useDerivedValue } from "react-native-reanimated";
-import { Plant } from "../components/elements/plant";
+import { Plant, PlantStage } from "../components/elements/plant";
 import { Modal } from "../components/modules/modals/modal";
 import { ExitSessionModal } from "../components/modules/modals/exit-session-modal";
 import { Routes } from "../types/route-names";
@@ -369,7 +369,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   const runTheTimer = () => {
     if (!timerCounter.current && habit) {
-      const period: number = isIntroduction ? 100 : 1000;
+      const period: number = isIntroduction ? 300 : 1000;
       timerCounter.current = setInterval(() => {
         setTimer((t) =>
           habit && habit.type === HabitTypes.FASTING ? t + 1 : t - 1
@@ -673,8 +673,59 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
                   : (habit.duration * 60 - timer) / (habit.duration * 60)
               }
               forceGlow={state === ProgressState.SUBMITTED}
-              useHeight={true}
-              extraStyles={{ bottom: "6%" }}
+              forceStage={
+                !isIntroduction
+                  ? undefined
+                  : state === ProgressState.STOPPED
+                  ? PlantStage.STAGE_20
+                  : timer > 57
+                  ? PlantStage.STAGE_1
+                  : timer > 54
+                  ? PlantStage.STAGE_2
+                  : timer > 51
+                  ? PlantStage.STAGE_3
+                  : timer > 48
+                  ? PlantStage.STAGE_4
+                  : timer > 45
+                  ? PlantStage.STAGE_5
+                  : timer > 42
+                  ? PlantStage.STAGE_6
+                  : timer > 39
+                  ? PlantStage.STAGE_7
+                  : timer > 36
+                  ? PlantStage.STAGE_8
+                  : timer > 33
+                  ? PlantStage.STAGE_9
+                  : timer > 30
+                  ? PlantStage.STAGE_10
+                  : timer > 27
+                  ? PlantStage.STAGE_11
+                  : timer > 24
+                  ? PlantStage.STAGE_12
+                  : timer > 21
+                  ? PlantStage.STAGE_13
+                  : timer > 18
+                  ? PlantStage.STAGE_14
+                  : timer > 15
+                  ? PlantStage.STAGE_15
+                  : timer > 12
+                  ? PlantStage.STAGE_16
+                  : timer > 9
+                  ? PlantStage.STAGE_17
+                  : timer > 6
+                  ? PlantStage.STAGE_18
+                  : timer > 3
+                  ? PlantStage.STAGE_19
+                  : PlantStage.STAGE_20
+              }
+              useHeight={!isIntroduction}
+              extraStyles={[
+                { bottom: "6%" },
+                isIntroduction && {
+                  height: "85%",
+                  width: "auto",
+                },
+              ]}
             />
           ) : null}
           <MotiView
