@@ -109,7 +109,7 @@ export const IdentityReinforcement = () => {
     if (habit) {
       Animated.timing(line1_dxAnimation, {
         toValue: 11,
-        duration: 3000,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
       line1_dxAnimation.addListener((val) => {
@@ -119,7 +119,7 @@ export const IdentityReinforcement = () => {
 
       Animated.timing(line1_dyAnimation, {
         toValue: -74,
-        duration: 3000,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
       line1_dyAnimation.addListener((val) => {
@@ -128,7 +128,7 @@ export const IdentityReinforcement = () => {
 
       Animated.timing(line2_dxAnimation, {
         toValue: 38,
-        duration: 3000,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
       line2_dxAnimation.addListener((val) => {
@@ -137,7 +137,7 @@ export const IdentityReinforcement = () => {
 
       Animated.timing(line2_dyAnimation, {
         toValue: 9,
-        duration: 3000,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
       line2_dyAnimation.addListener((val) => {
@@ -146,7 +146,7 @@ export const IdentityReinforcement = () => {
 
       Animated.timing(circleRadiusAnimation, {
         toValue: 6,
-        duration: 3000,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
       circleRadiusAnimation.addListener((val) => {
@@ -155,7 +155,7 @@ export const IdentityReinforcement = () => {
 
       Animated.timing(circle1_xPositionAnimation, {
         toValue: lineLengthFactor - 12,
-        duration: 3000,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
       circle1_xPositionAnimation.addListener((val) => {
@@ -164,7 +164,7 @@ export const IdentityReinforcement = () => {
 
       Animated.timing(circle2_xPositionAnimation, {
         toValue: lineLengthFactor + 36,
-        duration: 3000,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
       circle2_xPositionAnimation.addListener((val) => {
@@ -173,7 +173,7 @@ export const IdentityReinforcement = () => {
 
       Animated.timing(circle2_yPositionAnimation, {
         toValue: 62,
-        duration: 3000,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
       circle2_yPositionAnimation.addListener((val) => {
@@ -182,7 +182,7 @@ export const IdentityReinforcement = () => {
     }
 
     // after all delays and animations and another 2 seconds navigate to view the created habit
-    const automaticNavigateDuration: number = 3000 + 2000;
+    const automaticNavigateDuration: number = 1000 + 1000;
     const autoNavigate = setTimeout(() => {
       if (isOnFocus) {
         navigation.dispatch(
@@ -221,7 +221,7 @@ export const IdentityReinforcement = () => {
       <MotiView
         from={{ opacity: 0 }}
         animate={{ opacity: 0.6 }}
-        transition={{ type: "timing", duration: 3000 }}
+        transition={{ type: "timing", duration: 1000 }}
         style={styles.background}
       >
         <RadialGradientShape
