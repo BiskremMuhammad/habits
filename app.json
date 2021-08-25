@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "habit",
-    "slug": "habit",
+    "name": "Flourish - Habit Builder and Fasting Tracker",
+    "slug": "flourish-habit-builder",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
