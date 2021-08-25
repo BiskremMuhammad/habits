@@ -145,7 +145,13 @@ export const FastingStageDuration = ({
     >
       <View style={[CommonStyles.textWithIcon, !hasSpacer && { flex: 2.5 }]}>
         <View style={styles.stageIconContainer}>{Icon}</View>
-        <Text style={[styles.stageText, selected && styles.stageTextSelected]}>
+        <Text
+          style={[
+            styles.stageText,
+            selected && styles.stageTextSelected,
+            !hideDuration && { marginLeft: 3 },
+          ]}
+        >
           {FastingStagesLabels[stage]}
         </Text>
         {showInfoIcon && <InfoIcon style={CommonStyles.infoIcon} />}

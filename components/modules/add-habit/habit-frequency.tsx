@@ -172,8 +172,8 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
       {freqChangeOpen && (
         <View style={props.floatingPanel && styles.floatingPanelContainer}>
           <MotiView
-            from={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100%" }}
+            from={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             style={styles.frequencyChangeContainer}
           >
             <View style={styles.frequencyChangeBorderContainer}>
