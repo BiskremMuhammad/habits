@@ -14,6 +14,7 @@ import {
   TextStyle,
   Pressable,
   ScrollView,
+  Platform,
 } from "react-native";
 import { CommonStyles } from "../../styles/common";
 import { FastingStages } from "../../types/fasting-stages";
@@ -158,6 +159,7 @@ export const Input = (props: InputProps) => {
     <View
       style={[
         InputStyles.input,
+        Platform.OS === "ios" && { zIndex: 2 },
         props.width === "full" && { flex: 1, justifyContent: "flex-start" },
       ]}
     >
@@ -233,8 +235,8 @@ export const Input = (props: InputProps) => {
         !!props.dropdownOptions &&
         props.dropdownOptions.length > 1 && (
           <MotiView
-            from={{ opacity: 0, translateY: 10, height: 0 }}
-            animate={{ opacity: 1, translateY: 0, height: "100%" }}
+            from={{ opacity: 0, translateY: 10 }}
+            animate={{ opacity: 1, translateY: 0 }}
             style={[
               InputStyles.dropdownContainer,
               props.width === "full" && { width: "125%" },

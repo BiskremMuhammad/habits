@@ -410,6 +410,7 @@ const styles = StyleSheet.create({
   },
   dotTextContainer: {
     position: "absolute",
+    zIndex: 2,
     width: "200%",
     display: "flex",
     flexDirection: "column",
