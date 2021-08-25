@@ -4,6 +4,7 @@
  * @description implement the Button element with our pre-defined styles
  */
 
+import { MotiView } from "moti";
 import React from "react";
 import {
   Pressable,
@@ -14,6 +15,7 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
+import { Easing } from "react-native-reanimated";
 
 /**
  * interface that defines the props of the component
@@ -128,7 +130,21 @@ export const Button = (props: ButtonProps) => {
       onPress={props.onPress}
     >
       {!props.noBorder && (
-        <View
+        <MotiView
+          from={
+            props.shape === "circle" &&
+            props.hasBackground && { rotate: "0deg" }
+          }
+          animate={
+            props.shape === "circle" && props.hasBackground
+              ? { rotate: props.darkBorder ? "80deg" : "0deg" }
+              : {}
+          }
+          transition={{
+            type: "timing",
+            duration: 200,
+            easing: Easing.out(Easing.exp),
+          }}
           style={[
             ButtonStyles.borderContainer,
             props.shape === "oval" && ButtonStyles.ovalBorderContainer,
@@ -143,7 +159,7 @@ export const Button = (props: ButtonProps) => {
                   props.hasBackground && ButtonStyles.violetBorder,
                   props.darkBorder && ButtonStyles.darkBorder,
                   props.hasBackground && { transform: [{ rotate: "114deg" }] },
-                  props.darkBorder && { transform: [{ rotate: "150deg" }] },
+                  // props.darkBorder && { transform: [{ rotate: "150deg" }] },
                 ]}
               />
               <View
@@ -153,7 +169,7 @@ export const Button = (props: ButtonProps) => {
                   props.hasBackground && ButtonStyles.violetBorder,
                   props.darkBorder && ButtonStyles.darkBorder,
                   props.hasBackground && { transform: [{ rotate: "64deg" }] },
-                  props.darkBorder && { transform: [{ rotate: "200deg" }] },
+                  // props.darkBorder && { transform: [{ rotate: "200deg" }] },
                 ]}
               />
             </View>
@@ -173,14 +189,11 @@ export const Button = (props: ButtonProps) => {
                   },
                 props.darkBorder && {
                   borderColor: "#575272",
-                  right: "auto",
-                  top: 48,
-                  left: -4,
                 },
               ]}
             />
           )}
-        </View>
+        </MotiView>
       )}
       {props.shape === "circle" && props.hasBackground && !props.noBorder && (
         <View
