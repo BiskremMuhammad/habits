@@ -12,6 +12,8 @@ import {
   call,
   takeLatest,
 } from "redux-saga/effects";
+import { Alert } from "react-native";
+import * as Updates from "expo-updates";
 import fb from "firebase/app";
 import {
   Habit,
@@ -130,6 +132,12 @@ const fetchHabitsFromAsyncStorage = async (): Promise<Habit[]> => {
     if (reset) {
       PushNotification.cancelAllNotifications();
       AsyncStorage.removeItem(CONSTANTS.PLAY_INTRODUCTION_ASYNC_STORAGE_KEY);
+
+      Alert.alert(
+        "Reset",
+        "Please Restart the app to complete the reset process.",
+        [{ text: "Restart Now", onPress: () => Updates.reloadAsync() }]
+      );
     }
     firebase
       .updateDocument(
