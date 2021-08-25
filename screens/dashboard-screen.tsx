@@ -55,7 +55,7 @@ export const DashboardScreen = () => {
     setRooms(rooms);
   }, [habits]);
 
-  return habits.length ? (
+  return !habits.length ? (
     <View />
   ) : (
     <View style={styles.container}>
