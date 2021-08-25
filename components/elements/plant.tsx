@@ -1001,12 +1001,15 @@ export const Plant = (props: PlantProps) => {
   const generatePlant = useMemo((): JSX.Element => {
     let activePlant: boolean = true;
     const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
-    const isTodayLogged: boolean =
-      (props.habit.progress.find(
-        (p: HabitProgressData) => p.date.getTime() === today.getTime()
-      )?.duration || 0) /
-        60 >=
-      props.habit.duration;
+    const isTodayLogged: boolean = !!props.habit.progress.find(
+      (p: HabitProgressData) => p.date.getTime() === today.getTime()
+    );
+    const todayProgression: number = isTodayLogged
+      ? (props.habit.progress.find(
+          (p: HabitProgressData) => p.date.getTime() === today.getTime()
+        )?.duration || 0) /
+        (props.habit.duration * 60)
+      : 0;
     if (!props.isActiveSession) {
       // get yesterday streak data to set inactive plant state when yesterday is not active streak
       const yesterday: Date = new Date(today.getTime() - 24 * 60 * 60 * 1000);
@@ -1034,147 +1037,224 @@ export const Plant = (props: PlantProps) => {
       plantResource = getPlantResource(props.forceStage, plantState);
     }
     // if it's not in the timer and no progress is tracked yet display the first seed medium plant
-    else if (
-      (props.habit.progress.length === 0 ||
-        (props.habit.progress.length === 1 &&
-          props.habit.progress.filter(
-            (p: HabitProgressData) => p.date.getTime() === today.getTime()
-          ).length &&
-          !isTodayLogged)) &&
-      !props.isActiveSession
-    ) {
+    else if (props.habit.progress.length === 0 && !props.isActiveSession) {
       plantResource = getPlantResource(PlantStage.STAGE_1, PlantState.NORMAL);
-    } else if (props.habit.progress.length < 1) {
+    } else if (
+      props.habit.progress.length < 1 ||
+      (props.isActiveSession &&
+        props.habit.progress.length === 1 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession
           ? !!props.sessionProgress &&
-            props.sessionProgress > 0 &&
-            props.sessionProgress < 0.4
+            props.sessionProgress + todayProgression > 0 &&
+            props.sessionProgress + todayProgression < 0.166667
             ? PlantStage.STAGE_1
-            : PlantStage.STAGE_2
+            : !!props.sessionProgress &&
+              props.sessionProgress + todayProgression >= 0.166667 &&
+              props.sessionProgress + todayProgression < 0.3333333
+            ? PlantStage.STAGE_2
+            : !!props.sessionProgress &&
+              props.sessionProgress + todayProgression >= 0.3333333 &&
+              props.sessionProgress + todayProgression < 0.5
+            ? PlantStage.STAGE_3
+            : !!props.sessionProgress &&
+              props.sessionProgress + todayProgression >= 0.5 &&
+              props.sessionProgress + todayProgression < 0.75
+            ? PlantStage.STAGE_4
+            : !!props.sessionProgress &&
+              props.sessionProgress + todayProgression >= 0.75 &&
+              props.sessionProgress + todayProgression < 1
+            ? PlantStage.STAGE_5
+            : PlantStage.STAGE_6
           : PlantStage.STAGE_1,
         plantState
       );
-    } else if (props.habit.progress.length < 2) {
+    } else if (
+      props.habit.progress.length < 2 ||
+      (props.isActiveSession &&
+        props.habit.progress.length === 2 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession
           ? !!props.sessionProgress &&
-            props.sessionProgress > 0 &&
-            props.sessionProgress < 0.4
-            ? PlantStage.STAGE_3
-            : PlantStage.STAGE_4
-          : PlantStage.STAGE_2,
-        plantState
-      );
-    } else if (props.habit.progress.length < 3) {
-      plantResource = getPlantResource(
-        props.isActiveSession
-          ? !!props.sessionProgress &&
-            props.sessionProgress > 0 &&
-            props.sessionProgress < 0.4
-            ? PlantStage.STAGE_5
-            : PlantStage.STAGE_6
-          : PlantStage.STAGE_4,
-        plantState
-      );
-    } else if (props.habit.progress.length < 4) {
-      plantResource = getPlantResource(
-        props.isActiveSession ? PlantStage.STAGE_7 : PlantStage.STAGE_6,
-        plantState
-      );
-    } else if (props.habit.progress.length < 5) {
-      plantResource = getPlantResource(
-        props.isActiveSession
-          ? !!props.sessionProgress &&
-            props.sessionProgress > 0 &&
-            props.sessionProgress < 0.4
+            props.sessionProgress + todayProgression > 0 &&
+            props.sessionProgress + todayProgression < 0.25
+            ? PlantStage.STAGE_6
+            : !!props.sessionProgress &&
+              props.sessionProgress + todayProgression >= 0.25 &&
+              props.sessionProgress + todayProgression < 0.5
+            ? PlantStage.STAGE_7
+            : !!props.sessionProgress &&
+              props.sessionProgress + todayProgression >= 0.5 &&
+              props.sessionProgress + todayProgression < 0.75
             ? PlantStage.STAGE_8
-            : PlantStage.STAGE_9
-          : PlantStage.STAGE_7,
+            : !!props.sessionProgress &&
+              props.sessionProgress + todayProgression >= 0.75 &&
+              props.sessionProgress + todayProgression < 1
+            ? PlantStage.STAGE_9
+            : PlantStage.STAGE_10
+          : PlantStage.STAGE_6,
         plantState
       );
-    } else if (props.habit.progress.length < 6) {
+    } else if (
+      props.habit.progress.length < 3 ||
+      (props.isActiveSession &&
+        props.habit.progress.length === 3 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
-        props.isActiveSession
-          ? !!props.sessionProgress &&
-            props.sessionProgress > 0 &&
-            props.sessionProgress < 0.4
-            ? PlantStage.STAGE_10
-            : PlantStage.STAGE_11
-          : PlantStage.STAGE_9,
+        props.isActiveSession ? PlantStage.STAGE_11 : PlantStage.STAGE_10,
         plantState
       );
-    } else if (props.habit.progress.length < 9) {
+    } else if (
+      props.habit.progress.length < 5 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 5 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_12 : PlantStage.STAGE_11,
         plantState
       );
-    } else if (props.habit.progress.length < 13) {
+    } else if (
+      props.habit.progress.length < 10 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 10 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_13 : PlantStage.STAGE_12,
         plantState
       );
-    } else if (props.habit.progress.length < 16) {
+    } else if (
+      props.habit.progress.length < 14 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 14 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_14 : PlantStage.STAGE_13,
         plantState
       );
-    } else if (props.habit.progress.length < 18) {
+    } else if (
+      props.habit.progress.length < 18 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 18 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_15 : PlantStage.STAGE_14,
         plantState
       );
-    } else if (props.habit.progress.length < 20) {
+    } else if (
+      props.habit.progress.length < 21 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 21 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_16 : PlantStage.STAGE_15,
         plantState
       );
-    } else if (props.habit.progress.length < 23) {
+    } else if (
+      props.habit.progress.length < 23 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 23 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_17 : PlantStage.STAGE_16,
         plantState
       );
-    } else if (props.habit.progress.length < 28) {
+    } else if (
+      props.habit.progress.length < 28 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 28 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_18 : PlantStage.STAGE_17,
         plantState
       );
-    } else if (props.habit.progress.length < 38) {
+    } else if (
+      props.habit.progress.length < 38 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 38 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_19 : PlantStage.STAGE_18,
         plantState
       );
-    } else if (props.habit.progress.length < 48) {
+    } else if (
+      props.habit.progress.length < 48 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 48 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_20 : PlantStage.STAGE_19,
         plantState
       );
-    } else if (props.habit.progress.length < 52) {
+    } else if (
+      props.habit.progress.length < 52 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 52 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_21 : PlantStage.STAGE_20,
         plantState
       );
-    } else if (props.habit.progress.length < 58) {
+    } else if (
+      props.habit.progress.length < 58 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 58 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_22 : PlantStage.STAGE_21,
         plantState
       );
-    } else if (props.habit.progress.length < 68) {
+    } else if (
+      props.habit.progress.length < 68 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 68 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_23 : PlantStage.STAGE_22,
         plantState
       );
-    } else if (props.habit.progress.length < 77) {
+    } else if (
+      props.habit.progress.length < 77 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 77 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_24 : PlantStage.STAGE_23,
         plantState
       );
-    } else if (props.habit.progress.length < 81) {
+    } else if (
+      props.habit.progress.length < 81 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 81 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_25 : PlantStage.STAGE_24,
         plantState
       );
-    } else if (props.habit.progress.length < 89) {
+    } else if (
+      props.habit.progress.length < 89 ||
+      (props.isActiveSession &&
+        props.habit.progress.length <= 89 &&
+        isTodayLogged)
+    ) {
       plantResource = getPlantResource(
         props.isActiveSession ? PlantStage.STAGE_26 : PlantStage.STAGE_25,
         plantState
