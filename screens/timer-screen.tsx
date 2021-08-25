@@ -258,7 +258,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   useEffect(() => {
     AppState.addEventListener("change", handleAppStateChange);
     return () => AppState.removeEventListener("change", handleAppStateChange);
-  }, [habit, state]);
+  }, [habit, state, isIntroduction, eta, etaNotificationId]);
 
   /**
    * record starting time immidiatly when background is invoked
@@ -282,6 +282,17 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     if (nextAppState.match(/inactive|background/)) {
       await recordStartTime();
       stopTheTimer();
+      if (!isIntroduction) {
+        PushNotification.scheduleNotification(
+          "Congratulations!",
+          `Congratulations you have illuminated your ${HabitTypes[
+            habit!.type
+          ].charAt(0)}${HabitTypes[habit!.type].substr(1).toLowerCase()} plant`,
+          eta
+        ).then((id: string) => {
+          setEtaNotificationId(id);
+        });
+      }
     } else if (
       appState.current.match(/inactive|background/) &&
       nextAppState === "active"
@@ -301,6 +312,10 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           : newTime;
       });
       runTheTimer();
+      // cancel committed time notification reached
+      if (etaNotificationId) {
+        PushNotification.cancelNotification(etaNotificationId);
+      }
     }
     appState.current = nextAppState;
   };
@@ -397,17 +412,6 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           : timer;
       const etaTime: Date = new Date(Date.now() + timeToComplete * 1000);
       setEta(etaTime);
-      if (!isIntroduction) {
-        PushNotification.scheduleNotification(
-          "Congratulations!",
-          `Congratulations you have illuminated your ${HabitTypes[
-            habit!.type
-          ].charAt(0)}${HabitTypes[habit!.type].substr(1).toLowerCase()} plant`,
-          etaTime
-        ).then((id: string) => {
-          setEtaNotificationId(id);
-        });
-      }
       // change user practicing state on the server
       changeUserPracticingState(habit ? habit.type : "none");
     } else {
