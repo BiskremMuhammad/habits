@@ -269,6 +269,11 @@ export const AddHabit = (props: AddHabitProps) => {
         <Button
           shape={props.isIntroduction ? "circle" : "oval"}
           text={!props.isIntroduction ? "commit" : "start"}
+          hasBackground={props.isIntroduction}
+          isStatic={props.isIntroduction}
+          extraTextStyles={
+            props.isIntroduction && { textTransform: "capitalize" }
+          }
           onPress={onCallToActionPress}
           hasCircleBorder={true}
         />

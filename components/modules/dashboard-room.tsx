@@ -233,6 +233,9 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
             <Button
               shape="circle"
               text="start"
+              hasBackground={true}
+              isStatic={true}
+              extraTextStyles={{ textTransform: "capitalize" }}
               onPress={onStartHabit}
               hasCircleBorder={true}
             />

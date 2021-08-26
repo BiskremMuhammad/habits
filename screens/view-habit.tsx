@@ -43,7 +43,7 @@ import {
 import { Routes } from "../types/route-names";
 import { TimerScreenRouteParams } from "./timer-screen";
 import { WeekDays, WeekDaysFullName } from "../types/week-days";
-import { Plant } from "../components/elements/plant";
+import { Plant, PlantStage } from "../components/elements/plant";
 import { Button } from "../components/elements/button";
 import { MotiView } from "@motify/components";
 import { MonthView } from "../components/modules/view-habit/month-view";
@@ -437,6 +437,10 @@ export const ViewHabitScreen = ({
               <Button
                 shape="circle"
                 text="start"
+                hasBackground={true}
+                isStatic={true}
+                extraTextStyles={{ textTransform: "capitalize" }}
+                dim={true}
                 onPress={onStartPracticing}
                 hasCircleBorder={true}
               />
@@ -527,7 +531,7 @@ const styles = StyleSheet.create({
   },
   habitDetails: {
     display: "flex",
-    paddingVertical: 48,
+    paddingVertical: 72,
     flex: 1.5,
   },
   habitDetailsText: {
@@ -571,7 +575,7 @@ const styles = StyleSheet.create({
   plant: {
     position: "absolute",
     zIndex: -1,
-    bottom: 83,
+    bottom: 112,
   },
   weekday: {
     fontFamily: "JosefinSans-Regular",
