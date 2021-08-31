@@ -5,10 +5,9 @@
  */
 
 import { useNavigation } from "@react-navigation/core";
-import { useRoute } from "@react-navigation/native";
-import React, { Dispatch, useEffect, useState } from "react";
+import { CommonActions, useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../components/elements/button";
 import { Spoiler } from "../components/elements/spoiler";
 import { Modal } from "../components/modules/modals/modal";
@@ -16,20 +15,28 @@ import { RequestNotificationAccessModal } from "../components/modules/modals/req
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
-import {
-  HabitActions,
-  HabitActionTypes,
-} from "../redux/reducers/habit/habit-actions";
-import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
-import { Habit } from "../types/habit";
 import { Routes } from "../types/route-names";
 import { CONSTANTS } from "../utils/constants";
 import { TimerScreenRouteParams } from "./timer-screen";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
-export const SuccessScreen = () => {
+/**
+ * interface that defines the props of the component
+ *
+ * @interface
+ */
+interface SuccessScreenProps {
+  /**
+   * on complete the introduction callback
+   *
+   * @type {() => void}
+   */
+  onCompleteIntro: () => void;
+}
+
+export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
   const navigation = useNavigation();
   const route = useRoute();
   const params = route.params as TimerScreenRouteParams;
@@ -54,9 +61,21 @@ export const SuccessScreen = () => {
   );
 
   const onBegin = () => {
-    navigation.navigate(Routes.VIEW_HABIT, {
-      habitId: habitId,
-    } as TimerScreenRouteParams);
+    onCompleteIntro();
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [
+          { name: Routes.HOME },
+          {
+            name: Routes.VIEW_HABIT,
+            params: {
+              habitId,
+            } as TimerScreenRouteParams,
+          },
+        ],
+      })
+    );
   };
 
   return (

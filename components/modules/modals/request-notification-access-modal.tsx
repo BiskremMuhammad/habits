@@ -42,9 +42,18 @@ export const RequestNotificationAccessModal = ({
   callback,
 }: RequestNotificationAccessModalProps) => {
   const requestAccess = async () => {
+    let token: string | undefined;
     try {
-      const token: string | undefined =
-        await PushNotification.registerForPushNotificationsAsync();
+      token = await PushNotification.registerForPushNotificationsAsync();
+    } catch (e) {
+      console.log("[flourish-biskrem] can't get notification access", e);
+      Alert.alert(
+        "Can't get notification access",
+        "Please browse throught your apps and allow notification permission for this app.",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+      );
+    }
+    try {
       if (token) {
         AsyncStorage.setItem(CONSTANTS.EXPO_PUSH_TOKEN, token);
         getUserDeviceIdAsync().then((id: string) => {
@@ -54,17 +63,13 @@ export const RequestNotificationAccessModal = ({
             id
           );
         });
+        AsyncStorage.setItem(
+          CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY,
+          "true"
+        );
       }
-      AsyncStorage.setItem(
-        CONSTANTS.NOTIFICATION_MODAL_DISMISSED_STORAGE_KEY,
-        "true"
-      );
     } catch (e) {
-      Alert.alert(
-        "Can't get notification access",
-        "Please browse throught your apps and allow notification permission for this app.",
-        [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-      );
+      console.log("[flourish-biskrem] got an error with post token fetch ", e);
     }
     callback();
   };

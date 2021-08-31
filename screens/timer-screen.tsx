@@ -511,7 +511,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     );
   };
 
-  const onCancelSessionHandler = (openState: boolean) => {
+  const onCancelSessionHandler = async (openState: boolean) => {
     if (!isIntroduction) {
       setExitSessionModalOpenState(openState);
       // also pause the timer
@@ -519,6 +519,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         changeState(ProgressState.PAUSED);
       }
     } else {
+      await PushNotification.cancelAllNotifications();
       dispatch({
         type: HabitActionTypes.INTRODUCTION_CLEAR_UP,
       });

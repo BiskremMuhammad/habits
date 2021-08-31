@@ -169,21 +169,17 @@ export default function App() {
             <Route.Screen name={Routes.SPLASH} component={SplashScreen} />
           )}
           {playIntroduction && (
-            <Route.Screen name={Routes.SUCCESS} component={SuccessScreen} />
+            <Route.Screen name={Routes.SUCCESS}>
+              {(props) => (
+                <SuccessScreen {...props} onCompleteIntro={completeIntro} />
+              )}
+            </Route.Screen>
           )}
           <Route.Screen
             name={Routes.IDENTITY_REINFORCEMENT}
             component={IdentityReinforcement}
           />
-          <Route.Screen name={Routes.VIEW_HABIT}>
-            {(props) => (
-              <ViewHabitScreen
-                {...props}
-                isIntroduction={playIntroduction}
-                onCompleteIntro={completeIntro}
-              />
-            )}
-          </Route.Screen>
+          <Route.Screen name={Routes.VIEW_HABIT} component={ViewHabitScreen} />
           <Route.Screen name={Routes.TIMER}>
             {(props) => (
               <TimerScreen {...props} isIntroduction={playIntroduction} />

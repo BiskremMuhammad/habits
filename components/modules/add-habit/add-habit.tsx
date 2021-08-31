@@ -4,7 +4,7 @@
  * @description implement the add habit form
  */
 
-import { StackActions, useNavigation } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/core";
 import React, { Dispatch, useLayoutEffect, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, Platform } from "react-native";
 import {
@@ -166,14 +166,8 @@ export const AddHabit = (props: AddHabitProps) => {
   const onCallToActionPress = async () => {
     if (!days.length) return;
 
-    let notificationId: string | HabitNotEveryDayNotificationId = isEveryDay
-      ? ""
-      : {};
-    if (!props.isIntroduction) {
-      notificationId = await HabitUtils.scheduleHabitNotificationAsync(
-        props.state
-      );
-    }
+    const notificationId: string | HabitNotEveryDayNotificationId =
+      await HabitUtils.scheduleHabitNotificationAsync(props.state);
 
     const habit: Habit = { ...props.state, notification: notificationId };
     storeDispatch({
