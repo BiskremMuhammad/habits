@@ -2,7 +2,7 @@
   "expo": {
     "name": "Flourish - Habit Builder and Fasting Tracker",
     "slug": "flourish-habit-builder",
-    "version": "1.0.2",
+    "version": "1.0.1",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "icon": "./assets/icon.png",
@@ -26,8 +26,8 @@
       ]
     ],
     "ios": {
-      "bundleIdentifier": "com.eisenberg.habit",
-      "buildNumber": "1.0.2",
+      "bundleIdentifier": "com.eisenberg.flourishhabits",
+      "buildNumber": "1.0.1",
       "supportsTablet": true,
       "infoPlist": {
         "UIBackgroundModes": [
@@ -40,8 +40,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.eisenberg.habit",
+      "package": "com.eisenberg.flourishhabits",
       "versionCode": 1,
+      "googleServicesFile": "./google-services.json",
       "permissions": []
     },
     "web": {
