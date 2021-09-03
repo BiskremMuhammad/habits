@@ -46,7 +46,6 @@ export const RequestNotificationAccessModal = ({
     try {
       token = await PushNotification.registerForPushNotificationsAsync();
     } catch (e) {
-      console.log("[flourish-biskrem] can't get notification access", e);
       Alert.alert(
         "Can't get notification access",
         "Please browse throught your apps and allow notification permission for this app.",
@@ -69,7 +68,7 @@ export const RequestNotificationAccessModal = ({
         );
       }
     } catch (e) {
-      console.log("[flourish-biskrem] got an error with post token fetch ", e);
+      console.log("[flourish-habits] got an error with post token fetch ", e);
     }
     callback();
   };
