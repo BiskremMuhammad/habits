@@ -41,6 +41,8 @@ const { width, height } = Dimensions.get("screen");
 // disable RTL
 try {
   I18nManager.allowRTL(false);
+  I18nManager.forceRTL(false);
+  I18nManager.swapLeftAndRightInRTL(false);
 } catch (e) {
   console.log(e);
 }
