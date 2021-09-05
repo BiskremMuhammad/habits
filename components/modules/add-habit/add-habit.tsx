@@ -166,8 +166,14 @@ export const AddHabit = (props: AddHabitProps) => {
   const onCallToActionPress = async () => {
     if (!days.length) return;
 
-    const notificationId: string | HabitNotEveryDayNotificationId =
-      await HabitUtils.scheduleHabitNotificationAsync(props.state);
+    let notificationId: string | HabitNotEveryDayNotificationId = isEveryDay
+      ? ""
+      : {};
+    if (!props.isIntroduction) {
+      notificationId = await HabitUtils.scheduleHabitNotificationAsync(
+        props.state
+      );
+    }
 
     const habit: Habit = { ...props.state, notification: notificationId };
     storeDispatch({

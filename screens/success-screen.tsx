@@ -6,8 +6,9 @@
 
 import { useNavigation } from "@react-navigation/core";
 import { CommonActions, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import { Button } from "../components/elements/button";
 import { Spoiler } from "../components/elements/spoiler";
 import { Modal } from "../components/modules/modals/modal";
@@ -15,9 +16,16 @@ import { RequestNotificationAccessModal } from "../components/modules/modals/req
 import { TitlePanel } from "../components/modules/panels/title-panel";
 import { AddIconSvg } from "../components/svgs/add-icon";
 import InfoIcon from "../components/svgs/info-icon";
+import {
+  HabitActions,
+  HabitActionTypes,
+} from "../redux/reducers/habit/habit-actions";
+import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
+import { Habit, HabitNotEveryDayNotificationId } from "../types/habit";
 import { Routes } from "../types/route-names";
 import { CONSTANTS } from "../utils/constants";
+import { HabitUtils } from "../utils/habit-utils";
 import { TimerScreenRouteParams } from "./timer-screen";
 
 const { height: screenHeight } = Dimensions.get("screen");
@@ -41,6 +49,10 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
   const route = useRoute();
   const params = route.params as TimerScreenRouteParams;
   const habitId: string = params ? params.habitId : "";
+  const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
+    (store: GlobalStore): Habit[] => store.habits
+  );
+  const storeDispatch = useDispatch<Dispatch<HabitActions>>();
 
   const [notificationModalOpened, setNotificationModalVisibility] =
     useState<boolean>(false);
@@ -60,8 +72,21 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
     [navigation]
   );
 
-  const onBegin = () => {
+  const onBegin = async () => {
     onCompleteIntro();
+    try {
+      let habit: Habit = habits.find((h: Habit) => h.id === habitId)!;
+      const updatedHabitNewNotification:
+        | string
+        | HabitNotEveryDayNotificationId = await HabitUtils.scheduleHabitNotificationAsync(
+        habit
+      );
+      habit = { ...habit, notification: updatedHabitNewNotification };
+      storeDispatch({
+        type: HabitActionTypes.UPDATE_HABIT,
+        payload: habit,
+      });
+    } catch (e) {}
     navigation.dispatch(
       CommonActions.reset({
         index: 1,
