@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Flourish - Habit Builder and Fasting Tracker",
-    "slug": "flourish-habit-builder",
+    "slug": "flourish-habits",
     "version": "1.0.2",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -14,7 +14,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "plugins": [
       [
         "expo-notifications",
@@ -28,7 +30,9 @@
       "buildNumber": "1.0.2",
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["fetch"]
+        "UIBackgroundModes": [
+          "fetch"
+        ]
       }
     },
     "android": {
@@ -44,6 +48,12 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": ""
+    "description": "",
+    "extra": {
+      "eas": {
+        "projectId": "2e09b0a7-2f6a-4f60-9aac-68538b31b9b3"
+      }
+    },
+    "owner": "biskremmuhammad"
   }
 }

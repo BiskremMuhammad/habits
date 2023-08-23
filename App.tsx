@@ -8,7 +8,7 @@ import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { Dimensions, Image, StyleSheet, I18nManager } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { enableScreens } from "react-native-screens";
 import * as Font from "expo-font";
@@ -33,20 +33,6 @@ import { PushNotification } from "./utils/push-notification";
 import { Modal } from "./components/modules/modals/modal";
 import { RequestNotificationAccessModal } from "./components/modules/modals/request-notification-access-modal";
 import { LogBox } from "react-native";
-const ignoreWarns = ["AsyncStorage has been extracted from react-native"];
-
-const warn = console.warn;
-
-console.warn = (...arg) => {
-  for (const warning of ignoreWarns) {
-    if (arg[0].startsWith(warning)) {
-      return;
-    }
-  }
-  warn(...arg);
-};
-
-LogBox.ignoreLogs(ignoreWarns);
 LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 enableScreens();
 
@@ -89,6 +75,14 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
+
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "transparent",
+  },
+};
 
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -137,7 +131,7 @@ export default function App() {
     <></>
   ) : (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer theme={MyTheme}>
         <StatusBar style="light" />
         <Image source={require("./assets/bg.png")} style={styles.background} />
         <Route.Navigator
