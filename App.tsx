@@ -33,6 +33,7 @@ import { PushNotification } from "./utils/push-notification";
 import { Modal } from "./components/modules/modals/modal";
 import { RequestNotificationAccessModal } from "./components/modules/modals/request-notification-access-modal";
 import { LogBox } from "react-native";
+
 LogBox.ignoreLogs(["Setting a timer for a long period of time"]);
 enableScreens();
 

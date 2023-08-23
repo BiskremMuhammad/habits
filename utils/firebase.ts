@@ -9,13 +9,13 @@ import { UserResponce } from "../types/user-responce";
 // import "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyABWL96VpXtOrZ1Sz05gYKxnlrghn-NSZ0",
-  authDomain: "flourish-habits.firebaseapp.com",
-  projectId: "flourish-habits",
-  storageBucket: "flourish-habits.appspot.com",
-  messagingSenderId: "414026042501",
-  appId: "1:414026042501:web:36665b6207f31f80bb6dec",
-  measurementId: "G-RHKLJDCRLH",
+  apiKey: "AIzaSyA4HSDF8wRTe3fgY9uyoo_3ahHlLsKkftc",
+  authDomain: "flourish-habits-cdeed.firebaseapp.com",
+  projectId: "flourish-habits-cdeed",
+  storageBucket: "flourish-habits-cdeed.appspot.com",
+  messagingSenderId: "662310746556",
+  appId: "1:662310746556:web:152d4a501ed1364c2053b9",
+  measurementId: "G-F80Q00TBX5",
 };
 
 // Initialize Firebase only one time if it's uninitialized

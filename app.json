@@ -14,9 +14,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "plugins": [
       [
         "expo-notifications",
@@ -26,13 +24,11 @@
       ]
     ],
     "ios": {
-      "bundleIdentifier": "com.flourish.fasting",
+      "bundleIdentifier": "com.biskrem.habits",
       "buildNumber": "1.0.2",
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": [
-          "fetch"
-        ]
+        "UIBackgroundModes": ["fetch"]
       }
     },
     "android": {
@@ -40,7 +36,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.flourish.fasting",
+      "package": "com.biskrem.habits",
       "versionCode": 2,
       "googleServicesFile": "./google-services.json",
       "permissions": []
