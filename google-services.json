@@ -1,77 +1,34 @@
 {
   "project_info": {
-    "project_number": "414026042501",
-    "project_id": "flourish-habits",
-    "storage_bucket": "flourish-habits.appspot.com"
+    "project_number": "662310746556",
+    "project_id": "flourish-habits-cdeed",
+    "storage_bucket": "flourish-habits-cdeed.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:414026042501:android:6ecb7af5f3693445bb6dec",
+        "mobilesdk_app_id": "1:662310746556:android:be77ef1db46705da2053b9",
         "android_client_info": {
-          "package_name": "com.eisenberg.flourishhabits"
+          "package_name": "com.biskrem.habits"
         }
       },
       "oauth_client": [
         {
-          "client_id": "414026042501-dt4ms894q04l4u73o95ufie2dqmkij0v.apps.googleusercontent.com",
+          "client_id": "662310746556-2slem71l3fq5kisiul5sckiddlmsajkj.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCe-35mXFJzel82HkyKK2UQSi0xgcBr6v0"
+          "current_key": "AIzaSyCDSsXoxGMhdSxUO1u3H124sjSI7eVTCxw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "414026042501-dt4ms894q04l4u73o95ufie2dqmkij0v.apps.googleusercontent.com",
+              "client_id": "662310746556-2slem71l3fq5kisiul5sckiddlmsajkj.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "414026042501-esoi56io1gtkusdmkhj2vprhksa75m01.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.eisenberg.flourishhabits"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:414026042501:android:cacde265143fc6fabb6dec",
-        "android_client_info": {
-          "package_name": "com.flourish.fasting"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "414026042501-dt4ms894q04l4u73o95ufie2dqmkij0v.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCe-35mXFJzel82HkyKK2UQSi0xgcBr6v0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "414026042501-dt4ms894q04l4u73o95ufie2dqmkij0v.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "414026042501-esoi56io1gtkusdmkhj2vprhksa75m01.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.eisenberg.flourishhabits"
-              }
             }
           ]
         }

@@ -8,7 +8,7 @@ import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { Dimensions, Image, StyleSheet, I18nManager } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { enableScreens } from "react-native-screens";
 import * as Font from "expo-font";
@@ -76,6 +76,14 @@ Notifications.setNotificationHandler({
   }),
 });
 
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "transparent",
+  },
+};
+
 export default function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [playIntroduction, setPlayIntroduction] = useState<boolean>(false);
@@ -123,7 +131,7 @@ export default function App() {
     <></>
   ) : (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer theme={MyTheme}>
         <StatusBar style="light" />
         <Image source={require("./assets/bg.png")} style={styles.background} />
         <Route.Navigator
