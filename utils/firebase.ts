@@ -1,7 +1,14 @@
-import firebase from "firebase/app";
-
+import { initializeApp } from "firebase/app";
 // import the services that you want to use
-import "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  setDoc,
+} from "firebase/firestore";
 import { UserResponce } from "../types/user-responce";
 // import "firebase/auth";
 // import "firebase/database";
@@ -19,21 +26,17 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase only one time if it's uninitialized
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+initializeApp(firebaseConfig);
 
 export default class Firebase {
-  static getFireStoreRef = () => firebase.firestore();
-
   static readCollection = (collectionName: string) => {
     return new Promise((resolve) => {
-      const colRef = firebase.firestore().collection(collectionName);
-      colRef
-        .get()
+      const fs = getFirestore();
+      const colRef = collection(fs, collectionName);
+      getDocs(colRef)
         .then((snapshot: any) => {
           const documents: any[] = [];
-          snapshot.forEach((doc: firebase.firestore.DocumentSnapshot) => {
+          snapshot.forEach((doc: any) => {
             documents.push({ id: doc.id, data: doc.data() });
           });
           resolve(documents);
@@ -52,13 +55,10 @@ export default class Firebase {
     documentId: string
   ): Promise<UserResponce> =>
     new Promise((resolve, reject) => {
-      const docRef = firebase
-        .firestore()
-        .collection(collectionName)
-        .doc(documentId);
-      docRef
-        .get()
-        .then((doc: firebase.firestore.DocumentSnapshot) => {
+      const fs = getFirestore();
+      const docRef = doc(fs, collectionName, documentId);
+      getDoc(docRef)
+        .then((doc: any) => {
           resolve(doc.data() as UserResponce);
           return;
         })
@@ -75,26 +75,21 @@ export default class Firebase {
     documentId: string | null = null
   ): Promise<void> =>
     new Promise((resolve, reject) => {
-      let docRef: firebase.firestore.DocumentReference;
+      const fs = getFirestore();
+      let p: Promise<any>;
       if (documentId) {
-        docRef = firebase
-          .firestore()
-          .collection(collectionName)
-          .doc(documentId);
+        p = setDoc(doc(fs, collectionName, documentId), data);
       } else {
-        docRef = firebase.firestore().collection(collectionName).doc();
+        p = addDoc(collection(fs, collectionName), data);
       }
 
-      docRef
-        .set(data)
-        .then(() => {
-          resolve();
-        })
-        .catch((error: any) => {
-          console.error("Error writing document: ", error);
-          reject();
-          return;
-        });
+      p.then(() => {
+        resolve();
+      }).catch((error: any) => {
+        console.error("Error writing document: ", error);
+        reject();
+        return;
+      });
 
       // firebase.firestore().collection("test").doc("Egypt").set({
       //     name: "Andrew",
@@ -113,13 +108,9 @@ export default class Firebase {
         reject();
       }
 
-      let docRef: firebase.firestore.DocumentReference = firebase
-        .firestore()
-        .collection(collectionName)
-        .doc(documentId);
+      const fs = getFirestore();
 
-      docRef
-        .update(data)
+      setDoc(doc(fs, collectionName, documentId), data)
         .then(() => {
           resolve();
         })

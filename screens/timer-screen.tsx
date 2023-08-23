@@ -33,7 +33,7 @@ import {
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
-import firebase from "firebase/app";
+import { collection, getFirestore, onSnapshot } from "firebase/firestore";
 
 import { CommonStyles } from "../styles/common";
 import { Button } from "../components/elements/button";
@@ -125,7 +125,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
     (store: GlobalStore): Habit[] => store.habits
   );
-  const dispatch = useDispatch<Dispatch<HabitActions>>();
+  const dispatch = useDispatch();
   const [habit, setHabit] = useState<Habit>();
 
   const [state, setState] = useState<ProgressState>(ProgressState.STOPPED);
@@ -156,27 +156,26 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
   useEffect(() => {
     if (!habit) return;
 
-    const habitUsersRef = Firebase.getFireStoreRef().collection(
-      CONSTANTS.FIREBASE_HABITS_COLLECTION
-    );
-    const registerPeersListener = habitUsersRef.onSnapshot({
-      next: (snapshot) => {
-        let peersCount: number = 0;
-        snapshot.forEach((doc: firebase.firestore.DocumentSnapshot) => {
-          const userData: UserResponce = doc.data()! as UserResponce;
-          if (userData.practicing === habit.type) {
-            peersCount++;
-          }
-        });
-        setPeers(
-          peersCount <= 100
-            ? Math.floor(Math.random() * 23) + 100 + peersCount
-            : peersCount
-        );
-      },
+    const fs = getFirestore();
+    const habitUsersRef = collection(fs, CONSTANTS.FIREBASE_HABITS_COLLECTION);
+    const registerPeersListener = onSnapshot(habitUsersRef, (sn) => {
+      let peersCount: number = 0;
+      sn.forEach((doc) => {
+        const userData: UserResponce = doc.data()! as UserResponce;
+        if (userData.practicing === habit.type) {
+          peersCount++;
+        }
+      });
+      setPeers(
+        peersCount <= 100
+          ? Math.floor(Math.random() * 23) + 100 + peersCount
+          : peersCount
+      );
     });
 
-    return () => registerPeersListener();
+    return () => {
+      registerPeersListener();
+    };
   }, [habit?.type]);
 
   /**
@@ -256,8 +255,8 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
    * to register the timer in the background task
    */
   useEffect(() => {
-    AppState.addEventListener("change", handleAppStateChange);
-    return () => AppState.removeEventListener("change", handleAppStateChange);
+    const sub = AppState.addEventListener("change", handleAppStateChange);
+    return () => sub.remove();
   }, [habit, state, isIntroduction, eta, etaNotificationId]);
 
   /**

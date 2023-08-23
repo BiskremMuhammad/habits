@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "662310746556",
+    "project_id": "flourish-habits-cdeed",
+    "storage_bucket": "flourish-habits-cdeed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662310746556:android:be77ef1db46705da2053b9",
+        "android_client_info": {
+          "package_name": "com.biskrem.habits"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662310746556-2slem71l3fq5kisiul5sckiddlmsajkj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDSsXoxGMhdSxUO1u3H124sjSI7eVTCxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "662310746556-2slem71l3fq5kisiul5sckiddlmsajkj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
