@@ -34,13 +34,46 @@ export enum DayState {
 }
 
 /**
+ * helper function that dispaly formatted time
+ *
+ * @param {{ hour: number; minute: number; }} time object has hour number in 24 and minute
+ * @returns {string} formatted time hh:mm aa
+ */
+export function Time24Prettify({
+  hour,
+  minute,
+}: {
+  hour: number;
+  minute: number;
+}): string {
+  return `${
+    hour > 12
+      ? `0${24 - hour === 0 ? 12 : 24 - hour}`.slice(-2)
+      : `0${hour}`.slice(-2)
+  }:${`0${minute}`.slice(-2)} ${hour > 12 ? "PM" : "AM"}`;
+}
+
+/**
+ * helper function that map selected habit time picker to habit time object
+ *
+ * @param {Date} time js Date object
+ * @returns {string} formatted habit time object
+ */
+export function mapToHabitTime(time: Date): { hour: number; minute: number } {
+  return {
+    hour: time.getHours(),
+    minute: time.getMinutes(),
+  };
+}
+
+/**
  * helper function that returns month total number of days
  *
  * @param {number} month the month to get total number of days to 31, 30, 29, or 28
  * @param {number} year the year of the month
  * @returns {number} the number of the days in the month
  */
-export function getDaysInMonth(month: number, year: number) {
+export function getDaysInMonth(month: number, year: number): number {
   // 0 = last day of the previous month
   return new Date(year, month + 1, 0).getDate();
 }

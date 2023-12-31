@@ -17,6 +17,7 @@ export enum HabitTypes {
   JOURNALING = "JOURNALING",
   MEDITATING = "MEDITATING",
   FASTING = "FASTING",
+  OTHER = "OTHER",
 }
 
 /**
@@ -30,6 +31,7 @@ export enum HabitTypesVerbale {
   JOURNALING = "Write",
   MEDITATING = "Meditate",
   FASTING = "Fast",
+  OTHER = "Do",
 }
 
 /**
@@ -43,6 +45,7 @@ export enum HabitTypesIdentity {
   JOURNALING = "Writer",
   MEDITATING = "Meditater",
   FASTING = "Faster",
+  OTHER = "",
 }
 
 /**
@@ -113,6 +116,11 @@ export type HabitNotEveryDayNotificationId = {
   [index in WeekDays]?: string;
 };
 
+type RoutineHabit = {
+  title: string;
+  duration: number;
+};
+
 /**
  * interface that defines the habit object
  *
@@ -133,6 +141,17 @@ export interface Habit {
    * @type {HabitTypes}
    */
   type: HabitTypes;
+
+  title: string;
+
+  /**
+   * flag for special kind of habits which is a day routine
+   *
+   * @type {boolean}
+   */
+  isRoutine: boolean;
+
+  datetime: { hour: number; minute: number };
 
   /**
    * flag is the habit frequency in a week is everyday or not
@@ -168,4 +187,6 @@ export interface Habit {
    * @type {HabitProgressData[]}
    */
   progress: HabitProgressData[];
+
+  routineHabits?: Array<RoutineHabit>;
 }

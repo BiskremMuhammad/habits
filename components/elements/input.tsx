@@ -15,6 +15,7 @@ import {
   Pressable,
   ScrollView,
   Platform,
+  TextInput,
 } from "react-native";
 import { CommonStyles } from "../../styles/common";
 import { FastingStages } from "../../types/fasting-stages";
@@ -76,6 +77,8 @@ interface InputProps {
    * @type {JSX.Element}
    */
   icon?: JSX.Element;
+
+  isTextInput?: boolean;
 
   /**
    * if the dropdown options are custom jsx elements
@@ -199,6 +202,17 @@ export const Input = (props: InputProps) => {
             extraStyles={{ marginBottom: 0 }}
             selected={true}
             onSelect={(v: string) => onInputPress()}
+          />
+        ) : props.isTextInput ? (
+          <TextInput
+            style={[
+              InputStyles.text,
+              props.customTextStyle,
+              props.width !== "long" && InputStyles.short,
+              props.width === "minimal" && { marginRight: 22 },
+            ]}
+            onChangeText={onChange}
+            value={props.text}
           />
         ) : (
           <Text

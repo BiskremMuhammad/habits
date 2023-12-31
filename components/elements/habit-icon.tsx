@@ -11,6 +11,7 @@ import BookIcon from "../svgs/book";
 import { CandleIcon } from "../svgs/candel-icon";
 import { FastIcon } from "../svgs/fast-icon";
 import { PencilIcon } from "../svgs/pencil";
+import { GenericHabitIcon } from "../svgs/habit";
 
 /**
  * interface that definse the props of the component
@@ -42,7 +43,7 @@ export const HabitIcon = (props: HabitIconProps) => {
       Icon = <FastIcon {...props} width={32} height={32} />;
       break;
     default:
-      Icon = <BookIcon {...props} />;
+      Icon = <GenericHabitIcon {...props} />;
   }
 
   return Icon;

@@ -60,6 +60,7 @@ export const habitReducer = (
       break;
 
     case HabitActionTypes.ADD_NEW_HABIT:
+      console.log("Adding new habit: ", action.payload);
       newState = [...state, action.payload as Habit];
       break;
 

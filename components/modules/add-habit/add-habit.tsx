@@ -5,8 +5,18 @@
  */
 
 import { useNavigation } from "@react-navigation/core";
-import React, { Dispatch, useLayoutEffect, useState } from "react";
-import { StyleSheet, Text, View, Dimensions, Platform } from "react-native";
+import React, { useLayoutEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Platform,
+  Pressable,
+} from "react-native";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import {
   HabitActions,
   HabitActionTypes,
@@ -32,6 +42,8 @@ import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 import { useDispatch, useSelector } from "react-redux";
 import { HabitUtils } from "../../../utils/habit-utils";
 import { GlobalStore } from "../../../redux/store";
+import { Radio } from "../../elements/radio";
+import { mapToHabitTime } from "../../../utils/calendar-utils";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -103,33 +115,38 @@ export const AddHabit = (props: AddHabitProps) => {
   const habits: Habit[] = useSelector<GlobalStore, Habit[]>(
     (store: GlobalStore): Habit[] => store.habits
   );
-  const { type, isEveryDay, days, duration } = props.state;
+  const { type, isEveryDay, days, duration, title, isRoutine, datetime } =
+    props.state;
   const navigation = useNavigation();
   const [currentOpenInput, setCurrentOpenInput] = useState(OpenedDropDown.NONE);
-  const storeDispatch = useDispatch<Dispatch<HabitActions>>();
+  const storeDispatch = useDispatch();
 
   // to limit the habit creation to only one usage of habit type
   useLayoutEffect(() => {
-    const availableTypes: HabitTypes[] = Object.values(HabitTypes).filter(
-      (habitType) =>
-        !habits.length || !!!habits.find((h) => h.type === habitType)
-    );
-    if (!availableTypes.includes(type)) {
-      dispatch({
-        type: AddHabitActionTypes.CHANGE_HABIT_TYPE,
-        payload: availableTypes[0],
-      });
-    }
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_TYPE,
+      payload:
+        Object.values(HabitTypes)[
+          Math.floor(Math.random() * (Object.values(HabitTypes).length - 1))
+        ],
+    });
   }, [habits]);
 
   const onChangeOpenedDropdown = (state: boolean, input: OpenedDropDown) => {
     setCurrentOpenInput(state ? input : OpenedDropDown.NONE);
   };
 
+  const onToggleRoutine = (val: boolean) => {
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_TO_ROUTINE,
+      payload: val,
+    });
+  };
+
   const onChangeHabit = (val: string) => {
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_TYPE,
-      payload: getEnumKeyByEnumValue(HabitTypesVerbale, val),
+      payload: getEnumKeyByEnumValue(HabitTypesVerbale, val) || val,
     });
   };
 
@@ -160,6 +177,13 @@ export const AddHabit = (props: AddHabitProps) => {
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_FREQUENCY,
       payload: selectedDays,
+    });
+  };
+
+  const onChangeRoutineTime = (d: DateTimePickerEvent) => {
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_TIME,
+      payload: mapToHabitTime(new Date(d.nativeEvent.timestamp)),
     });
   };
 
@@ -194,18 +218,35 @@ export const AddHabit = (props: AddHabitProps) => {
   return (
     <View style={addHabitStyles.container}>
       <View
+        style={{
+          marginBottom: 16,
+          display: "flex",
+          flexDirection: "row",
+          paddingHorizontal: CONSTANTS.PADDING - 14,
+        }}
+      >
+        <Radio
+          index={1}
+          label="Habit"
+          selected={!isRoutine}
+          onChange={() => onToggleRoutine(false)}
+        />
+        <Radio
+          index={2}
+          label="Routine"
+          selected={isRoutine}
+          onChange={() => onToggleRoutine(true)}
+        />
+      </View>
+      <View
         style={[
           addHabitStyles.addHabitSection,
           Platform.OS === "ios" && { zIndex: 5 },
         ]}
       >
-        <Text style={addHabitStyles.label}>I will</Text>
+        <Text style={addHabitStyles.label}>I will{isRoutine ? " Do" : ""}</Text>
         <Input
-          forceState={currentOpenInput === OpenedDropDown.HABIT_TYPE}
-          toggleCallback={(state: boolean) =>
-            onChangeOpenedDropdown(state, OpenedDropDown.HABIT_TYPE)
-          }
-          text={HabitTypesVerbale[type]}
+          text={title}
           width="long"
           icon={
             <HabitIcon
@@ -216,23 +257,24 @@ export const AddHabit = (props: AddHabitProps) => {
               ]}
             />
           }
+          isTextInput={true}
           onChange={onChangeHabit}
-          isDropdown={true}
-          dropdownOptions={
-            props.enableChangeHabit
-              ? Object.values(HabitTypesVerbale)
-                  .filter(
-                    (habitType) =>
-                      !habits.length ||
-                      !!!habits.find(
-                        (h) =>
-                          h.type ===
-                          getEnumKeyByEnumValue(HabitTypesVerbale, habitType)
-                      )
-                  )
-                  .map((k) => k)
-              : undefined
-          }
+          // isDropdown={true}
+          // dropdownOptions={
+          //   props.enableChangeHabit
+          //     ? Object.values(HabitTypesVerbale)
+          //         .filter(
+          //           (habitType) =>
+          //             !habits.length ||
+          //             !!!habits.find(
+          //               (h) =>
+          //                 h.type ===
+          //                 getEnumKeyByEnumValue(HabitTypesVerbale, habitType)
+          //             )
+          //         )
+          //         .map((k) => k)
+          //     : undefined
+          // }
           hasBorder={true}
           hasCircleBorder={true}
         />
@@ -249,6 +291,23 @@ export const AddHabit = (props: AddHabitProps) => {
           onChangeFreq={onChangeFreq}
         />
       )}
+      <View
+        style={[
+          addHabitStyles.addHabitSection,
+          // { marginBottom: 16 },
+          Platform.OS === "ios" && { zIndex: 5 },
+        ]}
+      >
+        <Text style={addHabitStyles.label}>at</Text>
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={new Date(0, 0, 0, datetime.hour, datetime.minute)}
+          mode="time"
+          onChange={onChangeRoutineTime}
+          display="inline"
+          style={{ ...addHabitStyles.label, marginTop: 8 }}
+        />
+      </View>
       <HabitDurationInput
         forceState={currentOpenInput === OpenedDropDown.HABIT_DURATION}
         toggleCallback={(state: boolean) =>

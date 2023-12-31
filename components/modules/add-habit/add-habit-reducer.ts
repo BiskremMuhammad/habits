@@ -5,8 +5,14 @@
  */
 
 import { v4 as uuid } from "uuid";
-import { Habit, HabitProgressData, HabitTypes } from "../../../types/habit";
+import {
+  Habit,
+  HabitProgressData,
+  HabitTypes,
+  HabitTypesVerbale,
+} from "../../../types/habit";
 import { WeekDays } from "../../../types/week-days";
+import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 
 const today = new Date(new Date().setHours(0, 0, 0, 0));
 const testProgress: HabitProgressData[] = [
@@ -31,11 +37,18 @@ const testProgress: HabitProgressData[] = [
 export const INITIAL_ADD_HABIT_STATE: Habit = {
   id: uuid(),
   type: HabitTypes.READING,
+  title: HabitTypesVerbale.READING,
   isEveryDay: true,
   days: Object.keys(WeekDays).map<WeekDays>((k) => k as WeekDays),
   duration: 1,
   notification: "",
   progress: [],
+  isRoutine: false,
+  datetime: {
+    hour: 8,
+    minute: 30,
+  },
+  routineHabits: [],
 };
 
 /**
@@ -45,9 +58,11 @@ export const INITIAL_ADD_HABIT_STATE: Habit = {
  */
 export enum AddHabitActionTypes {
   CHANGE_HABIT_TYPE = "CHANGE_HABIT_TYPE",
+  CHANGE_HABIT_TO_ROUTINE = "CHANGE_HABIT_TO_ROUTINE",
   CHANGE_HABIT_EVERYDAY_STATE = "CHANGE_HABIT_EVERYDAY_STATE",
   CHANGE_HABIT_FREQUENCY = "CHANGE_HABIT_FREQUENCY",
   CHANGE_HABIT_DURATION = "CHANGE_HABIT_DURATION",
+  CHANGE_HABIT_TIME = "CHANGE_HABIT_TIME",
   UPDATE_HABIT = "UPDATE_HABIT",
 }
 
@@ -80,8 +95,55 @@ export const addHabitReducer = (
     case AddHabitActionTypes.CHANGE_HABIT_TYPE:
       return {
         ...state,
-        type: action.payload,
+        type: Object.values(HabitTypesVerbale)
+          .slice(0, 4)
+          .some(
+            (h) =>
+              action.payload
+                ?.toLowerCase()
+                .includes(
+                  h
+                    .substring(
+                      0,
+                      h === HabitTypesVerbale.MEDITATING
+                        ? h.length - 1
+                        : h.length
+                    )
+                    .toLowerCase()
+                ) || action.payload === HabitTypes.JOURNALING
+          )
+          ? action.payload
+          : HabitTypes.OTHER,
+        title: Object.values(HabitTypesVerbale)
+          .slice(0, 4)
+          .some(
+            (h) =>
+              action.payload
+                ?.toLowerCase()
+                .includes(
+                  h
+                    .substring(
+                      0,
+                      h === HabitTypesVerbale.MEDITATING
+                        ? h.length - 1
+                        : h.length
+                    )
+                    .toLowerCase()
+                ) || action.payload === HabitTypes.JOURNALING
+          )
+          ? Object.entries(HabitTypesVerbale)
+              .slice(0, 4)
+              .find(
+                ([k, _]) => k.toLowerCase() === action.payload?.toLowerCase()
+              )?.[1] || ""
+          : action.payload,
         duration: action.payload === HabitTypes.FASTING ? 3 * 60 : 1,
+      };
+
+    case AddHabitActionTypes.CHANGE_HABIT_TO_ROUTINE:
+      return {
+        ...state,
+        isRoutine: typeof action.payload === "boolean" && action.payload,
       };
 
     case AddHabitActionTypes.CHANGE_HABIT_EVERYDAY_STATE:
@@ -109,6 +171,12 @@ export const addHabitReducer = (
         duration:
           Number(action.payload.match(/\d+/g)[0]) *
           (action.payload.includes("hr") ? 60 : 1),
+      };
+
+    case AddHabitActionTypes.CHANGE_HABIT_TIME:
+      return {
+        ...state,
+        datetime: action.payload,
       };
 
     case AddHabitActionTypes.UPDATE_HABIT:

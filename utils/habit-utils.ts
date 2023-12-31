@@ -60,11 +60,7 @@ export class HabitUtils {
         ? ""
         : { ...(habit.notification as HabitNotEveryDayNotificationId) };
     const notification = {
-      title: `Time for your ${HabitTypes[habit.type].charAt(0)}${HabitTypes[
-        habit.type
-      ]
-        .substr(1)
-        .toLowerCase()} Habit`,
+      title: `Time for your ${habit.title} Habit`,
       message: `Building habits is about building momentum day over day. Perform your habit for ${habitDuration} now.`,
       date: { hour: 18, minute: 0 } as NotificationHourInput,
     };

@@ -153,7 +153,9 @@ export const DashboardRoom = ({ habit }: DashboardRoomProps) => {
                     { paddingBottom: 0 },
                   ]}
                 >
-                  {HabitTypesIdentity[habit.type]}
+                  {habit?.type !== HabitTypes.OTHER
+                    ? HabitTypesIdentity[habit.type]
+                    : habit.title}
                 </Text>
               </View>
               <View style={styles.habitFrequ}>

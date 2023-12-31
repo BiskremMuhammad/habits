@@ -8,7 +8,6 @@ import {
   useRoute,
   useNavigation,
   useIsFocused,
-  CommonActions,
 } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, {
@@ -27,6 +26,9 @@ import {
   Pressable,
   Platform,
 } from "react-native";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { GlobalStore } from "../redux/store";
 import { CommonStyles } from "../styles/common";
@@ -66,7 +68,7 @@ import InfoIcon from "../components/svgs/info-icon";
 import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
 import { Modal } from "../components/modules/modals/modal";
 import { useMemo } from "react";
-import { calculateStreak } from "../utils/calendar-utils";
+import { calculateStreak, mapToHabitTime } from "../utils/calendar-utils";
 import { HabitUtils } from "../utils/habit-utils";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
@@ -182,6 +184,13 @@ export const ViewHabitScreen = () => {
     });
   };
 
+  const onChangeRoutineTime = (d: DateTimePickerEvent) => {
+    dispatch({
+      type: AddHabitActionTypes.CHANGE_HABIT_TIME,
+      payload: mapToHabitTime(new Date(d.nativeEvent.timestamp)),
+    });
+  };
+
   const onStartPracticing = () => {
     if (hasChanges) {
       onSaveChanges();
@@ -264,7 +273,13 @@ export const ViewHabitScreen = () => {
                 Platform.OS === "ios" && { zIndex: 4 },
               ]}
             >
-              <Text style={styles.habitDetailsText}>I am a</Text>
+              <Text style={styles.habitDetailsText}>
+                {habit?.isRoutine
+                  ? "I will do"
+                  : habit?.type !== HabitTypes.OTHER
+                  ? "I will"
+                  : "I am a"}
+              </Text>
               <View
                 style={{
                   paddingHorizontal: habitDetailsPadding,
@@ -286,7 +301,9 @@ export const ViewHabitScreen = () => {
                       CommonStyles.habitTypeAccentText,
                     ]}
                   >
-                    {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
+                    {habit?.type !== HabitTypes.OTHER
+                      ? HabitTypesIdentity[habit?.type || HabitTypes.READING]
+                      : habit.title}
                   </Text>
                 </View>
               </View>
@@ -311,6 +328,41 @@ export const ViewHabitScreen = () => {
                   dispatchDays={dispatchDays}
                   onChangeFreq={onChangeFreq}
                 />
+              )}
+              {!!habit && (
+                <View
+                  style={[
+                    Platform.OS === "ios" && {
+                      zIndex: 4,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    },
+                  ]}
+                >
+                  <Text style={[styles.habitDetailsText, { paddingBottom: 0 }]}>
+                    at
+                  </Text>
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={
+                      new Date(
+                        0,
+                        0,
+                        0,
+                        habit.datetime.hour,
+                        habit.datetime.minute
+                      )
+                    }
+                    mode="time"
+                    onChange={onChangeRoutineTime}
+                    display="inline"
+                    style={[
+                      CommonStyles.habitTypeText,
+                      CommonStyles.habitTypeAccentText,
+                      { marginTop: 8 },
+                    ]}
+                  />
+                </View>
               )}
               {!!habit && (
                 <HabitDurationInput
