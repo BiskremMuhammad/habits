@@ -9,6 +9,7 @@ import {
   useNavigation,
   useIsFocused,
 } from "@react-navigation/native";
+import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, {
   Dispatch,
@@ -39,6 +40,7 @@ import {
   HabitProgressData,
   HabitTypes,
   HabitTypesIdentity,
+  RoutineHabit,
 } from "../types/habit";
 import { Routes } from "../types/route-names";
 import { TimerScreenRouteParams } from "./timer-screen";
@@ -70,6 +72,7 @@ import { Modal } from "../components/modules/modals/modal";
 import { useMemo } from "react";
 import { calculateStreak, mapToHabitTime } from "../utils/calendar-utils";
 import { HabitUtils } from "../utils/habit-utils";
+import { AddRoutinePeriodModal } from "../components/modules/modals/add-routine-period-modal";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -94,6 +97,8 @@ export const ViewHabitScreen = () => {
   };
 
   const [fastingStageInfoModal, toggleFastingStageInfoModal] =
+    useState<boolean>(false);
+  const [showAddRoutinePeriodModal, toggleAddRoutinePeriodModal] =
     useState<boolean>(false);
 
   const [state, dispatch] = useReducer(
@@ -121,6 +126,29 @@ export const ViewHabitScreen = () => {
       payload: updatedHabit,
     });
     setHasChanges(false);
+  };
+
+  const onAddPeriod = (period: RoutineHabit) => {
+    let updatedHabit: Habit = {
+      ...state,
+      routineHabits: [...(state.routineHabits || []), period],
+    };
+    storeDispatch({
+      type: HabitActionTypes.UPDATE_HABIT,
+      payload: updatedHabit,
+    });
+    toggleAddRoutinePeriodModal(false);
+  };
+
+  const onRemovePeriod = (idx: number) => {
+    let updatedHabit: Habit = {
+      ...state,
+      routineHabits: state.routineHabits?.filter((_, i) => i !== idx),
+    };
+    storeDispatch({
+      type: HabitActionTypes.UPDATE_HABIT,
+      payload: updatedHabit,
+    });
   };
 
   useLayoutEffect(() => {
@@ -185,6 +213,7 @@ export const ViewHabitScreen = () => {
   };
 
   const onChangeRoutineTime = (d: DateTimePickerEvent) => {
+    setHasChanges(true);
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_TIME,
       payload: mapToHabitTime(new Date(d.nativeEvent.timestamp)),
@@ -434,6 +463,67 @@ export const ViewHabitScreen = () => {
               />
             </View>
           </View>
+          {habit?.isRoutine && (
+            <View style={styles.routineDateContainer}>
+              <View style={styles.routineSeparator} />
+              <Text
+                style={[
+                  styles.habitDetailsText,
+                  { paddingHorizontal: 0, paddingLeft: 0 },
+                ]}
+              >
+                Routine Periods
+              </Text>
+              {habit.routineHabits?.map((p, i) => (
+                <View
+                  key={`routine-period-${i + 1}`}
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 8,
+                  }}
+                >
+                  <Text
+                    style={[
+                      CommonStyles.habitTypeText,
+                      CommonStyles.habitTypeAccentText,
+                      { paddingBottom: 0, flex: 1 },
+                    ]}
+                  >
+                    {p.title}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.routinePeriodDuration,
+                      CommonStyles.habitTypeText,
+                      CommonStyles.habitTypeAccentText,
+                      { paddingBottom: 0 },
+                    ]}
+                  >
+                    {p.duration >= 60 ? p.duration / 60 : p.duration}{" "}
+                    {p.duration >= 60 ? "hr" : "min"}
+                  </Text>
+                  <Pressable
+                    onPress={() => onRemovePeriod(i)}
+                    style={[styles.routinePeriodDeleteButton]}
+                  >
+                    <Feather name="trash-2" size={24} color="white" />
+                  </Pressable>
+                </View>
+              ))}
+              <View style={styles.buttonContainer}>
+                <Button
+                  shape={"oval"}
+                  text="Add Period"
+                  hasBackground={true}
+                  isStatic={false}
+                  onPress={() => toggleAddRoutinePeriodModal(true)}
+                  hasCircleBorder={true}
+                />
+              </View>
+            </View>
+          )}
           <View style={styles.accentSection}>
             <View style={styles.statsItem}>
               <Text style={styles.statsItemDescription}>total time</Text>
@@ -491,6 +581,14 @@ export const ViewHabitScreen = () => {
               (s) => s === habitDurationText
             )}
             onDismiss={() => toggleFastingStageInfoModal(false)}
+          />
+        </Modal>
+      )}
+      {showAddRoutinePeriodModal && (
+        <Modal>
+          <AddRoutinePeriodModal
+            onConfirm={onAddPeriod}
+            onDismiss={() => toggleAddRoutinePeriodModal(false)}
           />
         </Modal>
       )}
@@ -641,5 +739,40 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#fff",
     opacity: 0.66,
+  },
+  routineDateContainer: {
+    flexDirection: "column",
+    position: "relative",
+    paddingHorizontal: habitDetailsMargin,
+  },
+  routineSeparator: {
+    width: "25%",
+    position: "absolute",
+    height: 4,
+    backgroundColor: "white",
+    marginTop: -28,
+    marginLeft: habitDetailsMargin,
+  },
+  routinePeriodDuration: {
+    flexShrink: 0,
+    flexGrow: 0,
+    width: "30%",
+    textAlign: "center",
+    alignItems: "center",
+  },
+  routinePeriodDeleteButton: {
+    flexShrink: 0,
+    flexGrow: 0,
+    width: "7%",
+    textAlign: "right",
+    alignItems: "flex-end",
+    opacity: 0.4,
+  },
+  buttonContainer: {
+    alignSelf: "stretch",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 0.0855 * screenHeight,
   },
 });

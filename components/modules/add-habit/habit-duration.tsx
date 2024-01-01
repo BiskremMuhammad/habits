@@ -15,7 +15,11 @@ import {
 } from "react-native";
 import { CommonStyles } from "../../../styles/common";
 import { FastingStages } from "../../../types/fasting-stages";
-import { FASTING_HABIT_DURATIONS, HABIT_DURATIONS } from "../../../types/habit";
+import {
+  FASTING_HABIT_DURATIONS,
+  HABIT_DURATIONS,
+  PERIOD_DURATIONS,
+} from "../../../types/habit";
 import { getEnumKeyByEnumValue } from "../../../utils/enum-type-utils";
 import { Input } from "../../elements/input";
 import InfoIcon from "../../svgs/info-icon";
@@ -118,6 +122,13 @@ interface HabitDurationInputProps {
    * @type {boolean}
    */
   useFastingDurations?: boolean;
+
+  /**
+   * flag to tell the component to use shorter habit durations
+   *
+   * @type {boolean}
+   */
+  useShorterDurations?: boolean;
 }
 
 export const HabitDurationInput = (props: HabitDurationInputProps) => {
@@ -155,8 +166,10 @@ export const HabitDurationInput = (props: HabitDurationInputProps) => {
         hideIcon={props.useFastingDurations}
         isCustomDropDown={props.useFastingDurations}
         dropdownOptions={
-          !props.useFastingDurations
+          !props.useFastingDurations && !props.useShorterDurations
             ? HABIT_DURATIONS
+            : props.useShorterDurations
+            ? PERIOD_DURATIONS
             : Object.keys(FastingStages)
                 .filter((_, i: number) => i > 0)
                 .map((s: string, i: number) => (

@@ -64,6 +64,27 @@ export const HABIT_DURATIONS: string[] = [
 ];
 
 /**
+ * Short Durations
+ *
+ * @type {string[]}
+ */
+export const PERIOD_DURATIONS: string[] = [
+  "1 min",
+  "2 min",
+  "3 min",
+  "4 min",
+  "5 min",
+  "6 min",
+  "7 min",
+  "8 min",
+  "9 min",
+  "10 min",
+  "15 min",
+  "30 min",
+  "1 hr",
+];
+
+/**
  * define constant habit durations for fasting habit type
  *
  * @type {string[]}
@@ -116,7 +137,7 @@ export type HabitNotEveryDayNotificationId = {
   [index in WeekDays]?: string;
 };
 
-type RoutineHabit = {
+export type RoutineHabit = {
   title: string;
   duration: number;
 };

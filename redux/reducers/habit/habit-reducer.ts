@@ -60,11 +60,11 @@ export const habitReducer = (
       break;
 
     case HabitActionTypes.ADD_NEW_HABIT:
-      console.log("Adding new habit: ", action.payload);
       newState = [...state, action.payload as Habit];
       break;
 
     case HabitActionTypes.UPDATE_HABIT:
+      console.log("updateing habit: ", action.payload);
       newState = state.map((h: Habit, _) =>
         h.id === (action.payload as Habit).id ? (action.payload as Habit) : h
       );

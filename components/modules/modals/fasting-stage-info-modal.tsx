@@ -169,6 +169,8 @@ const styles = StyleSheet.create({
     paddingTop: 34,
     paddingBottom: 29,
     paddingHorizontal: 31,
+    borderTopRightRadius: 16,
+    borderTopLeftRadius: 16,
   },
   headerTitle: {
     fontFamily: "Rubik-Medium",

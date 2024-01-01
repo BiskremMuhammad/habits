@@ -259,7 +259,7 @@ export const Input = (props: InputProps) => {
             <View style={InputStyles.dropdownBorderContainer}>
               <View style={InputStyles.dropdownBorder}></View>
             </View>
-            <ScrollView>
+            <ScrollView style={{ maxHeight: 380 }}>
               <View
                 style={[
                   InputStyles.dropdownList,
