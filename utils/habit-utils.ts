@@ -62,7 +62,10 @@ export class HabitUtils {
     const notification = {
       title: `Time for your ${habit.title} Habit`,
       message: `Building habits is about building momentum day over day. Perform your habit for ${habitDuration} now.`,
-      date: { hour: 18, minute: 0 } as NotificationHourInput,
+      date: {
+        hour: habit.datetime.hour,
+        minute: habit.datetime.minute,
+      } as NotificationHourInput,
     };
 
     if (habit.isEveryDay) {
@@ -136,7 +139,9 @@ export class HabitUtils {
     habit: Habit
   ): Promise<string | HabitNotEveryDayNotificationId> => {
     // cancel habit existing scheduled notification
-    const today: Date = new Date(new Date().setHours(0, 0, 0, 0));
+    const today: Date = new Date(
+      new Date().setHours(habit.datetime.hour, habit.datetime.minute, 0, 0)
+    );
     const weekDay: WeekDays =
       WeekDays[
         Object.keys(WeekDays).find(

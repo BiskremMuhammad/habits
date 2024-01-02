@@ -240,7 +240,9 @@ export const IdentityReinforcement = () => {
         }}
       />
       <View style={styles.identityContainer}>
-        <Text style={styles.title}>I am a</Text>
+        <Text style={styles.title}>
+          {habit?.type !== HabitTypes.OTHER ? "I am a" : "I will Do"}
+        </Text>
         <View style={styles.identityTextContainer}>
           <View style={CommonStyles.textWithIcon}>
             <HabitIcon
