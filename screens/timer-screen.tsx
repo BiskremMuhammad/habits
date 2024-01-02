@@ -130,10 +130,15 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   const [state, setState] = useState<ProgressState>(ProgressState.STOPPED);
   const [timer, setTimer] = useState<number>(
-    habit && habit.type === HabitTypes.FASTING ? 0 : (habit?.duration || 1) * 60
+    habit && habit.type === HabitTypes.FASTING
+      ? 0
+      : habit && habit.isRoutine && habit.routineHabits?.length
+      ? habit.routineHabits[0].duration * 60
+      : (habit?.duration || 1) * 60
   );
   const [submittedTimer, setSubmittedTimer] = useState<number>(0);
   const [eta, setEta] = useState<Date>(new Date());
+  const [curRoutinePeriod, setCurRoutinePeriod] = useState<number>(0);
   const [etaNotificationId, setEtaNotificationId] = useState<string>("");
   let timerCounter = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -190,6 +195,8 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     const totalDuration: number =
       habit && habit.type === HabitTypes.FASTING
         ? 24 * 60 * 60
+        : habit && habit.isRoutine
+        ? (habit.routineHabits?.[curRoutinePeriod].duration || 1) * 60
         : (habit?.duration || 1) * 60;
     return (
       (((habit && habit.type === HabitTypes.FASTING
@@ -241,6 +248,8 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
           setTimer(
             getHabit.type === HabitTypes.FASTING
               ? 0
+              : getHabit && getHabit.isRoutine
+              ? (getHabit.routineHabits?.[curRoutinePeriod].duration || 1) * 60
               : (getHabit.duration || 1) * 60
           );
         }
@@ -282,11 +291,23 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       await recordStartTime();
       stopTheTimer();
       if (!isIntroduction) {
+        let completionNotificationTitle = "Congratulations!";
+        let completionNotificationMsg = `Congrats on completing your "${habit.title}" habit today!`;
+        if (
+          habit.isRoutine &&
+          habit.routineHabits?.length &&
+          curRoutinePeriod < habit.routineHabits.length - 1
+        ) {
+          completionNotificationTitle = "Period Completed!";
+          completionNotificationMsg = `You've completed "${
+            habit.routineHabits[curRoutinePeriod].title
+          }", Move on to the next stage "${
+            habit.routineHabits[curRoutinePeriod + 1].title
+          }"`;
+        }
         PushNotification.scheduleNotification(
-          "Congratulations!",
-          `Congratulations you have illuminated your ${HabitTypes[
-            habit!.type
-          ].charAt(0)}${HabitTypes[habit!.type].substr(1).toLowerCase()} plant`,
+          completionNotificationTitle,
+          completionNotificationMsg,
           eta
         ).then((id: string) => {
           setEtaNotificationId(id);
@@ -360,13 +381,22 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       timer > 0 &&
       timer % 3 === 0
     ) {
-      setTimer(
-        timer + 5 * 59 >= habit.duration * 60
-          ? habit.duration * 60
-          : timer + 5 * 59
-      );
+      if (habit.isRoutine) {
+        setTimer(
+          timer + 5 * 59 >=
+            (habit.routineHabits?.[curRoutinePeriod].duration || 1) * 60
+            ? (habit.routineHabits?.[curRoutinePeriod].duration || 1) * 60
+            : timer + 5 * 59
+        );
+      } else {
+        setTimer(
+          timer + 5 * 59 >= habit.duration * 60
+            ? habit.duration * 60
+            : timer + 5 * 59
+        );
+      }
     }
-  }, [isIntroduction, timer, state]);
+  }, [isIntroduction, timer, state, habit?.isRoutine, curRoutinePeriod]);
 
   useEffect(() => {
     if (
@@ -375,9 +405,31 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         habit.type === HabitTypes.FASTING &&
         timer >= habit.duration * 60) ||
       (habit && habit.type === HabitTypes.FASTING && timer === 24 * 60 * 60) ||
-      (habit && habit.type !== HabitTypes.FASTING && timer <= 0)
+      (habit &&
+        habit.type !== HabitTypes.FASTING &&
+        !habit.isRoutine &&
+        timer <= 0) ||
+      (habit &&
+        habit.type !== HabitTypes.FASTING &&
+        habit.isRoutine &&
+        habit.routineHabits?.length &&
+        curRoutinePeriod === habit.routineHabits?.length - 1 &&
+        timer <= 0)
     ) {
       changeState(ProgressState.ENDED);
+    } else if (
+      habit &&
+      habit.isRoutine &&
+      habit.routineHabits?.length &&
+      curRoutinePeriod < habit.routineHabits.length &&
+      timer <= 0
+    ) {
+      setCurRoutinePeriod((prev) => prev + 1);
+      const timeToComplete: number =
+        habit.routineHabits[curRoutinePeriod + 1].duration * 60;
+      setTimer(timeToComplete);
+      const etaTime: Date = new Date(Date.now() + timeToComplete * 1000);
+      setEta(etaTime);
     }
   }, [timer]);
 
@@ -428,9 +480,11 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
       changeUserPracticingState("none");
       // cancel today's notification for this habit
       if (habit && !HabitUtils.isHabitRestDay(habit)) {
-        const today6pm: Date = new Date(new Date().setHours(18, 0, 0, 0));
+        const habitPracticeTime: Date = new Date(
+          new Date().setHours(habit.datetime.hour, habit.datetime.minute, 0, 0)
+        );
         const now: Date = new Date(Date.now());
-        if (now.getTime() < today6pm.getTime()) {
+        if (now.getTime() < habitPracticeTime.getTime()) {
           await HabitUtils.cancelHabitTodaysNotification(habit).then(
             (notification: string | HabitNotEveryDayNotificationId) => {
               dispatch({
@@ -469,6 +523,12 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
     const timeToSubmit: number =
       habit && habit.type === HabitTypes.FASTING
         ? timer
+        : habit && habit.isRoutine && habit.routineHabits?.length
+        ? habit.routineHabits
+            .slice(0, curRoutinePeriod)
+            .reduce((total, p) => total + p.duration, 0) *
+            60 +
+          ((habit.routineHabits?.[curRoutinePeriod].duration || 1) * 60 - timer)
         : (habit?.duration || 1) * 60 - timer;
     setSubmittedTimer(timeToSubmit);
     dispatch({
@@ -531,7 +591,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
 
   const habitDurationText: string = `${(habit?.duration || 1) / 60} hr`;
 
-  return (
+  return !habit ? (
+    <View />
+  ) : (
     <View style={TimeScreenStyles.container}>
       <Image
         source={require("../assets/timer/timer-bg.png")}
@@ -568,7 +630,9 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
         <Pressable onPress={() => onCancelSessionHandler(true)}>
           <MaterialIcons name="arrow-back" size={24} color="white" />
         </Pressable>
-        <Text style={TimeScreenStyles.identity}>I am a</Text>
+        <Text style={TimeScreenStyles.identity}>
+          {habit.type !== HabitTypes.OTHER ? "I am a" : "Doing"}
+        </Text>
         <HabitIcon
           type={habit?.type}
           style={[
@@ -583,10 +647,12 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             { paddingBottom: 0 },
           ]}
         >
-          {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
+          {habit.type !== HabitTypes.OTHER
+            ? HabitTypesIdentity[habit?.type || HabitTypes.READING]
+            : habit.title}
         </Text>
       </View>
-      <View style={TimeScreenStyles.peers}>
+      {/* <View style={TimeScreenStyles.peers}>
         <Text style={TimeScreenStyles.peersNum}>
           {peers >= 1000
             ? Math.floor(peers / 1000) +
@@ -603,7 +669,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             .toLowerCase()}{" "}
           now
         </Text>
-      </View>
+      </View> */}
       <View style={TimeScreenStyles.timerContainer}>
         <View style={TimeScreenStyles.progressContainer}>
           <View style={{ position: "relative" }}>
@@ -730,6 +796,15 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               ]}
             />
           ) : null}
+          {habit.isRoutine &&
+            (state === ProgressState.PLAYING ||
+              state === ProgressState.PAUSED) && (
+              <View style={TimeScreenStyles.routinePeriodTitle}>
+                <Text style={TimeScreenStyles.routinePeriodTitleText}>
+                  {habit.routineHabits?.[curRoutinePeriod].title || ""}
+                </Text>
+              </View>
+            )}
           <MotiView
             from={{ opacity: 0 }}
             animate={{ opacity: state === ProgressState.ENDED ? 0 : 1 }}
@@ -969,6 +1044,7 @@ const TimeScreenStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 21,
+    marginBottom: 24,
   },
   identity: {
     fontFamily: "JosefinSans-Bold",
@@ -1006,6 +1082,25 @@ const TimeScreenStyles = StyleSheet.create({
   },
   progressContainer: {
     alignItems: "center",
+  },
+  routinePeriodTitle: {
+    position: "absolute",
+    top: -56,
+    left: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+    paddingBottom: 18,
+  },
+  routinePeriodTitleText: {
+    fontFamily: "Rubik-Regular",
+    fontSize: 36,
+    lineHeight: 40,
+    letterSpacing: 1.2,
+    color: "#fff",
+    opacity: 0.8,
   },
   timer: {
     position: "absolute",
