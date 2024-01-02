@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Habit & Routine Tracker",
-    "slug": "habit_routine_tracker",
+    "slug": "habit-routine-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
@@ -51,7 +51,7 @@
     "description": "",
     "extra": {
       "eas": {
-        "projectId": "2e09b0a7-2f6a-4f60-9aac-68538b31b9b3"
+        "projectId": "37084422-ba4a-42de-bb6e-4938bdd32d3e"
       }
     },
     "owner": "biskremmuhammad"
