@@ -200,6 +200,14 @@ export const AddHabit = (props: AddHabitProps) => {
     }
 
     const habit: Habit = { ...props.state, notification: notificationId };
+    if (props.isIntroduction && habit.isRoutine) {
+      habit.routineHabits = [
+        {
+          title: "Example Period",
+          duration: 1,
+        },
+      ];
+    }
     storeDispatch({
       type: HabitActionTypes.ADD_NEW_HABIT,
       payload: habit,
@@ -217,27 +225,29 @@ export const AddHabit = (props: AddHabitProps) => {
 
   return (
     <View style={addHabitStyles.container}>
-      <View
-        style={{
-          marginBottom: 16,
-          display: "flex",
-          flexDirection: "row",
-          paddingHorizontal: CONSTANTS.PADDING - 14,
-        }}
-      >
-        <Radio
-          index={1}
-          label="Habit"
-          selected={!isRoutine}
-          onChange={() => onToggleRoutine(false)}
-        />
-        <Radio
-          index={2}
-          label="Routine"
-          selected={isRoutine}
-          onChange={() => onToggleRoutine(true)}
-        />
-      </View>
+      {type !== HabitTypes.FASTING && (
+        <View
+          style={{
+            marginBottom: 16,
+            display: "flex",
+            flexDirection: "row",
+            paddingHorizontal: CONSTANTS.PADDING - 14,
+          }}
+        >
+          <Radio
+            index={1}
+            label="Habit"
+            selected={!isRoutine}
+            onChange={() => onToggleRoutine(false)}
+          />
+          <Radio
+            index={2}
+            label="Routine"
+            selected={isRoutine}
+            onChange={() => onToggleRoutine(true)}
+          />
+        </View>
+      )}
       <View
         style={[
           addHabitStyles.addHabitSection,

@@ -249,7 +249,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
             getHabit.type === HabitTypes.FASTING
               ? 0
               : getHabit && getHabit.isRoutine
-              ? (getHabit.routineHabits?.[curRoutinePeriod].duration || 1) * 60
+              ? (getHabit.routineHabits?.[curRoutinePeriod]?.duration || 1) * 60
               : (getHabit.duration || 1) * 60
           );
         }
@@ -801,7 +801,7 @@ export const TimerScreen = ({ isIntroduction }: TimerScreenProps) => {
               state === ProgressState.PAUSED) && (
               <View style={TimeScreenStyles.routinePeriodTitle}>
                 <Text style={TimeScreenStyles.routinePeriodTitleText}>
-                  {habit.routineHabits?.[curRoutinePeriod].title || ""}
+                  {habit.routineHabits?.[curRoutinePeriod]?.title || ""}
                 </Text>
               </View>
             )}

@@ -255,7 +255,9 @@ export const IdentityReinforcement = () => {
               ]}
             />
             <Text style={styles.identityText}>
-              {HabitTypesIdentity[habit?.type || HabitTypes.READING]}
+              {habit?.type === HabitTypes.OTHER
+                ? habit.title
+                : HabitTypesIdentity[habit?.type || HabitTypes.READING]}
             </Text>
           </View>
           <View style={styles.identityBorderContainer}>
