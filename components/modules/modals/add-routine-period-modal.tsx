@@ -10,6 +10,7 @@ import {
   View,
   Text,
   StyleSheet,
+  I18nManager,
   Pressable,
   Platform,
   Dimensions,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
   },
   header: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     backgroundColor: "#120E30",
     paddingTop: 34,
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
   },
   addHabitSection: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "flex-start",
     alignSelf: "stretch",
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 28,

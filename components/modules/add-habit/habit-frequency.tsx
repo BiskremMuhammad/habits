@@ -11,6 +11,7 @@ import {
   Pressable,
   Text,
   StyleSheet,
+  I18nManager,
   Dimensions,
   StyleProp,
   ViewStyle,
@@ -252,7 +253,7 @@ export const HabitFrequencyInput = (props: HabitFrequencyInputProps) => {
 const styles = StyleSheet.create({
   frequency: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "flex-start",
     alignSelf: "flex-start",
@@ -268,7 +269,7 @@ const styles = StyleSheet.create({
   },
   frequencyButton: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "flex-start",
     alignSelf: "flex-start",
@@ -334,7 +335,7 @@ const styles = StyleSheet.create({
   },
   frequencyCustomRadioLabelContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
   },
   frequencyCustomRadioText: {

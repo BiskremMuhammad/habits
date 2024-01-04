@@ -12,6 +12,7 @@ import {
 import React from "react";
 import {
   StyleSheet,
+  I18nManager,
   Dimensions,
   ImageBackground,
   View,

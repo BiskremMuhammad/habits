@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, I18nManager } from "react-native";
 import { Habit } from "../../../types/habit";
 import { DayState, stateOfTheDay } from "../../../utils/calendar-utils";
 
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 32,
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   },
   dayTextWrapper: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
   },

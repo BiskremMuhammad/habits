@@ -10,6 +10,7 @@ import {
   View,
   Text,
   StyleSheet,
+  I18nManager,
   StyleProp,
   ViewStyle,
   TextStyle,
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
   },
   titleWithIcon: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
   },

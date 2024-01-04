@@ -10,6 +10,7 @@ import {
   View,
   Image,
   StyleSheet,
+  I18nManager,
   StyleProp,
   ViewStyle,
   Dimensions,
@@ -1300,7 +1301,7 @@ export const Plant = (props: PlantProps) => {
           PlantStyles.thePlant,
           props.useHeight && {
             display: "flex",
-            flexDirection: "row",
+            flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
             alignItems: "flex-end",
           },
         ]}

@@ -6,7 +6,7 @@
 
 import { MotiView } from "@motify/components";
 import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, I18nManager, Pressable } from "react-native";
 import {
   FastingStages,
   FastingStagesLabels,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   },
   header: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     backgroundColor: "#120E30",
     paddingTop: 34,

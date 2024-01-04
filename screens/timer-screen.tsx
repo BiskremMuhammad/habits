@@ -13,6 +13,7 @@ import React, {
 } from "react";
 import {
   StyleSheet,
+  I18nManager,
   View,
   Image,
   Text,
@@ -1041,7 +1042,7 @@ const TimeScreenStyles = StyleSheet.create({
   },
   header: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     paddingHorizontal: 21,
     marginBottom: 24,
@@ -1057,7 +1058,7 @@ const TimeScreenStyles = StyleSheet.create({
   },
   peers: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "flex-end",
     paddingHorizontal: 24,
     marginTop: 8,
@@ -1115,7 +1116,7 @@ const TimeScreenStyles = StyleSheet.create({
   },
   timerEta: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1147,14 +1148,14 @@ const TimeScreenStyles = StyleSheet.create({
     top: 5,
     left: 5,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
   },
   timerControls: {
     marginTop: screenHeight < 800 ? -32 : -26,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
@@ -1166,7 +1167,7 @@ const TimeScreenStyles = StyleSheet.create({
   },
   footerInfoSection: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     paddingHorizontal: 8,
     paddingVertical: 16,
     marginTop: 12,
@@ -1192,7 +1193,7 @@ const TimeScreenStyles = StyleSheet.create({
     width: screenWidth * 0.61,
     alignSelf: "center",
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "flex-end",
     justifyContent: "center",
   },

@@ -6,7 +6,7 @@
 
 import { MotiView } from "moti";
 import React, { Children } from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, I18nManager, View, Text, Pressable } from "react-native";
 
 /**
  * define the props of the component
@@ -68,7 +68,10 @@ export const Radio = ({
       style={RadioStyles.freqFormLabelContainer}
     >
       <Pressable
-        style={{ display: "flex", flexDirection: "row" }}
+        style={{
+          display: "flex",
+          flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
+        }}
         onPress={() => onChange(index)}
       >
         <View

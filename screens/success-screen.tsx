@@ -7,7 +7,7 @@
 import { useNavigation } from "@react-navigation/core";
 import { CommonActions, useRoute } from "@react-navigation/native";
 import React, { Dispatch, useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, I18nManager, Dimensions } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "../components/elements/button";
 import { Spoiler } from "../components/elements/spoiler";
@@ -78,9 +78,8 @@ export const SuccessScreen = ({ onCompleteIntro }: SuccessScreenProps) => {
       let habit: Habit = habits.find((h: Habit) => h.id === habitId)!;
       const updatedHabitNewNotification:
         | string
-        | HabitNotEveryDayNotificationId = await HabitUtils.scheduleHabitNotificationAsync(
-        habit
-      );
+        | HabitNotEveryDayNotificationId =
+        await HabitUtils.scheduleHabitNotificationAsync(habit);
       habit = { ...habit, notification: updatedHabitNewNotification };
       storeDispatch({
         type: HabitActionTypes.UPDATE_HABIT,

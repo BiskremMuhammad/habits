@@ -6,7 +6,7 @@
 
 import { MotiView } from "moti";
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, I18nManager, View, Text, Pressable } from "react-native";
 import { CommonStyles } from "../../styles/common";
 import CaretDown from "../svgs/caret-down";
 
@@ -90,7 +90,7 @@ const SpoilerStyles = StyleSheet.create({
   },
   titleContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
   },
   titleIcon: {

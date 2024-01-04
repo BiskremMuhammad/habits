@@ -8,6 +8,7 @@ import { useNavigation } from "@react-navigation/core";
 import React, { useLayoutEffect, useState } from "react";
 import {
   StyleSheet,
+  I18nManager,
   Text,
   View,
   Dimensions,
@@ -15,6 +16,7 @@ import {
   Pressable,
 } from "react-native";
 import DateTimePicker, {
+  DateTimePickerAndroid,
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import {
@@ -43,7 +45,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { HabitUtils } from "../../../utils/habit-utils";
 import { GlobalStore } from "../../../redux/store";
 import { Radio } from "../../elements/radio";
-import { mapToHabitTime } from "../../../utils/calendar-utils";
+import { Time24Prettify, mapToHabitTime } from "../../../utils/calendar-utils";
 
 const { height: screenHeight } = Dimensions.get("screen");
 
@@ -143,6 +145,15 @@ export const AddHabit = (props: AddHabitProps) => {
     });
   };
 
+  const onShowAndroidTimePicker = () => {
+    DateTimePickerAndroid.open({
+      value: new Date(0, 0, 0, datetime.hour, datetime.minute),
+      onChange: onChangeRoutineTime,
+      mode: "time",
+      is24Hour: false,
+    });
+  };
+
   const onChangeHabit = (val: string) => {
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_TYPE,
@@ -230,7 +241,7 @@ export const AddHabit = (props: AddHabitProps) => {
           style={{
             marginBottom: 16,
             display: "flex",
-            flexDirection: "row",
+            flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
             paddingHorizontal: CONSTANTS.PADDING - 14,
           }}
         >
@@ -309,14 +320,27 @@ export const AddHabit = (props: AddHabitProps) => {
         ]}
       >
         <Text style={addHabitStyles.label}>at</Text>
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={new Date(0, 0, 0, datetime.hour, datetime.minute)}
-          mode="time"
-          onChange={onChangeRoutineTime}
-          display="inline"
-          style={{ ...addHabitStyles.label, marginTop: 8 }}
-        />
+        {Platform.OS === "android" ? (
+          <Pressable onPress={onShowAndroidTimePicker}>
+            <Input
+              text={Time24Prettify(datetime)}
+              width="long"
+              hideIcon={true}
+              onChange={onShowAndroidTimePicker}
+              hasBorder={true}
+              hasCircleBorder={true}
+            />
+          </Pressable>
+        ) : (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={new Date(0, 0, 0, datetime.hour, datetime.minute)}
+            mode="time"
+            onChange={onChangeRoutineTime}
+            display="inline"
+            style={{ ...addHabitStyles.label, marginTop: 8 }}
+          />
+        )}
       </View>
       <HabitDurationInput
         forceState={currentOpenInput === OpenedDropDown.HABIT_DURATION}
@@ -360,7 +384,7 @@ const addHabitStyles = StyleSheet.create({
   },
   addHabitSection: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "flex-start",
     alignSelf: "stretch",

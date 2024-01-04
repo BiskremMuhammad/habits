@@ -6,7 +6,7 @@
 
 import { MotiView } from "@motify/components";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, I18nManager } from "react-native";
 import { CommonStyles } from "../../../styles/common";
 import { Button } from "../../elements/button";
 
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "space-between",
   },

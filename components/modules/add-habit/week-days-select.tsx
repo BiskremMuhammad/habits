@@ -10,6 +10,7 @@ import {
   Text,
   Pressable,
   StyleSheet,
+  I18nManager,
   StyleProp,
   ViewStyle,
 } from "react-native";
@@ -103,7 +104,7 @@ export const WeekDaysSelect = (props: WeekDaysSelectProps) => {
 const WeekDaysSelectStyles = StyleSheet.create({
   container: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
   },

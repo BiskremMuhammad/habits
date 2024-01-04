@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, I18nManager } from "react-native";
 import { FastingStages } from "../../types/fasting-stages";
 import { AutophagyIcon } from "../svgs/fasting/autophagy-icon";
 import { AutophagyTwoIcon } from "../svgs/fasting/autophagy-two-icon";
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     height: 25,
     borderRadius: 25,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
   },

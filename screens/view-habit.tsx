@@ -22,12 +22,14 @@ import {
   View,
   Text,
   StyleSheet,
+  I18nManager,
   Dimensions,
   ScrollView,
   Pressable,
   Platform,
 } from "react-native";
 import DateTimePicker, {
+  DateTimePickerAndroid,
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,9 +72,14 @@ import InfoIcon from "../components/svgs/info-icon";
 import { FastingStageInfoModal } from "../components/modules/modals/fasting-stage-info-modal";
 import { Modal } from "../components/modules/modals/modal";
 import { useMemo } from "react";
-import { calculateStreak, mapToHabitTime } from "../utils/calendar-utils";
+import {
+  Time24Prettify,
+  calculateStreak,
+  mapToHabitTime,
+} from "../utils/calendar-utils";
 import { HabitUtils } from "../utils/habit-utils";
 import { AddRoutinePeriodModal } from "../components/modules/modals/add-routine-period-modal";
+import { Input } from "../components/elements/input";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 
@@ -209,6 +216,15 @@ export const ViewHabitScreen = () => {
     dispatch({
       type: AddHabitActionTypes.CHANGE_HABIT_FREQUENCY,
       payload: selectedDays,
+    });
+  };
+
+  const onShowAndroidTimePicker = () => {
+    DateTimePickerAndroid.open({
+      value: new Date(0, 0, 0, habit?.datetime.hour, habit?.datetime.minute),
+      onChange: onChangeRoutineTime,
+      mode: "time",
+      is24Hour: false,
     });
   };
 
@@ -363,7 +379,7 @@ export const ViewHabitScreen = () => {
                   style={[
                     Platform.OS === "ios" && {
                       zIndex: 4,
-                      flexDirection: "row",
+                      flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
                       alignItems: "center",
                     },
                   ]}
@@ -371,26 +387,39 @@ export const ViewHabitScreen = () => {
                   <Text style={[styles.habitDetailsText, { paddingBottom: 0 }]}>
                     at
                   </Text>
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={
-                      new Date(
-                        0,
-                        0,
-                        0,
-                        habit.datetime.hour,
-                        habit.datetime.minute
-                      )
-                    }
-                    mode="time"
-                    onChange={onChangeRoutineTime}
-                    display="inline"
-                    style={[
-                      CommonStyles.habitTypeText,
-                      CommonStyles.habitTypeAccentText,
-                      { marginTop: 8 },
-                    ]}
-                  />
+                  {Platform.OS === "android" ? (
+                    <Pressable onPress={onShowAndroidTimePicker}>
+                      <Input
+                        text={Time24Prettify(habit.datetime)}
+                        width="minimal"
+                        hideIcon={true}
+                        onChange={onShowAndroidTimePicker}
+                        hasBorder={true}
+                        hasCircleBorder={true}
+                      />
+                    </Pressable>
+                  ) : (
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={
+                        new Date(
+                          0,
+                          0,
+                          0,
+                          habit.datetime.hour,
+                          habit.datetime.minute
+                        )
+                      }
+                      mode="time"
+                      onChange={onChangeRoutineTime}
+                      display="inline"
+                      style={[
+                        CommonStyles.habitTypeText,
+                        CommonStyles.habitTypeAccentText,
+                        { marginTop: 8 },
+                      ]}
+                    />
+                  )}
                 </View>
               )}
               {!!habit && (
@@ -479,7 +508,7 @@ export const ViewHabitScreen = () => {
                   key={`routine-period-${i + 1}`}
                   style={{
                     width: "100%",
-                    flexDirection: "row",
+                    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
                     alignItems: "center",
                     marginBottom: 8,
                   }}
@@ -613,7 +642,7 @@ const styles = StyleSheet.create({
   },
   habitDetailsContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
   },
   habitDetails: {
     display: "flex",
@@ -632,7 +661,7 @@ const styles = StyleSheet.create({
   },
   habitDurationContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "flex-start",
     alignSelf: "stretch",
@@ -675,7 +704,7 @@ const styles = StyleSheet.create({
   accentSection: {
     height: 137,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "rgba(78, 70, 126, 0.2)",
@@ -709,7 +738,7 @@ const styles = StyleSheet.create({
   },
   tabs: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     marginTop: 15,
     paddingHorizontal: 42,

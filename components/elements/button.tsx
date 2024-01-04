@@ -9,6 +9,7 @@ import React from "react";
 import {
   Pressable,
   StyleSheet,
+  I18nManager,
   View,
   Text,
   StyleProp,

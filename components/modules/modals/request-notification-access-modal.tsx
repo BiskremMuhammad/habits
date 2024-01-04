@@ -11,6 +11,7 @@ import {
   View,
   Text,
   StyleSheet,
+  I18nManager,
   ImageBackground,
   Dimensions,
   Alert,

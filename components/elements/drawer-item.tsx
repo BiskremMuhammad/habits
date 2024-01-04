@@ -7,7 +7,7 @@
 import { useNavigation, useNavigationState } from "@react-navigation/core";
 import { ParamListBase, PartialRoute, Route } from "@react-navigation/native";
 import React from "react";
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, Text, StyleSheet, I18nManager } from "react-native";
 import { CommonStyles } from "../../styles/common";
 import { Routes } from "../../types/route-names";
 

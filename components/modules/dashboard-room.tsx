@@ -5,7 +5,14 @@
  */
 
 import React, { useMemo } from "react";
-import { Image, StyleSheet, View, Text, Pressable } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  I18nManager,
+  View,
+  Text,
+  Pressable,
+} from "react-native";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import Svg, { Line, Path } from "react-native-svg";
 import { TimerScreenRouteParams } from "../../screens/timer-screen";
@@ -313,7 +320,7 @@ const styles = StyleSheet.create({
   },
   addHabitContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
   },
   addIcon: {
@@ -340,7 +347,7 @@ const styles = StyleSheet.create({
   },
   info: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     paddingLeft: 16,
     paddingRight: 0.1 * CONSTANTS.DASHBOARD_ROOM_ITEM_SIZE,
   },
@@ -350,7 +357,7 @@ const styles = StyleSheet.create({
   },
   habitFrequ: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     marginVertical: 3,
   },
@@ -374,7 +381,7 @@ const styles = StyleSheet.create({
   },
   habitStreakInGlance: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     position: "relative",
     marginTop: 6,
@@ -382,7 +389,7 @@ const styles = StyleSheet.create({
   recentDaysCombo: {
     position: "relative",
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     width: 27,
     height: 22,

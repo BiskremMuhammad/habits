@@ -6,7 +6,14 @@
 
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { View, Text, Dimensions, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  StyleSheet,
+  I18nManager,
+  Pressable,
+} from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import Svg, { Line } from "react-native-svg";
 import { CommonStyles } from "../../../styles/common";

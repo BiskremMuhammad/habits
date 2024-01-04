@@ -4,12 +4,12 @@
  * @description define some common styles will be globaly available for the app
  */
 
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, I18nManager } from "react-native";
 
 export const CommonStyles = StyleSheet.create({
   textWithIcon: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
   },
   withIcon: {
@@ -18,7 +18,7 @@ export const CommonStyles = StyleSheet.create({
   },
   rowContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
   },
   centerContent: {
     alignItems: "center",

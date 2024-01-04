@@ -9,6 +9,7 @@ import {
   View,
   Text,
   StyleSheet,
+  I18nManager,
   Pressable,
   StyleProp,
   ViewStyle,
@@ -98,7 +99,7 @@ export const Header = ({
 const styles = StyleSheet.create({
   header: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: CONSTANTS.HEADER_HORIZONTAL_MARGIN,

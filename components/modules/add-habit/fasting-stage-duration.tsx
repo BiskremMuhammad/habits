@@ -9,6 +9,7 @@ import {
   Pressable,
   Text,
   StyleSheet,
+  I18nManager,
   View,
   StyleProp,
   ViewStyle,
@@ -173,7 +174,7 @@ export const FastingStageDuration = ({
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     flex: 1,
     marginBottom: 14,

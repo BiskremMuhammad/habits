@@ -7,7 +7,14 @@
 import { MotiView } from "@motify/components";
 import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Animated, Platform, Dimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  I18nManager,
+  Animated,
+  Platform,
+  Dimensions,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { Header } from "../components/elements/header";
 import { INITIAL_ADD_HABIT_STATE } from "../components/modules/add-habit/add-habit-reducer";

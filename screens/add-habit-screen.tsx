@@ -6,7 +6,13 @@
 
 import { v4 as uuid } from "uuid";
 import React, { useEffect, useReducer, useState } from "react";
-import { ScrollView, View, StyleSheet, Dimensions } from "react-native";
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  I18nManager,
+  Dimensions,
+} from "react-native";
 import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";

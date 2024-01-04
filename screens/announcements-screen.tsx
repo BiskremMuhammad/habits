@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, I18nManager, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Header } from "../components/elements/header";
 import { AnnouncementCard } from "../components/modules/annoucements/annoucement-card";

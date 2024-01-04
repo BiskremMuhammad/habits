@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, I18nManager, Text, Image } from "react-native";
 import { CONSTANTS } from "../../../utils/constants";
 
 /**

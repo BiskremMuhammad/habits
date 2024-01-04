@@ -9,6 +9,7 @@ import {
   View,
   Text,
   StyleSheet,
+  I18nManager,
   StyleProp,
   ViewStyle,
   Pressable,

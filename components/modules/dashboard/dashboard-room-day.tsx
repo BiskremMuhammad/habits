@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, I18nManager } from "react-native";
 import { HabitProgressData } from "../../../types/habit";
 import { DayState } from "../../../utils/calendar-utils";
 
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 22,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
   },

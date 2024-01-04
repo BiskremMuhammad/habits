@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, I18nManager, Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { getDaysInMonth } from "../../../utils/calendar-utils";
 import { Habit } from "../../../types/habit";
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   headContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 11,
@@ -212,19 +212,19 @@ const styles = StyleSheet.create({
   },
   headButtonsContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
   },
   headButtons: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 30,
   },
   weekDaysRow: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
   },
   day: {

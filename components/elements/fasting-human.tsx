@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, I18nManager } from "react-native";
 
 /**
  * interface that defines the props of the component

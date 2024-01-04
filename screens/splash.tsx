@@ -6,7 +6,7 @@
 
 import { v4 as uuid } from "uuid";
 import React, { useReducer, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, I18nManager, Dimensions } from "react-native";
 import { View as MotiView } from "moti";
 import { AddHabit } from "../components/modules/add-habit/add-habit";
 import { AddIconSvg } from "../components/svgs/add-icon";
@@ -102,7 +102,7 @@ const SplashScreenStyles = StyleSheet.create({
   },
   valueProp: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     marginTop: 0.0444 * screenHeight,
     opacity: 0.66,
     paddingHorizontal: 0.06 * screenWidth + CONSTANTS.PADDING,

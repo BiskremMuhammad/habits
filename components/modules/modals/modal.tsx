@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { StyleSheet, Dimensions, Pressable } from "react-native";
+import { StyleSheet, I18nManager, Dimensions, Pressable } from "react-native";
 import { MotiView } from "@motify/components";
 
 const { width, height } = Dimensions.get("screen");
@@ -47,7 +47,7 @@ const ModalStyles = StyleSheet.create({
     bottom: 0,
     zIndex: 10,
     display: "flex",
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.7)",
